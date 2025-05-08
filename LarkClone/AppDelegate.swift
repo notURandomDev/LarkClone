@@ -1,8 +1,8 @@
 //
 //  AppDelegate.swift
-//  LarkClone
+//  Feishu-clone
 //
-//  Created by Kyle Huang on 2025/5/8.
+//  Created by Kyle Huang on 2025/4/26.
 //
 
 import UIKit
