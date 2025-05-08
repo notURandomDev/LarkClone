@@ -6,12 +6,20 @@
 //
 
 # Xcode 项目文件
-## Xcode 工程文件
-*.xcodeproj/
-    !*.xcodeproj/project.pbxproj
-    !*.xcodeproj/xcshareddata/
-    !*.xcodeproj/project.xcworkspace/
-*.xcworkspace/
+## 强制忽略所有用户专属数据（不可共享）
+*.xcodeproj/xcuserdata/  # 开发者本地设置（窗口布局/断点等）
+*.xcworkspace/xcuserdata/
+*.xcworkspace/xcshareddata/WorkspaceSettings.xcsettings  # 可选忽略
+
+## 保留核心工程文件（必须提交）
+!*.xcodeproj/project.pbxproj  # 项目结构文件（必须跟踪）
+!*.xcodeproj/xcshareddata/   # 共享配置（如代码签名设置）
+
+## 特殊处理 project.xcworkspace（根据需求选择）
+# 如果 project.xcworkspace 是自动生成的（如 CocoaPods），可忽略：
+*.xcodeproj/project.xcworkspace/
+# 如果是手动管理的，则保留：
+# !*.xcodeproj/project.xcworkspace/
 
 ## 构建输出
 build/
