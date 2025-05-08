@@ -1,0 +1,15 @@
+[package]
+name = "rust-sdk"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["staticlib"]  # 编译为静态库，供 FFI 使用
+
+[dependencies]
+prost = "0.13.5"              # Protobuf 序列化
+plist = "1.6"               # 解析 plist 文件
+libc = "0.2"                # FFI 内存管理
+
+[build-dependencies]
+prost-build = "0.13.5"        # 编译 Protobuf 文件

@@ -1,0 +1,15 @@
+syntax = "proto3";
+package lark;
+
+message Contact {
+    string name = 1;
+    string latest_msg = 2;
+    string datetime = 3;
+    string type = 4;
+}
+
+// Protobuf的顶层消息
+// 使用 repeated 修饰，相当于数组
+message ContactList {
+    repeated Contact contacts = 1;
+}
