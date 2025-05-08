@@ -1,0 +1,20 @@
+//
+//  .gitignore
+//  LarkClone
+//
+//  Created by Kyle Huang on 2025/5/8.
+//
+
+# Build 目录（编译生成的二进制文件、缓存等）
+build/
+DerivedData/
+
+# 索引和临时文件
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+
+# 用户工作区配置（包含个人设置，不应共享）
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcuserstate

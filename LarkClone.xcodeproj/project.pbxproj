@@ -61,6 +61,7 @@
 		100E66D92DCCC8110011B0F1 /* MessengerTab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MessengerTab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E66EF2DCCC8460011B0F1 /* LarkColor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkColor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		100E67892DCD04350011B0F1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -140,6 +141,7 @@
 				100E66D32DCCC7590011B0F1 /* RustSDK */,
 				100E63C02DCCC22C0011B0F1 /* LarkClone */,
 				100E63BF2DCCC22C0011B0F1 /* Products */,
+				100E67892DCD04350011B0F1 /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
