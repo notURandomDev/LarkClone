@@ -119,3 +119,14 @@ Tab 框架（framework）的目录下主要有三个子目录：
 - mod.rs：将 Rust 数据体编码成 Protobuf 数据的实现逻辑
 
 最后，`src/` 根目录下的 lib.rs 文件将 Rust 代码封装成高层次的接口进行暴露，供 Swift 侧通过静态库调用。
+
+## 相关链接
+
+### notURandomDev
+
+来自 **notURandomDev** 开发过程中的产出，仅供参考：
+
+- [开发日志](https://www.notion.so/1df2ad4d78728035ac70e561191aee9d?pvs=21)：记录开发过程中遇到的问题，以及对技术的理解
+- [Git学习笔记](https://www.notion.so/Git-1e32ad4d78728044bc68ceee16c00132?pvs=21)：在这个项目中，我大量使用了Git和GitHub；指令很多，需要总结
+- [Rust学习笔记](https://www.notion.so/Rust-1e42ad4d787280838c14c801f8aab3e3?pvs=21)：0基础学习；语法现代的底层语言，学习曲线陡峭
+- [Swift学习笔记](https://www.notion.so/Swift-1e02ad4d7872803ea110d71e4b3e2932?pvs=21)：0基础学习；除了语言的学习之外，还积累了iOS开发中的工程经验
