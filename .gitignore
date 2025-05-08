@@ -5,16 +5,44 @@
 //  Created by Kyle Huang on 2025/5/8.
 //
 
-# Build 目录（编译生成的二进制文件、缓存等）
+# Xcode 项目文件
+## Xcode 工程文件
+*.xcodeproj/
+    !*.xcodeproj/project.pbxproj
+    !*.xcodeproj/xcshareddata/
+    !*.xcodeproj/project.xcworkspace/
+*.xcworkspace/
+
+## 构建输出
 build/
 DerivedData/
+*.xcarchive/
+*.ipa
+*.dSYM/
 
-# 索引和临时文件
+## 用户设置和缓存
+*.pbxuser
+*.perspective
+*.perspectivev3
 *.xcuserstate
-*.xcscmblueprint
-*.xccheckout
+xcuserdata/
 
-# 用户工作区配置（包含个人设置，不应共享）
-*.xcworkspace/xcuserdata/
-*.xcodeproj/xcuserdata/
-*.xcuserstate
+# Rust 相关（针对 rust-sdk）
+## Rust 构建输出
+target/
+
+## Rust 依赖和缓存
+Cargo.lock
+*.rlib
+
+# 其他
+## 虚拟机和 IDE 文件
+.vscode/
+.idea/
+
+## macOS 系统文件
+.DS_Store
+
+## 手动添加的忽略文件（如果有）
+# 示例：忽略特定的 plist 文件（如果不希望版本控制）
+# Contacts.plist
