@@ -28,7 +28,9 @@ class ContactListVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Lark Messenger"
+        
+        // 使用正确的本地化字符串
+        title = NSLocalizedString("messenger_title", tableName: "MessengerTab", bundle: Bundle.main, comment: "Messenger title")
         
         setupUI()
         loadInitialData()

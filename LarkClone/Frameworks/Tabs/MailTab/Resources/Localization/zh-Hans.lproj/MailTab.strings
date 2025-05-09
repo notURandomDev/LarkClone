@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  LarkClone
+
+  Created by 张纪龙 on 2025/5/9.
+  
+*/
+"mailbox_title" = "飞书邮箱";
+"mailbox_tabbar_title" = "邮箱";
+"mailbox_placeholder" = "邮箱功能正在开发中...";

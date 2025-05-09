@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  LarkClone
+
+  Created by 张纪龙 on 2025/5/9.
+  
+*/
+"mailbox_title" = "Lark Mail";
+"mailbox_tabbar_title" = "Mail";
+"mailbox_placeholder" = "Mail is developping...";
