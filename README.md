@@ -11,6 +11,36 @@
 - LarkClone：使用 Swift 语言开发的 iOS App 工程
 - RustSDK：使用 Rust 语言开发的 SDK 工程
 
+## 如何贡献
+
+### Pull Request
+
+通过提交 Pull Request，为项目贡献新功能的代码实现或 Bug 的修复。
+
+注意，请尽量使 PR 原子化；即，每个 PR 应只解决一个问题或实现一个功能。例如，文档更新、代码格式化、功能实现应通过不同的 PR 进行提交；这样有利于仓库管理者在合并 PR 的时候尽可能地减小冲突。
+
+### Commit
+
+PR 中每次的 Commit 信息应尽可能地反映更改内容。可以参照以下格式编写 Commit 信息：
+
+```
+<类型>: <简短描述>  // 标题
+
+<详细说明>         // 正文（可选）
+```
+
+Commit 标题的类型，可以参照下表：
+
+| 类型       | 用途                       | 示例                         |
+| ---------- | -------------------------- | ---------------------------- |
+| `feat`     | 新增功能                   | `feat: 添加邮箱页面`         |
+| `fix`      | 修复 Bug                   | `fix: 解决plist读取问题`     |
+| `docs`     | 文档更新                   | `docs: 更新README文档`       |
+| `style`    | 代码格式调整（不影响逻辑） | `style: 格式化缩进`          |
+| `refactor` | 代码重构（非功能修改）     | `refactor: 优化通信逻辑`     |
+| `test`     | 测试相关                   | `test: 添加文件读取单元测试` |
+| `chore`    | 构建/依赖管理等杂项        | `chore: 升级xcodebuild`      |
+
 ## 项目概要介绍
 
 该项目是字节跳动-飞书客户端（iOS）技术训练营的课题。
@@ -127,6 +157,6 @@ Tab 框架（framework）的目录下主要有三个子目录：
 来自 **notURandomDev** 开发过程中的产出，仅供参考：
 
 - [开发日志](https://www.notion.so/1df2ad4d78728035ac70e561191aee9d?pvs=21)：记录开发过程中遇到的问题，以及对技术的理解
-- [Git学习笔记](https://www.notion.so/Git-1e32ad4d78728044bc68ceee16c00132?pvs=21)：在这个项目中，我大量使用了Git和GitHub；指令很多，需要总结
-- [Rust学习笔记](https://www.notion.so/Rust-1e42ad4d787280838c14c801f8aab3e3?pvs=21)：0基础学习；语法现代的底层语言，学习曲线陡峭
-- [Swift学习笔记](https://www.notion.so/Swift-1e02ad4d7872803ea110d71e4b3e2932?pvs=21)：0基础学习；除了语言的学习之外，还积累了iOS开发中的工程经验
+- [Git 学习笔记](https://www.notion.so/Git-1e32ad4d78728044bc68ceee16c00132?pvs=21)：在这个项目中，我大量使用了 Git 和 GitHub；指令很多，需要总结
+- [Rust 学习笔记](https://www.notion.so/Rust-1e42ad4d787280838c14c801f8aab3e3?pvs=21)：0 基础学习；语法现代的底层语言，学习曲线陡峭
+- [Swift 学习笔记](https://www.notion.so/Swift-1e02ad4d7872803ea110d71e4b3e2932?pvs=21)：0 基础学习；除了语言的学习之外，还积累了 iOS 开发中的工程经验
