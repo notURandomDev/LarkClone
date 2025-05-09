@@ -1,0 +1,9 @@
+language = "C"
+include_guard = "RUST_SDK_H"
+autogen_warning = "/* 该文件由 cbindgen 自动生成，请勿手动修改 */"
+
+[parse]
+include = ["src/lib.rs"]  # 指向你的主要 Rust 文件
+
+[export]
+prefix = "rust_"  # 为所有导出的函数添加前缀
