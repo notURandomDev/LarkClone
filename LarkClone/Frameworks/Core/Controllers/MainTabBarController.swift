@@ -1,8 +1,3 @@
-//
-//  MainTabBarController.swift
-//  LarkClone
-//
-
 import UIKit
 
 class MainTabBarController: UITabBarController {
@@ -10,8 +5,8 @@ class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 设置标签栏外观
-        UITabBar.appearance().tintColor = .systemBlue
+        // 设置标签栏外观 - 增加更多外观设置以确保一致性
+        setupTabBarAppearance()
         
         // 创建视图控制器
         setupViewControllers()
@@ -22,6 +17,9 @@ class MainTabBarController: UITabBarController {
         
         // 在视图将要显示时更新标签栏标题
         updateTabBarItemTitles()
+        
+        // 确保TabBar外观一致性
+        setupTabBarAppearance()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -30,7 +28,54 @@ class MainTabBarController: UITabBarController {
         // 在视图完全显示后再次更新标签栏标题，确保应用正确
         DispatchQueue.main.async {
             self.updateTabBarItemTitles()
+            self.setupTabBarAppearance() // 再次确保外观一致
         }
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
+        
+        // 检查颜色外观是否变化
+        if traitCollection.hasDifferentColorAppearance(comparedTo: newCollection) {
+            coordinator.animate(alongsideTransition: { _ in
+                self.setupTabBarAppearance()
+            })
+        }
+    }
+    
+    // 设置TabBar的外观
+    func setupTabBarAppearance() {
+        // 设置颜色
+        UITabBar.appearance().tintColor = .systemBlue
+        
+        if #available(iOS 15.0, *) {
+            let appearance = UITabBarAppearance()
+            appearance.configureWithDefaultBackground()
+            
+            // 根据当前是否为暗色模式设置适当的背景样式
+            if traitCollection.userInterfaceStyle == .dark {
+                // 暗色模式下设置半透明黑色背景
+                appearance.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.9)
+            } else {
+                // 浅色模式下使用默认背景
+                appearance.backgroundColor = nil
+            }
+            
+            tabBar.standardAppearance = appearance
+            tabBar.scrollEdgeAppearance = appearance
+        } else {
+            // iOS 15以下版本
+            tabBar.isTranslucent = true
+            tabBar.barStyle = traitCollection.userInterfaceStyle == .dark ? .black : .default
+            
+            // 确保刷新时TabBar不会变透明
+            tabBar.backgroundImage = nil
+            tabBar.shadowImage = nil
+        }
+        
+        // 强制布局更新
+        tabBar.setNeedsLayout()
+        tabBar.layoutIfNeeded()
     }
     
     // 更新TabBar标题的方法
@@ -63,7 +108,7 @@ class MainTabBarController: UITabBarController {
         // 使用主Bundle
         let bundle = Bundle.main
         
-        // 信息标签 - 使用现有的ContactListVC
+        // 信息标签 - 使用ContactListVC
         let messagesVC = ContactListVC()
         messagesVC.title = NSLocalizedString("messenger_title", tableName: "MessengerTab", bundle: bundle, comment: "Messenger")
         let messagesNavController = UINavigationController(rootViewController: messagesVC)
