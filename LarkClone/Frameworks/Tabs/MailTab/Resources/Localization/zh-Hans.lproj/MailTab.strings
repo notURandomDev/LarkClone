@@ -1,0 +1,22 @@
+/* 
+  Localizable.strings
+  LarkClone
+
+  Created by 张纪龙 on 2025/5/9.
+  
+*/
+"mailbox_title" = "飞书邮箱";
+"mailbox_tabbar_title" = "邮箱";
+"mailbox_placeholder" = "邮箱功能正在开发中...";
+"search_emails" = "搜索邮件";
+"filter_options" = "筛选选项";
+"all_emails" = "全部邮件";
+"unread" = "未读";
+"with_attachments" = "含附件";
+"cancel" = "取消";
+"compose_email" = "撰写邮件";
+"feature_under_development" = "此功能正在开发中";
+"ok" = "确定";
+"no_emails" = "没有邮件";
+"no_search_results" = "没有找到结果";
+"yesterday" = "昨天";

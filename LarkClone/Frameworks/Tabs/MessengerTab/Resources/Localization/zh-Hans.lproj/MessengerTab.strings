@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  Feishu-clone
+
+  Created by 张纪龙 on 2025/4/28.
+  
+ */
+ "messenger_title" = "飞书消息";
+ "messenger_tabbar_title" = "信息";
+
+ // 添加标签的本地化
+ "tag_external" = " 外部 ";
+ "tag_bot" = " 机器人 ";

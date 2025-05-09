@@ -1,0 +1,22 @@
+/* 
+  Localizable.strings
+  LarkClone
+
+  Created by 张纪龙 on 2025/5/9.
+  
+*/
+"mailbox_title" = "Lark Mail";
+"mailbox_tabbar_title" = "Mail";
+"mailbox_placeholder" = "Mailbox function is under development...";
+"search_emails" = "Search emails";
+"filter_options" = "Filter Options";
+"all_emails" = "All Emails";
+"unread" = "Unread";
+"with_attachments" = "With Attachments";
+"cancel" = "Cancel";
+"compose_email" = "Compose Email";
+"feature_under_development" = "This feature is under development";
+"ok" = "OK";
+"no_emails" = "No emails";
+"no_search_results" = "No results found";
+"yesterday" = "Yesterday";

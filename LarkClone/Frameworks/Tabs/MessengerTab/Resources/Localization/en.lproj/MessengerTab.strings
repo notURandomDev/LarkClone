@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  Feishu-clone
+
+  Created by 张纪龙 on 2025/4/28.
+  
+*/
+"messenger_title" = "Lark Messenger";
+"messenger_tabbar_title" = "Messenger";
+
+// Add tags localization
+"tag_external" = " External ";
+"tag_bot" = " Bot ";

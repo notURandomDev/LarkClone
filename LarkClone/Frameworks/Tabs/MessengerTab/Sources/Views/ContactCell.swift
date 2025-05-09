@@ -81,23 +81,24 @@ class ContactCell: UITableViewCell {
         
         // 使用switch语句处理不同的联系人类型
         switch contact.type {
-        case .bot:
-            tagLabel.text = NSLocalizedString(" 机器人 ", comment: "Bot contact tag")
-            tagLabel.textColor = LarkColor.Tag.Bot.textColor
-            tagLabel.backgroundColor = LarkColor.Tag.Bot.backgroundColor
-            tagLabel.isHidden = false
-            
-        case .external:
-            tagLabel.text = NSLocalizedString(" 外部 ", comment: "External contact tag")
-            tagLabel.textColor = LarkColor.Tag.External.textColor
-            tagLabel.backgroundColor = LarkColor.Tag.External.backgroundColor
-            tagLabel.isHidden = false
-            
-        case .user:
-            // 对于普通用户类型，隐藏标签
-            tagLabel.isHidden = true
-            
-        }
+            case .bot:
+                // 使用MessengerTab表中的本地化字符串
+                tagLabel.text = NSLocalizedString("tag_bot", tableName: "MessengerTab", comment: "Bot contact tag")
+                tagLabel.textColor = LarkColor.Tag.Bot.textColor
+                tagLabel.backgroundColor = LarkColor.Tag.Bot.backgroundColor
+                tagLabel.isHidden = false
+                
+            case .external:
+                // 使用MessengerTab表中的本地化字符串
+                tagLabel.text = NSLocalizedString("tag_external", tableName: "MessengerTab", comment: "External contact tag")
+                tagLabel.textColor = LarkColor.Tag.External.textColor
+                tagLabel.backgroundColor = LarkColor.Tag.External.backgroundColor
+                tagLabel.isHidden = false
+                
+            case .user:
+                // 对于普通用户类型，隐藏标签
+                tagLabel.isHidden = true
+            }
     }
     
     func configureNameLabel() {
