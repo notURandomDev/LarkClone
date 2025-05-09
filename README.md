@@ -1,6 +1,8 @@
 # 支持多构建系统的混合技术栈（Swift、OC、Rust）仿飞书 APP 开发
 
-## 仓库说明
+## 概览
+
+### 仓库介绍
 
 该仓库的初始化是基于「Feishu-clone」仓库的代码之上进行重构的；核心的变动是项目中 Framework 的模块划分，以及更加合理的和可扩展的项目架构。
 
@@ -10,6 +12,20 @@
 
 - LarkClone：使用 Swift 语言开发的 iOS App 工程
 - RustSDK：使用 Rust 语言开发的 SDK 工程
+
+### 开发环境要求
+
+RustSDK 的静态库通过 Build Phase 的 Run Script 自动生成，因此需要安装 Rust 工具链：
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+Rust 静态库的函数调用依赖 C 头文件；该头文件的自动生成需要安装 Cargo 包 `cbindgen` ：
+
+```bash
+cargo install cbindgen
+```
 
 ## 如何贡献
 
