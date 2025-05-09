@@ -80,7 +80,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/Core/LarkFoundation/LarkFoundation.swift,
-				Frameworks/Core/LarkSDK/LarkSDK.swift,
 				Info.plist,
 			);
 			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
@@ -92,13 +91,6 @@
 			);
 			target = 100E67042DCCC90D0011B0F1 /* LarkFoundation */;
 		};
-		1044EEEC2DCDAC5700CC1692 /* Exceptions for "LarkClone" folder in "LarkSDK" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Frameworks/Core/LarkSDK/LarkSDK.swift,
-			);
-			target = 1044EEDD2DCDAC5200CC1692 /* LarkSDK */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -107,7 +99,6 @@
 			exceptions = (
 				100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */,
 				100E67142DCCC9400011B0F1 /* Exceptions for "LarkClone" folder in "LarkFoundation" target */,
-				1044EEEC2DCDAC5700CC1692 /* Exceptions for "LarkClone" folder in "LarkSDK" target */,
 			);
 			path = LarkClone;
 			sourceTree = "<group>";

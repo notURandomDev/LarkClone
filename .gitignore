@@ -38,6 +38,8 @@ xcuserdata/
 # Rust 相关（针对 rust-sdk）
 ## Rust 构建输出
 target/
+include/
+libs/
 
 ## Rust 依赖和缓存
 Cargo.lock
