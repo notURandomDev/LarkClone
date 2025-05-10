@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import LarkAvatar
+import LarkColor
 
 class ContactCell: UITableViewCell {
-    var avatarIV = UIImageView()
+    private var avatarView = AvatarView() // 使用 AvatarView 替代 avatarIV
     var nameLabel = UILabel()
     var tagLabel = UILabel()
     var datetimeLabel = UILabel()
@@ -16,9 +18,9 @@ class ContactCell: UITableViewCell {
     var infoSV = UIStackView()
     var leftView = UIView()
     var firstLineView = UIView()
+
     
     struct Styles {
-        static let avatarSize: CGFloat = 40
         static let pxPrimary: CGFloat = 16
         static let pxSecondary: CGFloat = 12
         static let pyPrimary: CGFloat = 13
@@ -27,11 +29,10 @@ class ContactCell: UITableViewCell {
         static let fontSizeSecondary: CGFloat = 13
         static let fontWeightPrimary = UIFont.Weight.medium
     }
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
        
-        configureAvatarIV()
         configureNameLabel()
         configureTagLabel()
         configureLeftView()
@@ -40,10 +41,10 @@ class ContactCell: UITableViewCell {
         configureFirstLineView()
         configureInfoSV()
         
-        addSubview(avatarIV)
+        addSubview(avatarView) // 添加 avatarView
         addSubview(infoSV)
         
-        setAvatarIVConstaints()
+        setAvatarViewConstraints() // 添加 avatarView 的约束
         setNameLabelConstraints()
         setTagLabelConstraints()
         setLeftViewConstraints()
@@ -51,18 +52,18 @@ class ContactCell: UITableViewCell {
         setFirstLineViewConstraints()
         setMsgLabelConstaints()
         setInfoSVConstraints()
+        
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     // 添加prepareForReuse方法重置所有状态，解决标签错乱问题
     override func prepareForReuse() {
         super.prepareForReuse()
         
         // 重置所有视图状态
-        avatarIV.image = nil
+        avatarView.image = nil
         nameLabel.text = nil
         msgLabel.text = nil
         datetimeLabel.text = nil
@@ -72,9 +73,9 @@ class ContactCell: UITableViewCell {
         tagLabel.backgroundColor = nil
         tagLabel.text = nil
     }
-    
+
     func set(contact: Contact) {
-        avatarIV.image = contact.avatar
+        avatarView.image = contact.avatar
         nameLabel.text = contact.name
         msgLabel.text = contact.latestMsg
         datetimeLabel.text = contact.datetime
@@ -84,60 +85,54 @@ class ContactCell: UITableViewCell {
             case .bot:
                 // 使用MessengerTab表中的本地化字符串
                 tagLabel.text = NSLocalizedString("tag_bot", tableName: "MessengerTab", comment: "Bot contact tag")
-                tagLabel.textColor = LarkColor.Tag.Bot.textColor
-                tagLabel.backgroundColor = LarkColor.Tag.Bot.backgroundColor
+                tagLabel.textColor = LarkColorConfig.Tag.Bot.textColor
+                tagLabel.backgroundColor = LarkColorConfig.Tag.Bot.backgroundColor
                 tagLabel.isHidden = false
                 
             case .external:
                 // 使用MessengerTab表中的本地化字符串
                 tagLabel.text = NSLocalizedString("tag_external", tableName: "MessengerTab", comment: "External contact tag")
-                tagLabel.textColor = LarkColor.Tag.External.textColor
-                tagLabel.backgroundColor = LarkColor.Tag.External.backgroundColor
+                tagLabel.textColor = LarkColorConfig.Tag.External.textColor
+                tagLabel.backgroundColor = LarkColorConfig.Tag.External.backgroundColor
                 tagLabel.isHidden = false
                 
             case .user:
-                // 对于普通用户类型，隐藏标签
                 tagLabel.isHidden = true
-            }
+        }
     }
-    
+
     func configureNameLabel() {
         nameLabel.font = .systemFont(ofSize: Styles.fontSizePrimary, weight: Styles.fontWeightPrimary)
         nameLabel.lineBreakMode = .byTruncatingTail
     }
-    
+
     func configureTagLabel() {
         tagLabel.isHidden = true
         tagLabel.font = .systemFont(ofSize: 11, weight: .semibold)
         tagLabel.clipsToBounds = true
         tagLabel.layer.cornerRadius = 4
     }
-    
+
     func configureLeftView() {
         leftView.addSubview(nameLabel)
         leftView.addSubview(tagLabel)
     }
-    
+
     func configureDatetimeLabel() {
-        datetimeLabel.textColor = LarkColor.Text.secondary
+        datetimeLabel.textColor = LarkColorConfig.Text.secondary
         datetimeLabel.font = .systemFont(ofSize: Styles.fontSizeSecondary, weight: .semibold)
     }
-    
-    func configureAvatarIV() {
-        avatarIV.layer.cornerRadius = Styles.avatarSize / 2
-        avatarIV.clipsToBounds = true
-    }
-    
+
     func configureMsgLabel() {
-        msgLabel.textColor = LarkColor.Text.secondary
+        msgLabel.textColor = LarkColorConfig.Text.secondary
         msgLabel.font = .systemFont(ofSize: Styles.fontSizeSecondary, weight: Styles.fontWeightPrimary)
     }
-    
+
     func configureFirstLineView() {
         firstLineView.addSubview(leftView)
         firstLineView.addSubview(datetimeLabel)
     }
-    
+
     func configureInfoSV() {
         infoSV.axis = .vertical
         infoSV.spacing = 8
@@ -145,17 +140,16 @@ class ContactCell: UITableViewCell {
         infoSV.addArrangedSubview(firstLineView)
         infoSV.addArrangedSubview(msgLabel)
     }
-    
-    func setAvatarIVConstaints() {
-        avatarIV.translatesAutoresizingMaskIntoConstraints = false
+
+    func setAvatarViewConstraints() { // 更新为 avatarView 的约束
+        avatarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            avatarIV.centerYAnchor.constraint(equalTo: centerYAnchor),
-            avatarIV.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Styles.pxPrimary),
-            avatarIV.heightAnchor.constraint(equalToConstant: Styles.avatarSize),
-            avatarIV.widthAnchor.constraint(equalToConstant: Styles.avatarSize)
+            avatarView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            avatarView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Styles.pxPrimary),
+            // 大小约束已在 AvatarView 内部设置
         ])
     }
-    
+
     func setNameLabelConstraints() {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -164,7 +158,7 @@ class ContactCell: UITableViewCell {
             nameLabel.widthAnchor.constraint(lessThanOrEqualToConstant: 220)
         ])
     }
-    
+
     func setTagLabelConstraints() {
         tagLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -173,7 +167,7 @@ class ContactCell: UITableViewCell {
             tagLabel.bottomAnchor.constraint(equalTo: firstLineView.bottomAnchor)
         ])
     }
-    
+
     func setLeftViewConstraints() {
         leftView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -182,7 +176,7 @@ class ContactCell: UITableViewCell {
             leftView.centerYAnchor.constraint(equalTo: firstLineView.centerYAnchor)
         ])
     }
-    
+
     func setDatetimeLabelConstraints() {
         datetimeLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -191,30 +185,28 @@ class ContactCell: UITableViewCell {
             datetimeLabel.bottomAnchor.constraint(equalTo: firstLineView.bottomAnchor)
         ])
     }
-    
+
     func setFirstLineViewConstraints() {
         firstLineView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             firstLineView.leadingAnchor.constraint(equalTo: infoSV.leadingAnchor),
             firstLineView.trailingAnchor.constraint(equalTo: infoSV.trailingAnchor),
-            // firstLineView.topAnchor.constraint(equalTo: infoSV.topAnchor)
         ])
     }
-    
+
     func setMsgLabelConstaints() {
         msgLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            // msgLabel.leadingAnchor.constraint(equalTo: infoSV.leadingAnchor)
         ])
     }
-    
+
     func setInfoSVConstraints() {
         infoSV.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             infoSV.topAnchor.constraint(equalTo: topAnchor, constant: Styles.pyPrimary),
             infoSV.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Styles.pyPrimary),
             infoSV.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Styles.pxPrimary),
-            infoSV.leadingAnchor.constraint(equalTo: avatarIV.trailingAnchor, constant: Styles.pxSecondary)
+            infoSV.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Styles.pxSecondary) // 更新为 avatarView
         ])
     }
 }

@@ -7,12 +7,12 @@
 
 import UIKit
 
-struct LarkColor {
+public struct LarkColorConfig {
     // 标签颜色
-    struct Tag {
+    public struct Tag {
         // 机器人标签
-        struct Bot {
-            static var textColor: UIColor {
+        public struct Bot {
+            public static var textColor: UIColor {
                 return UIColor { traitCollection in
                     return traitCollection.userInterfaceStyle == .dark
                         ? UIColor(red: 200/255.0, green: 150/255.0, blue: 30/255.0, alpha: 1)
@@ -20,7 +20,7 @@ struct LarkColor {
                 }
             }
             
-            static var backgroundColor: UIColor {
+            public static var backgroundColor: UIColor {
                 return UIColor { traitCollection in
                     return traitCollection.userInterfaceStyle == .dark
                         ? UIColor(red: 60/255.0, green: 50/255.0, blue: 10/255.0, alpha: 1)
@@ -30,8 +30,8 @@ struct LarkColor {
         }
         
         // 外部联系人标签
-        struct External {
-            static var textColor: UIColor {
+        public struct External {
+            public static var textColor: UIColor {
                 return UIColor { traitCollection in
                     return traitCollection.userInterfaceStyle == .dark
                         ? UIColor(red: 100/255.0, green: 140/255.0, blue: 255/255.0, alpha: 1)
@@ -39,7 +39,7 @@ struct LarkColor {
                 }
             }
             
-            static var backgroundColor: UIColor {
+            public static var backgroundColor: UIColor {
                 return UIColor { traitCollection in
                     return traitCollection.userInterfaceStyle == .dark
                         ? UIColor(red: 30/255.0, green: 40/255.0, blue: 80/255.0, alpha: 1)
@@ -50,8 +50,8 @@ struct LarkColor {
     }
     
     // 文本颜色
-    struct Text {
-        static var primary: UIColor {
+    public struct Text {
+        public static var primary: UIColor {
             return UIColor { traitCollection in
                 return traitCollection.userInterfaceStyle == .dark
                     ? UIColor.white
@@ -59,7 +59,7 @@ struct LarkColor {
             }
         }
         
-        static var secondary: UIColor {
+        public static var secondary: UIColor {
             return UIColor { traitCollection in
                 return traitCollection.userInterfaceStyle == .dark
                     ? UIColor.lightGray
