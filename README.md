@@ -27,6 +27,13 @@ Rust 静态库的函数调用依赖 C 头文件；该头文件的自动生成需
 cargo install cbindgen
 ```
 
+### 前置步骤
+项目中有两个脚本文件,分别在MailTab和MessengerTab里面的Scripts文件夹中,分别是
+- GenerateMails:生成邮件所需的数据文件
+- GenerateContacts:生成联系人的数据信息
+
+需要在项目里面的`Target Membership`中解除这两个文件的绑定,需要分别单独运行这两个脚本文件,随后运行整个项目.
+
 ## 如何贡献
 
 ### Pull Request

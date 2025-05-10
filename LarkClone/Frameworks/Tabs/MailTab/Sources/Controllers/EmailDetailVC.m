@@ -193,7 +193,7 @@
     dateFormatter.timeStyle = NSDateFormatterShortStyle;
     self.dateLabel.text = [dateFormatter stringFromDate:self.email.date];
     
-    // 为demo生成一些虚拟邮件正文
+    // 生成一些虚拟邮件正文
     self.bodyLabel.text = @"不知道写什么^-^";
 }
 

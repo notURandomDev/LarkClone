@@ -80,6 +80,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/Core/Controllers/LarkFoundation/LarkFoundation.swift,
+				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
+				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
 				Info.plist,
 			);
 			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
