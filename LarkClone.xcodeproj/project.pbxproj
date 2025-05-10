@@ -79,7 +79,7 @@
 		100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Frameworks/Core/Controllers/LarkFoundation/LarkFoundation.swift,
+				Frameworks/Core/LarkFoundation/LarkFoundation.swift,
 				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
 				Info.plist,
@@ -89,7 +89,7 @@
 		100E67142DCCC9400011B0F1 /* Exceptions for "LarkClone" folder in "LarkFoundation" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Frameworks/Core/Controllers/LarkFoundation/LarkFoundation.swift,
+				Frameworks/Core/LarkFoundation/LarkFoundation.swift,
 			);
 			target = 100E67042DCCC90D0011B0F1 /* LarkFoundation */;
 		};
