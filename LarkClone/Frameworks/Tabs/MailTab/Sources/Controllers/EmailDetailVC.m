@@ -193,8 +193,10 @@
     dateFormatter.timeStyle = NSDateFormatterShortStyle;
     self.dateLabel.text = [dateFormatter stringFromDate:self.email.date];
     
-    // 生成一些虚拟邮件正文
-    self.bodyLabel.text = @"不知道写什么^-^";
+    // 只使用原始预览内容，并添加一行文字
+    NSString *previewContent = [NSString stringWithFormat:@"%@\n\n我不知道写什么OvO", self.email.preview];
+    
+    self.bodyLabel.text = previewContent;
 }
 
 #pragma mark - Actions

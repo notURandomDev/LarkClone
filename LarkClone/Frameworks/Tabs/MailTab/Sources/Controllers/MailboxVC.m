@@ -55,7 +55,7 @@
 // 更新TabBar标题
 - (void)updateTabBarTitle {
     if (self.tabBarController && self.tabBarController.tabBar.items.count > 1) {
-        // 假设邮箱是第二个标签
+        // 邮箱标签
         UITabBarItem *tabBarItem = self.tabBarController.tabBar.items[1];
         tabBarItem.title = NSLocalizedStringFromTable(@"mailbox_tabbar_title", @"MailTab", @"Mailbox");
     }
