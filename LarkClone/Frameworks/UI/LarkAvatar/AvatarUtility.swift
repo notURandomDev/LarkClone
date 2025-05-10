@@ -8,9 +8,9 @@
 import UIKit
 
 // 这里使用枚举是为了避免实例化，类似命名空间
-enum AvatarUtility {
+public enum AvatarUtility {
     // size：支持不同尺寸的占位头像
-    static func createPlaceholderAvatar(size: CGSize = CGSize(width: 40, height: 40)) -> UIImage {
+    public static func createPlaceholderAvatar(size: CGSize = CGSize(width: 40, height: 40)) -> UIImage {
         let renderer = UIGraphicsImageRenderer(size: size)
         return renderer.image { ctx in
             UIColor.systemGray4.setFill()
