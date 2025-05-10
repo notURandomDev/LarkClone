@@ -79,19 +79,11 @@
 		100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Frameworks/Core/LarkFoundation/LarkFoundation.swift,
 				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
 				Info.plist,
 			);
 			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
-		};
-		100E67142DCCC9400011B0F1 /* Exceptions for "LarkClone" folder in "LarkFoundation" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Frameworks/Core/LarkFoundation/LarkFoundation.swift,
-			);
-			target = 100E67042DCCC90D0011B0F1 /* LarkFoundation */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -100,7 +92,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */,
-				100E67142DCCC9400011B0F1 /* Exceptions for "LarkClone" folder in "LarkFoundation" target */,
 			);
 			path = LarkClone;
 			sourceTree = "<group>";
