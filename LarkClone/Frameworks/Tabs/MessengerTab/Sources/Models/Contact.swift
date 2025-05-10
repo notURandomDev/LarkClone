@@ -1,4 +1,6 @@
 import Foundation
+import UIKit
+import LarkAvatar
 
 enum ContactType: String {
     case user

@@ -17,6 +17,8 @@
 		1044EEE52DCDAC5300CC1692 /* LarkSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1044EEDE2DCDAC5200CC1692 /* LarkSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		109008B42DCFACB300BC010A /* LarkAvatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; };
 		109008B52DCFACB300BC010A /* LarkAvatar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		109008CA2DCFB5D700BC010A /* LarkAvatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; };
+		109008D02DCFB81300BC010A /* LarkColor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 100E66EF2DCCC8460011B0F1 /* LarkColor.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +56,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 109008AD2DCFACB300BC010A;
 			remoteInfo = LarkAvatar;
+		};
+		109008C42DCFB32800BC010A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 109008AD2DCFACB300BC010A;
+			remoteInfo = LarkAvatar;
+		};
+		109008D12DCFB81900BC010A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 100E66EE2DCCC8460011B0F1;
+			remoteInfo = LarkColor;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -96,6 +112,31 @@
 			);
 			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
 		};
+		109008C92DCFB53100BC010A /* Exceptions for "LarkClone" folder in "MessengerTab" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Frameworks/Tabs/MessengerTab/Sources/Models/Contact.swift,
+				Frameworks/Tabs/MessengerTab/Sources/Views/ContactCell.swift,
+			);
+			target = 100E66D82DCCC8110011B0F1 /* MessengerTab */;
+		};
+		109008CC2DCFB71E00BC010A /* Exceptions for "LarkClone" folder in "LarkAvatar" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Frameworks/UI/LarkAvatar/AvatarUtility.swift,
+				Frameworks/UI/LarkAvatar/AvatarView.swift,
+				Frameworks/UI/LarkAvatar/LarkAvatar.h,
+			);
+			target = 109008AD2DCFACB300BC010A /* LarkAvatar */;
+		};
+		109008CF2DCFB75A00BC010A /* Exceptions for "LarkClone" folder in "LarkColor" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Frameworks/UI/LarkColor/LarkColor.h,
+				Frameworks/UI/LarkColor/LarkColor.swift,
+			);
+			target = 100E66EE2DCCC8460011B0F1 /* LarkColor */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -103,6 +144,9 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */,
+				109008C92DCFB53100BC010A /* Exceptions for "LarkClone" folder in "MessengerTab" target */,
+				109008CF2DCFB75A00BC010A /* Exceptions for "LarkClone" folder in "LarkColor" target */,
+				109008CC2DCFB71E00BC010A /* Exceptions for "LarkClone" folder in "LarkAvatar" target */,
 			);
 			path = LarkClone;
 			sourceTree = "<group>";
@@ -131,6 +175,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				109008D02DCFB81300BC010A /* LarkColor.framework in Frameworks */,
+				109008CA2DCFB5D700BC010A /* LarkAvatar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +324,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				109008D22DCFB81900BC010A /* PBXTargetDependency */,
+				109008C52DCFB32800BC010A /* PBXTargetDependency */,
 			);
 			name = MessengerTab;
 			packageProductDependencies = (
@@ -564,6 +612,16 @@
 			target = 109008AD2DCFACB300BC010A /* LarkAvatar */;
 			targetProxy = 109008B22DCFACB300BC010A /* PBXContainerItemProxy */;
 		};
+		109008C52DCFB32800BC010A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 109008AD2DCFACB300BC010A /* LarkAvatar */;
+			targetProxy = 109008C42DCFB32800BC010A /* PBXContainerItemProxy */;
+		};
+		109008D22DCFB81900BC010A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 100E66EE2DCCC8460011B0F1 /* LarkColor */;
+			targetProxy = 109008D12DCFB81900BC010A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -821,6 +879,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -855,6 +914,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1037,6 +1097,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1072,6 +1133,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
