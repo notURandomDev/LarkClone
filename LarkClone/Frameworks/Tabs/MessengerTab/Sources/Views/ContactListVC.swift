@@ -32,21 +32,15 @@ class ContactListVC: UIViewController {
         // 使用正确的本地化字符串
         title = NSLocalizedString("messenger_title", tableName: "MessengerTab", bundle: Bundle.main, comment: "Messenger title")
         
-        // 启用大标题样式
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
-        
+        setupNavBar()
         setupUI()
         loadInitialData()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // 确保使用大标题样式
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
-    }
+//    override func viewWillAppear(_ animated: Bool) {
+//        super.viewWillAppear(animated)
+//        setupNavBar()
+//    }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -56,14 +50,21 @@ class ContactListVC: UIViewController {
             navBar.prefersLargeTitles = true
             
             // iOS 15以上使用新API强制设置样式
-            if #available(iOS 15.0, *) {
-                let appearance = UINavigationBarAppearance()
-                appearance.configureWithDefaultBackground()
-                appearance.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
-                navBar.scrollEdgeAppearance = appearance
-                navBar.standardAppearance = appearance
-            }
+//            if #available(iOS 15.0, *) {
+//                let appearance = UINavigationBarAppearance()
+//                appearance.configureWithOpaqueBackground()
+//                appearance.backgroundColor = .systemBackground
+//                appearance.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
+//                // navBar.scrollEdgeAppearance = appearance
+//                navBar.standardAppearance = appearance
+//            }
         }
+    }
+    
+    private func setupNavBar() {
+        // 确保使用大标题样式
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
     }
     
     private func setupUI() {
