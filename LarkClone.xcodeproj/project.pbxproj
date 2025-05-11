@@ -19,6 +19,9 @@
 		109008B52DCFACB300BC010A /* LarkAvatar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		109008CA2DCFB5D700BC010A /* LarkAvatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; };
 		109008D02DCFB81300BC010A /* LarkColor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 100E66EF2DCCC8460011B0F1 /* LarkColor.framework */; };
+		10900F892DD04E5900BC010A /* LarkLaunchScreen.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */; };
+		10900F8A2DD04E5900BC010A /* LarkLaunchScreen.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		10900F972DD05BD900BC010A /* LarkColor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 100E66EF2DCCC8460011B0F1 /* LarkColor.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,6 +91,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				100E66F62DCCC8460011B0F1 /* LarkColor.framework in Embed Frameworks */,
+				10900F8A2DD04E5900BC010A /* LarkLaunchScreen.framework in Embed Frameworks */,
 				1044EEE52DCDAC5300CC1692 /* LarkSDK.framework in Embed Frameworks */,
 				100E66E02DCCC8110011B0F1 /* MessengerTab.framework in Embed Frameworks */,
 				100E670C2DCCC90D0011B0F1 /* LarkFoundation.framework in Embed Frameworks */,
@@ -106,7 +110,7 @@
 		100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67892DCD04350011B0F1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1044EEDE2DCDAC5200CC1692 /* LarkSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		109008AE2DCFACB300BC010A /* LarkAvatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkAvatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		109008AE2DCFACB300BC010A /* LarkAvatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkAvatar.framework; sourceTree = BUILT_PRODUCTS_DIR; }
 		E08973DF2DD078D700B720D4 /* LarkSearchBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = LarkSearchBar.framework; path = "/Users/zhangjilong/Documents/xcode_code/LarkClone/build/Debug-iphoneos/LarkSearchBar.framework"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -151,6 +155,14 @@
 			);
 			target = 100E66EE2DCCC8460011B0F1 /* LarkColor */;
 		};
+		10900F912DD04E5E00BC010A /* Exceptions for "LarkClone" folder in "LarkLaunchScreen" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Frameworks/UI/LarkLaunchScreen/Assets.xcassets,
+				Frameworks/UI/LarkLaunchScreen/LaunchViewController.swift,
+			);
+			target = 10900F822DD04E5900BC010A /* LarkLaunchScreen */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -161,6 +173,7 @@
 				109008C92DCFB53100BC010A /* Exceptions for "LarkClone" folder in "MessengerTab" target */,
 				109008CF2DCFB75A00BC010A /* Exceptions for "LarkClone" folder in "LarkColor" target */,
 				109008CC2DCFB71E00BC010A /* Exceptions for "LarkClone" folder in "LarkAvatar" target */,
+				10900F912DD04E5E00BC010A /* Exceptions for "LarkClone" folder in "LarkLaunchScreen" target */,
 			);
 			path = LarkClone;
 			sourceTree = "<group>";
@@ -178,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				100E66F52DCCC8460011B0F1 /* LarkColor.framework in Frameworks */,
+				10900F892DD04E5900BC010A /* LarkLaunchScreen.framework in Frameworks */,
 				1044EEE42DCDAC5300CC1692 /* LarkSDK.framework in Frameworks */,
 				100E66DF2DCCC8110011B0F1 /* MessengerTab.framework in Frameworks */,
 				100E670B2DCCC90D0011B0F1 /* LarkFoundation.framework in Frameworks */,
@@ -253,6 +267,7 @@
 				100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */,
 				1044EEDE2DCDAC5200CC1692 /* LarkSDK.framework */,
 				109008AE2DCFACB300BC010A /* LarkAvatar.framework */,
+				10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -702,6 +717,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -732,6 +748,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

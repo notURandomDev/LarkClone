@@ -117,7 +117,7 @@ public class LarkColorStyle: NSObject {
             }
         }
     }
-    
+   
     // 聊天气泡颜色
     public struct ChatBubble {
         // 发送者(自己)气泡
@@ -154,7 +154,7 @@ public class LarkColorStyle: NSObject {
             }
         }
     }
-    
+   
     // 已读状态标记颜色
     public struct ReadStatus {
         public static var tintColor: UIColor {

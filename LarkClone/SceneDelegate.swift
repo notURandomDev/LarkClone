@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import LarkLaunchScreen
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -17,13 +18,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        
-        let navController = MainTabBarController()
                                                    
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = navController
+        
+        let launchViewController = LaunchViewController()
+        window?.rootViewController = launchViewController
         window?.makeKeyAndVisible()
+        
+        // 延迟 1 秒后切换到 MainTabBarController
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+           let navController = MainTabBarController()
+           self.window?.rootViewController = navController
+           // 可选：添加过渡动画
+           UIView.transition(with: self.window!, duration: 0.3, options: .transitionCrossDissolve, animations: nil, completion: nil)
+        }
+        
+        // window?.rootViewController = navController
+        // window?.makeKeyAndVisible()
         
     }
 
