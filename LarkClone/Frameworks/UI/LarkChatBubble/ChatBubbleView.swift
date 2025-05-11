@@ -41,7 +41,7 @@ class ChatBubbleView: UIView {
         // 配置消息标签
         messageLabel.numberOfLines = 0
         messageLabel.font = UIFont.systemFont(ofSize: 16)
-        messageLabel.textColor = LarkColorConfig.Text.primary
+        messageLabel.textColor = LarkColorStyle.Text.primary
         addSubview(messageLabel)
         
         // 设置自动布局
@@ -65,24 +65,24 @@ class ChatBubbleView: UIView {
         
         switch type {
         case .sent:
-            // 使用 LarkColorConfig 中定义的发送消息气泡颜色
-            backgroundColor = LarkColorConfig.ChatBubble.Sent.backgroundColor
-            messageLabel.textColor = LarkColorConfig.ChatBubble.Sent.textColor
+            // 使用 LarkColorStyle 中定义的发送消息气泡颜色
+            backgroundColor = LarkColorStyle.ChatBubble.Sent.backgroundColor
+            messageLabel.textColor = LarkColorStyle.ChatBubble.Sent.textColor
             
         case .received:
-            // 使用 LarkColorConfig 中定义的接收消息气泡颜色
-            backgroundColor = LarkColorConfig.ChatBubble.Received.backgroundColor
-            messageLabel.textColor = LarkColorConfig.ChatBubble.Received.textColor
+            // 使用 LarkColorStyle 中定义的接收消息气泡颜色
+            backgroundColor = LarkColorStyle.ChatBubble.Received.backgroundColor
+            messageLabel.textColor = LarkColorStyle.ChatBubble.Received.textColor
         }
     }
     
-    // MARK: - 暗色模式支持（只使用iOS 17+新API）
+    // MARK: - 暗色模式支持
     private func registerForTraitChanges() {
         if #available(iOS 17.0, *) {
             registrationToken = registerForTraitChanges([UITraitUserInterfaceStyle.self]) { [weak self] (view: UIView, previousTraitCollection: UITraitCollection) in
                 if previousTraitCollection.userInterfaceStyle != self?.traitCollection.userInterfaceStyle {
                     if let text = self?.messageLabel.text {
-                        let isSent = self?.backgroundColor == LarkColorConfig.ChatBubble.Sent.backgroundColor
+                        let isSent = self?.backgroundColor == LarkColorStyle.ChatBubble.Sent.backgroundColor
                         self?.configure(text: text, type: isSent ? .sent : .received)
                     }
                 }
@@ -94,7 +94,7 @@ class ChatBubbleView: UIView {
     private func handleTraitChange(_ previousTraitCollection: UITraitCollection?) {
         // 当外观模式改变时，重新应用配置
         if let text = messageLabel.text, previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-            let isSent = backgroundColor == LarkColorConfig.ChatBubble.Sent.backgroundColor
+            let isSent = backgroundColor == LarkColorStyle.ChatBubble.Sent.backgroundColor
             configure(text: text, type: isSent ? .sent : .received)
         }
     }

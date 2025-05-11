@@ -54,12 +54,12 @@ class MessageCell: UITableViewCell {
         avatarImageView.contentMode = .scaleAspectFill
         avatarImageView.layer.cornerRadius = Constants.avatarSize / 2
         avatarImageView.clipsToBounds = true
-        avatarImageView.backgroundColor = LarkColorConfig.Avatar.backgroundColor // 使用自定义头像背景颜色
+        avatarImageView.backgroundColor = LarkColorStyle.Avatar.backgroundColor
         contentView.addSubview(avatarImageView)
         
         // 配置发送者名称
         senderNameLabel.font = UIFont.systemFont(ofSize: 12)
-        senderNameLabel.textColor = LarkColorConfig.Text.secondary
+        senderNameLabel.textColor = LarkColorStyle.Text.secondary
         contentView.addSubview(senderNameLabel)
         
         // 添加气泡视图
@@ -67,12 +67,12 @@ class MessageCell: UITableViewCell {
         
         // 配置时间标签
         timeLabel.font = UIFont.systemFont(ofSize: 12)
-        timeLabel.textColor = LarkColorConfig.Text.secondary
+        timeLabel.textColor = LarkColorStyle.Text.secondary
         contentView.addSubview(timeLabel)
         
         // 配置已读状态视图
         readStatusView.contentMode = .scaleAspectFit
-        readStatusView.tintColor = LarkColorConfig.ReadStatus.tintColor // 使用更明亮的绿色
+        readStatusView.tintColor = LarkColorStyle.ReadStatus.tintColor
         contentView.addSubview(readStatusView)
         
         // 设置自动布局
@@ -111,7 +111,6 @@ class MessageCell: UITableViewCell {
     
     // MARK: - Configuration
     func configure(with message: Message) {
-        // 移除之前的动态约束
         removeConstraintsWithIdentifier("dynamicConstraint")
         
         // 设置消息内容
@@ -120,7 +119,6 @@ class MessageCell: UITableViewCell {
         
         // 根据消息类型设置头像
         if message.type == .sent {
-            // 对于发送的消息，强制使用zhang-jilong头像
             if let customAvatar = UIImage(named: "zhang-jilong") {
                 avatarImageView.image = customAvatar
             } else {
@@ -155,7 +153,7 @@ class MessageCell: UITableViewCell {
             UIImage(systemName: "checkmark.circle", withConfiguration: readImageConfig)?.withRenderingMode(.alwaysTemplate)
         
         // 使用更明亮的绿色
-        readStatusView.tintColor = LarkColorConfig.ReadStatus.tintColor
+        readStatusView.tintColor = LarkColorStyle.ReadStatus.tintColor
         
         // 右侧约束 - 头像在右边
         let avatarRightConstraint = avatarImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.avatarMargin)
@@ -224,7 +222,7 @@ class MessageCell: UITableViewCell {
         ])
     }
     
-    // MARK: - 暗色模式支持（只使用iOS 17+新API）
+    // MARK: - 暗色模式支持
     private func registerForTraitChanges() {
         if #available(iOS 17.0, *) {
             registrationToken = registerForTraitChanges([UITraitUserInterfaceStyle.self]) { [weak self] (cell: UITableViewCell, previousTraitCollection: UITraitCollection) in
@@ -247,7 +245,7 @@ class MessageCell: UITableViewCell {
         // 判断消息类型
         let messageType: MessageType = readStatusView.isHidden ? .received : .sent
         
-        // 获取头像 - 保持发送消息时使用zhang-jilong头像
+        // 获取头像
         let avatar: UIImage
         if messageType == .sent {
             avatar = UIImage(named: "zhang-jilong") ?? avatarImageView.image ?? UIImage()

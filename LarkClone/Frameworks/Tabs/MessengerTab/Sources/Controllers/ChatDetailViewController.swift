@@ -64,7 +64,7 @@ class ChatDetailViewController: UIViewController {
             titleLabel.text = contact.name
             titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
             titleLabel.textAlignment = .center
-            titleLabel.textColor = LarkColorConfig.Text.primary
+            titleLabel.textColor = LarkColorStyle.Text.primary
             navigationItem.titleView = titleLabel
         }
     }
@@ -135,7 +135,7 @@ class ChatDetailViewController: UIViewController {
             
             // 更新标题颜色
             if let titleLabel = navigationItem.titleView as? UILabel {
-                titleLabel.textColor = LarkColorConfig.Text.primary
+                titleLabel.textColor = LarkColorStyle.Text.primary
             }
         }
     }
@@ -202,12 +202,12 @@ class ChatDetailViewController: UIViewController {
         inputField.borderStyle = .roundedRect
         inputField.placeholder = "输入消息..."
         inputField.backgroundColor = getInputFieldColor()
-        inputField.textColor = LarkColorConfig.Text.primary
+        inputField.textColor = LarkColorStyle.Text.primary
         inputContainer.addSubview(inputField)
         
         // 设置发送按钮
         sendButton.setTitle("发送", for: .normal)
-        sendButton.setTitleColor(LarkColorConfig.ChatBubble.Sent.backgroundColor, for: .normal)
+        sendButton.setTitleColor(LarkColorStyle.ChatBubble.Sent.backgroundColor, for: .normal)
         sendButton.addTarget(self, action: #selector(sendMessage), for: .touchUpInside)
         inputContainer.addSubview(sendButton)
     }

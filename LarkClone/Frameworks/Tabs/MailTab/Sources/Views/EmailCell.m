@@ -8,7 +8,7 @@
 #import "EmailCell.h"
 #import "MailItem.h"
 #import "RelativeDateFormatter.h"
-#import "LarkClone-Swift.h"
+#import "LarkColorObjC.h"
 
 @interface EmailCell ()
 // UI Elements
@@ -43,6 +43,7 @@
 - (void)setupUI {
     // 设置基本属性
     self.selectionStyle = UITableViewCellSelectionStyleNone;
+    // 使用桥接类访问颜色
     self.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     self.contentView.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     
@@ -143,12 +144,11 @@
     // 设置未读状态
     self.unreadIndicator.hidden = email.isRead;
     
-    // 更新背景色设置 - 使用 LarkColor
+    // 更新背景色设置
     if (email.isRead) {
         self.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
         self.contentView.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     } else {
-        // 使用 LarkColor 的未读背景色
         self.backgroundColor = [LarkColorConfigEmailCell unreadBackgroundColor];
         self.contentView.backgroundColor = [LarkColorConfigEmailCell unreadBackgroundColor];
     }
@@ -188,7 +188,7 @@
     self.subjectLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightRegular];
     self.previewLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightRegular];
     
-    // 重置背景色为 LarkColor 的默认背景色
+    // 重置背景色
     self.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     self.contentView.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
 }

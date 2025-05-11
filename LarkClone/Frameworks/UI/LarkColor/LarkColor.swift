@@ -1,30 +1,29 @@
 //
 //  LarkColor.swift
-//  Feishu-clone
+//  Lark-Clone
 //
 //  Created by 张纪龙 on 2025/4/28.
 //
 
 import UIKit
 
-@objc(LarkColorConfig)
-public class LarkColorConfig: NSObject {
+// 这个类将只在 Swift 代码中使用
+public class LarkColorStyle: NSObject {
     
     // MARK: - Email Cell 相关颜色
-    @objc(LarkColorConfigEmailCell)
     public class EmailCell: NSObject {
         // 未读指示器颜色
-        @objc public class var unreadIndicatorColor: UIColor {
+        public class var unreadIndicatorColor: UIColor {
             return UIColor.systemBlue
         }
         
         // 背景色
-        @objc public class var backgroundColor: UIColor {
+        public class var backgroundColor: UIColor {
             return UIColor.systemBackground
         }
         
         // 未读邮件背景色
-        @objc public class var unreadBackgroundColor: UIColor {
+        public class var unreadBackgroundColor: UIColor {
             return UIColor { traitCollection in
                 return traitCollection.userInterfaceStyle == .dark
                     ? UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1.0)
@@ -33,32 +32,32 @@ public class LarkColorConfig: NSObject {
         }
         
         // 发件人标签颜色
-        @objc public class var senderLabelColor: UIColor {
+        public class var senderLabelColor: UIColor {
             return UIColor.label
         }
         
         // 日期标签颜色
-        @objc public class var dateLabelColor: UIColor {
+        public class var dateLabelColor: UIColor {
             return UIColor.secondaryLabel
         }
         
         // 主题标签颜色
-        @objc public class var subjectLabelColor: UIColor {
+        public class var subjectLabelColor: UIColor {
             return UIColor.label
         }
         
         // 预览标签颜色
-        @objc public class var previewLabelColor: UIColor {
+        public class var previewLabelColor: UIColor {
             return UIColor.secondaryLabel
         }
         
         // 附件图标颜色
-        @objc public class var attachmentIconColor: UIColor {
+        public class var attachmentIconColor: UIColor {
             return UIColor.secondaryLabel
         }
     }
     
-    // MARK: - 其它颜色（EmailCell 中没用到，不需要 @objc）
+    // MARK: - 其它颜色
     // 标签颜色
     public struct Tag {
         // 机器人标签
