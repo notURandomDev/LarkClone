@@ -43,7 +43,7 @@ func generateRandomTime() -> String {
         }
         
     case 1:
-        // 今天的早些时间 (确保不会生成"未来"的时间)
+        // 今天的早些时间
         // 获取当前小时和分钟
         let currentHour = calendar.component(.hour, from: now)
         let currentMinute = calendar.component(.minute, from: now)
@@ -92,12 +92,12 @@ func generateRandomTime() -> String {
 
 // 生成随机姓名
 func generateRandomName() -> String {
-    // 常用姓氏
+    // 姓氏
     let familyNames = ["王", "李", "张", "刘", "陈", "杨", "赵", "黄", "周", "吴",
                        "徐", "孙", "马", "朱", "胡", "林", "郭", "何", "高", "罗",
                        "郑", "梁", "谢", "宋", "唐", "许", "邓", "冯", "韩", "曹"]
     
-    // 常用名字
+    // 名字
     let givenNames = ["伟", "芳", "娜", "秀英", "敏", "静", "丽", "强", "磊", "军",
                      "洋", "勇", "艳", "杰", "娟", "涛", "明", "超", "秀兰", "霞",
                      "平", "刚", "桂英", "英", "华", "俊", "文", "云", "建华", "建国",

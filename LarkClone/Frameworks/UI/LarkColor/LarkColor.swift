@@ -1,30 +1,29 @@
 //
 //  LarkColor.swift
-//  Feishu-clone
+//  Lark-Clone
 //
 //  Created by 张纪龙 on 2025/4/28.
 //
 
 import UIKit
 
-@objc(LarkColorConfig)
-public class LarkColorConfig: NSObject {
+// 这个类将只在 Swift 代码中使用
+public class LarkColorStyle: NSObject {
     
     // MARK: - Email Cell 相关颜色
-    @objc(LarkColorConfigEmailCell)
     public class EmailCell: NSObject {
         // 未读指示器颜色
-        @objc public class var unreadIndicatorColor: UIColor {
+        public class var unreadIndicatorColor: UIColor {
             return UIColor.systemBlue
         }
         
         // 背景色
-        @objc public class var backgroundColor: UIColor {
+        public class var backgroundColor: UIColor {
             return UIColor.systemBackground
         }
         
         // 未读邮件背景色
-        @objc public class var unreadBackgroundColor: UIColor {
+        public class var unreadBackgroundColor: UIColor {
             return UIColor { traitCollection in
                 return traitCollection.userInterfaceStyle == .dark
                     ? UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1.0)
@@ -33,32 +32,32 @@ public class LarkColorConfig: NSObject {
         }
         
         // 发件人标签颜色
-        @objc public class var senderLabelColor: UIColor {
+        public class var senderLabelColor: UIColor {
             return UIColor.label
         }
         
         // 日期标签颜色
-        @objc public class var dateLabelColor: UIColor {
+        public class var dateLabelColor: UIColor {
             return UIColor.secondaryLabel
         }
         
         // 主题标签颜色
-        @objc public class var subjectLabelColor: UIColor {
+        public class var subjectLabelColor: UIColor {
             return UIColor.label
         }
         
         // 预览标签颜色
-        @objc public class var previewLabelColor: UIColor {
+        public class var previewLabelColor: UIColor {
             return UIColor.secondaryLabel
         }
         
         // 附件图标颜色
-        @objc public class var attachmentIconColor: UIColor {
+        public class var attachmentIconColor: UIColor {
             return UIColor.secondaryLabel
         }
     }
     
-    // MARK: - 其它颜色（EmailCell 中没用到，不需要 @objc）
+    // MARK: - 其它颜色
     // 标签颜色
     public struct Tag {
         // 机器人标签
@@ -118,23 +117,63 @@ public class LarkColorConfig: NSObject {
             }
         }
     }
-    
-    public struct AppBackground {
-        public static var `default`: UIColor {
-            return UIColor { traitCollection in
-                switch traitCollection.userInterfaceStyle {
-                case .dark:
-                    return UIColor(red: 31/255.0, green: 32/255.0, blue: 31/255.0, alpha: 1.0)
-                case .light, .unspecified:
-                    return .white @unknown
-                    default: return .white }
+   
+    // 聊天气泡颜色
+    public struct ChatBubble {
+        // 发送者(自己)气泡
+        public struct Sent {
+            public static var backgroundColor: UIColor {
+                return UIColor { traitCollection in
+                    return traitCollection.userInterfaceStyle == .dark
+                        ? UIColor(red: 0.0, green: 0.47, blue: 0.99, alpha: 1.0) // 更鲜亮的蓝色
+                        : UIColor(red: 0.0, green: 0.47, blue: 0.99, alpha: 1.0) // 苹果风格蓝色
+                }
+            }
+            
+            public static var textColor: UIColor {
+                return UIColor.white // 始终使用白色文本
             }
         }
         
-        /// 纯暗黑模式背景颜色
-        public static let dark: UIColor = UIColor(red: 31/255.0, green: 32/255.0, blue: 31/255.0, alpha: 1.0)
-        
-        /// 纯亮色模式背景颜色。
-        public static let light: UIColor = .white
+        // 接收者气泡
+        public struct Received {
+            public static var backgroundColor: UIColor {
+                return UIColor { traitCollection in
+                    return traitCollection.userInterfaceStyle == .dark
+                        ? UIColor(red: 0.28, green: 0.28, blue: 0.3, alpha: 1.0) // 更亮的深灰色
+                        : UIColor(red: 0.94, green: 0.94, blue: 0.94, alpha: 1.0) // 浅灰色
+                }
+            }
+            
+            public static var textColor: UIColor {
+                return UIColor { traitCollection in
+                    return traitCollection.userInterfaceStyle == .dark
+                        ? UIColor.white
+                        : UIColor.black
+                }
+            }
+        }
+    }
+   
+    // 已读状态标记颜色
+    public struct ReadStatus {
+        public static var tintColor: UIColor {
+            return UIColor { traitCollection in
+                return traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(red: 76/255.0, green: 217/255.0, blue: 100/255.0, alpha: 1.0) // 亮绿色
+                    : UIColor(red: 52/255.0, green: 199/255.0, blue: 89/255.0, alpha: 1.0) // 苹果风格绿色
+            }
+        }
+    }
+    
+    // 头像背景颜色
+    public struct Avatar {
+        public static var backgroundColor: UIColor {
+            return UIColor { traitCollection in
+                return traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.3, green: 0.3, blue: 0.32, alpha: 1.0) // 深色模式下稍亮的灰色
+                    : UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0) // 浅色模式下的浅灰色
+            }
+        }
     }
 }

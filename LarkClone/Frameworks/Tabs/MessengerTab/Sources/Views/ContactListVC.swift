@@ -162,7 +162,15 @@ extension ContactListVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        // 这里可以添加点击联系人后的操作
+        
+        // 获取选中的联系人
+        let selectedContact = contacts[indexPath.row]
+        
+        // 创建聊天详情视图控制器并传递联系人信息
+        let chatDetailVC = ChatDetailViewController(contact: selectedContact)
+        
+        // 导航到聊天详情页面
+        navigationController?.pushViewController(chatDetailVC, animated: true)
     }
     
     // 实现滚动到底部加载更多

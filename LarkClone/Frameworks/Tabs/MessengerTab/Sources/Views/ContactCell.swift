@@ -85,15 +85,15 @@ class ContactCell: UITableViewCell {
             case .bot:
                 // 使用MessengerTab表中的本地化字符串
                 tagLabel.text = NSLocalizedString("tag_bot", tableName: "MessengerTab", comment: "Bot contact tag")
-                tagLabel.textColor = LarkColorConfig.Tag.Bot.textColor
-                tagLabel.backgroundColor = LarkColorConfig.Tag.Bot.backgroundColor
+                tagLabel.textColor = LarkColorStyle.Tag.Bot.textColor
+                tagLabel.backgroundColor = LarkColorStyle.Tag.Bot.backgroundColor
                 tagLabel.isHidden = false
                 
             case .external:
                 // 使用MessengerTab表中的本地化字符串
                 tagLabel.text = NSLocalizedString("tag_external", tableName: "MessengerTab", comment: "External contact tag")
-                tagLabel.textColor = LarkColorConfig.Tag.External.textColor
-                tagLabel.backgroundColor = LarkColorConfig.Tag.External.backgroundColor
+                tagLabel.textColor = LarkColorStyle.Tag.External.textColor
+                tagLabel.backgroundColor = LarkColorStyle.Tag.External.backgroundColor
                 tagLabel.isHidden = false
                 
             case .user:
@@ -119,12 +119,12 @@ class ContactCell: UITableViewCell {
     }
 
     func configureDatetimeLabel() {
-        datetimeLabel.textColor = LarkColorConfig.Text.secondary
+        datetimeLabel.textColor = LarkColorStyle.Text.secondary
         datetimeLabel.font = .systemFont(ofSize: Styles.fontSizeSecondary, weight: .semibold)
     }
 
     func configureMsgLabel() {
-        msgLabel.textColor = LarkColorConfig.Text.secondary
+        msgLabel.textColor = LarkColorStyle.Text.secondary
         msgLabel.font = .systemFont(ofSize: Styles.fontSizeSecondary, weight: Styles.fontWeightPrimary)
     }
 
