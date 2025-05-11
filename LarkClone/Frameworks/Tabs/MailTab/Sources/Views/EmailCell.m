@@ -8,6 +8,7 @@
 #import "EmailCell.h"
 #import "MailItem.h"
 #import "RelativeDateFormatter.h"
+#import "LarkClone-Swift.h"
 
 @interface EmailCell ()
 // UI Elements
@@ -42,44 +43,44 @@
 - (void)setupUI {
     // 设置基本属性
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.backgroundColor = [UIColor systemBackgroundColor];
-    self.contentView.backgroundColor = [UIColor systemBackgroundColor];
+    self.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
+    self.contentView.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     
     // 未读指示器
     self.unreadIndicator = [[UIView alloc] init];
-    self.unreadIndicator.backgroundColor = [UIColor systemBlueColor];
+    self.unreadIndicator.backgroundColor = [LarkColorConfigEmailCell unreadIndicatorColor];
     self.unreadIndicator.layer.cornerRadius = 4;
     self.unreadIndicator.translatesAutoresizingMaskIntoConstraints = NO;
     
     // 发件人标签
     self.senderLabel = [[UILabel alloc] init];
     self.senderLabel.font = [UIFont systemFontOfSize:16 weight:UIFontWeightMedium];
-    self.senderLabel.textColor = [UIColor labelColor];
+    self.senderLabel.textColor = [LarkColorConfigEmailCell senderLabelColor];
     self.senderLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     // 日期标签
     self.dateLabel = [[UILabel alloc] init];
     self.dateLabel.font = [UIFont systemFontOfSize:13];
-    self.dateLabel.textColor = [UIColor secondaryLabelColor];
+    self.dateLabel.textColor = [LarkColorConfigEmailCell dateLabelColor];
     self.dateLabel.textAlignment = NSTextAlignmentRight;
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     // 主题标签
     self.subjectLabel = [[UILabel alloc] init];
     self.subjectLabel.font = [UIFont systemFontOfSize:15];
-    self.subjectLabel.textColor = [UIColor labelColor];
+    self.subjectLabel.textColor = [LarkColorConfigEmailCell subjectLabelColor];
     self.subjectLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     // 预览标签
     self.previewLabel = [[UILabel alloc] init];
     self.previewLabel.font = [UIFont systemFontOfSize:14];
-    self.previewLabel.textColor = [UIColor secondaryLabelColor];
+    self.previewLabel.textColor = [LarkColorConfigEmailCell previewLabelColor];
     self.previewLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     // 附件图标
     self.attachmentIcon = [[UIImageView alloc] init];
     self.attachmentIcon.image = [UIImage systemImageNamed:@"paperclip"];
-    self.attachmentIcon.tintColor = [UIColor secondaryLabelColor];
+    self.attachmentIcon.tintColor = [LarkColorConfigEmailCell attachmentIconColor];
     self.attachmentIcon.translatesAutoresizingMaskIntoConstraints = NO;
     self.attachmentIcon.hidden = YES;
     
@@ -142,18 +143,14 @@
     // 设置未读状态
     self.unreadIndicator.hidden = email.isRead;
     
-    // 更新背景色设置 - 适配暗黑模式
+    // 更新背景色设置 - 使用 LarkColor
     if (email.isRead) {
-        self.backgroundColor = [UIColor systemBackgroundColor];
-        self.contentView.backgroundColor = [UIColor systemBackgroundColor];
+        self.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
+        self.contentView.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     } else {
-        // 使用动态颜色，支持暗黑模式
-        self.backgroundColor = [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
-            return traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark ?
-                [UIColor colorWithRed:0.17 green:0.17 blue:0.18 alpha:1.0] :
-                [UIColor colorWithRed:0.97 green:0.97 blue:0.97 alpha:1.0];
-        }];
-        self.contentView.backgroundColor = self.backgroundColor;
+        // 使用 LarkColor 的未读背景色
+        self.backgroundColor = [LarkColorConfigEmailCell unreadBackgroundColor];
+        self.contentView.backgroundColor = [LarkColorConfigEmailCell unreadBackgroundColor];
     }
     
     // 设置字体粗细基于已读/未读状态
@@ -191,9 +188,9 @@
     self.subjectLabel.font = [UIFont systemFontOfSize:15 weight:UIFontWeightRegular];
     self.previewLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightRegular];
     
-    // 重置背景色为默认系统背景色
-    self.backgroundColor = [UIColor systemBackgroundColor];
-    self.contentView.backgroundColor = [UIColor systemBackgroundColor];
+    // 重置背景色为 LarkColor 的默认背景色
+    self.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
+    self.contentView.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
 }
 
 @end
