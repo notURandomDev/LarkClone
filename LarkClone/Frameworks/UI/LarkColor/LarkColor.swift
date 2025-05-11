@@ -7,7 +7,58 @@
 
 import UIKit
 
-public struct LarkColorConfig {
+@objc(LarkColorConfig)
+public class LarkColorConfig: NSObject {
+    
+    // MARK: - Email Cell 相关颜色
+    @objc(LarkColorConfigEmailCell)
+    public class EmailCell: NSObject {
+        // 未读指示器颜色
+        @objc public class var unreadIndicatorColor: UIColor {
+            return UIColor.systemBlue
+        }
+        
+        // 背景色
+        @objc public class var backgroundColor: UIColor {
+            return UIColor.systemBackground
+        }
+        
+        // 未读邮件背景色
+        @objc public class var unreadBackgroundColor: UIColor {
+            return UIColor { traitCollection in
+                return traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.17, green: 0.17, blue: 0.18, alpha: 1.0)
+                    : UIColor(red: 0.97, green: 0.97, blue: 0.97, alpha: 1.0)
+            }
+        }
+        
+        // 发件人标签颜色
+        @objc public class var senderLabelColor: UIColor {
+            return UIColor.label
+        }
+        
+        // 日期标签颜色
+        @objc public class var dateLabelColor: UIColor {
+            return UIColor.secondaryLabel
+        }
+        
+        // 主题标签颜色
+        @objc public class var subjectLabelColor: UIColor {
+            return UIColor.label
+        }
+        
+        // 预览标签颜色
+        @objc public class var previewLabelColor: UIColor {
+            return UIColor.secondaryLabel
+        }
+        
+        // 附件图标颜色
+        @objc public class var attachmentIconColor: UIColor {
+            return UIColor.secondaryLabel
+        }
+    }
+    
+    // MARK: - 其它颜色（EmailCell 中没用到，不需要 @objc）
     // 标签颜色
     public struct Tag {
         // 机器人标签
