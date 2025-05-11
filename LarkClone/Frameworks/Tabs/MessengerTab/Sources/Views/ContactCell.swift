@@ -10,7 +10,7 @@ import LarkAvatar
 import LarkColor
 
 class ContactCell: UITableViewCell {
-    private var avatarView = AvatarView() // 使用 AvatarView 替代 avatarIV
+    private var avatarView = AvatarView()
     var nameLabel = UILabel()
     var tagLabel = UILabel()
     var datetimeLabel = UILabel()
@@ -24,7 +24,7 @@ class ContactCell: UITableViewCell {
         static let pxPrimary: CGFloat = 16
         static let pxSecondary: CGFloat = 12
         static let pyPrimary: CGFloat = 13
-        static let textColorSecondary = UIColor.systemGray
+        static let textColorSecondary = LarkColorStyle.Text.secondary
         static let fontSizePrimary: CGFloat = 16
         static let fontSizeSecondary: CGFloat = 13
         static let fontWeightPrimary = UIFont.Weight.medium
@@ -41,12 +41,12 @@ class ContactCell: UITableViewCell {
         configureFirstLineView()
         configureInfoSV()
         
-        addSubview(avatarView) // 添加 avatarView
+        addSubview(avatarView)
         addSubview(infoSV)
         
-        setAvatarViewConstraints() // 添加 avatarView 的约束
-        setNameLabelConstraints()
+        setAvatarViewConstraints()
         setTagLabelConstraints()
+        setNameLabelConstraints()
         setLeftViewConstraints()
         setDatetimeLabelConstraints()
         setFirstLineViewConstraints()
@@ -58,7 +58,7 @@ class ContactCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    // 添加prepareForReuse方法重置所有状态，解决标签错乱问题
+    // 添加prepareForReuse解决标签错乱问题
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -141,12 +141,11 @@ class ContactCell: UITableViewCell {
         infoSV.addArrangedSubview(msgLabel)
     }
 
-    func setAvatarViewConstraints() { // 更新为 avatarView 的约束
+    func setAvatarViewConstraints() {
         avatarView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             avatarView.centerYAnchor.constraint(equalTo: centerYAnchor),
             avatarView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Styles.pxPrimary),
-            // 大小约束已在 AvatarView 内部设置
         ])
     }
 
@@ -206,7 +205,7 @@ class ContactCell: UITableViewCell {
             infoSV.topAnchor.constraint(equalTo: topAnchor, constant: Styles.pyPrimary),
             infoSV.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Styles.pyPrimary),
             infoSV.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Styles.pxPrimary),
-            infoSV.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Styles.pxSecondary) // 更新为 avatarView
+            infoSV.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Styles.pxSecondary)
         ])
     }
 }

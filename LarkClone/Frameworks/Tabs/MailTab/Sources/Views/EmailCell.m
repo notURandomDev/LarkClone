@@ -43,7 +43,7 @@
 - (void)setupUI {
     // 设置基本属性
     self.selectionStyle = UITableViewCellSelectionStyleNone;
-    // 使用桥接类访问颜色
+    // 使用Objc类来访问
     self.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     self.contentView.backgroundColor = [LarkColorConfigEmailCell backgroundColor];
     

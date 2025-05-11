@@ -1,11 +1,18 @@
-import UIKit
+//
+//  MainTabBarController.swift
+//  LarkClone
+//
+//  Created by 张纪龙 on 2025/5/9.
+//
 
+import UIKit
+import LarkColor
 class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // 设置标签栏外观 - 增加更多外观设置以确保一致性
+        // 设置标签栏外观
         setupTabBarAppearance()
         
         // 创建视图控制器
@@ -28,7 +35,7 @@ class MainTabBarController: UITabBarController {
         // 在视图完全显示后再次更新标签栏标题，确保应用正确
         DispatchQueue.main.async {
             self.updateTabBarItemTitles()
-            self.setupTabBarAppearance() // 再次确保外观一致
+            self.setupTabBarAppearance()
         }
     }
     
@@ -46,7 +53,7 @@ class MainTabBarController: UITabBarController {
     // 设置TabBar的外观
     func setupTabBarAppearance() {
         // 设置颜色
-        UITabBar.appearance().tintColor = .systemBlue
+        UITabBar.appearance().tintColor = LarkColorStyle.TabBar.tintColor
         
         if #available(iOS 15.0, *) {
             let appearance = UITabBarAppearance()
@@ -55,7 +62,7 @@ class MainTabBarController: UITabBarController {
             // 根据当前是否为暗色模式设置适当的背景样式
             if traitCollection.userInterfaceStyle == .dark {
                 // 暗色模式下设置半透明黑色背景
-                appearance.backgroundColor = UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.9)
+                appearance.backgroundColor = LarkColorStyle.TabBar.darkBackground
             } else {
                 // 浅色模式下使用默认背景
                 appearance.backgroundColor = nil

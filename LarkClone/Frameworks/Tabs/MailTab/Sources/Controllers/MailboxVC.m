@@ -11,6 +11,7 @@
 #import "EmailDetailVC.h"
 #import "RelativeDateFormatter.h"
 #import "SearchBarView.h"
+#import "LarkColorObjC.h"
 
 @interface MailboxVC () <UITableViewDelegate, UITableViewDataSource>
 
@@ -30,7 +31,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    self.view.backgroundColor = [LarkColorConfigUI backgroundColor];
     
     // 使用本地化的标题
     self.title = NSLocalizedStringFromTable(@"mailbox_title", @"MailTab", @"Mailbox title");
@@ -77,7 +78,7 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     [self.tableView registerClass:[EmailCell class] forCellReuseIdentifier:[EmailCell reuseID]];
-    self.tableView.backgroundColor = [UIColor systemBackgroundColor];
+    self.tableView.backgroundColor = [LarkColorConfigUI tableViewBackgroundColor];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 26, 0, 0);
     self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -305,7 +306,7 @@
         NSLocalizedStringFromTable(@"no_search_results", @"MailTab", @"No results found") :
         NSLocalizedStringFromTable(@"no_emails", @"MailTab", @"No emails");
     emptyLabel.textAlignment = NSTextAlignmentCenter;
-    emptyLabel.textColor = [UIColor secondaryLabelColor];
+    emptyLabel.textColor = [LarkColorConfigUI emptyLabelColor];
     emptyLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.tableView.backgroundView = emptyLabel;
