@@ -71,6 +71,27 @@
 			remoteGlobalIDString = 100E66EE2DCCC8460011B0F1;
 			remoteInfo = LarkColor;
 		};
+		E08973CE2DD078A400B720D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E08973C12DD078A300B720D4;
+			remoteInfo = LarkSearchBar;
+		};
+		E08973D02DD078A400B720D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 100E63BD2DCCC22C0011B0F1;
+			remoteInfo = LarkClone;
+		};
+		E08973D52DD078A400B720D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E08973C12DD078A300B720D4;
+			remoteInfo = LarkSearchBar;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -100,6 +121,8 @@
 		100E67892DCD04350011B0F1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		1044EEDE2DCDAC5200CC1692 /* LarkSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		109008AE2DCFACB300BC010A /* LarkAvatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkAvatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E08973DF2DD078D700B720D4 /* LarkSearchBar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = LarkSearchBar.framework; path = "/Users/zhangjilong/Documents/xcode_code/LarkClone/build/Debug-iphoneos/LarkSearchBar.framework"; sourceTree = "<absolute>"; };
+		E08973E02DD078D700B720D4 /* LarkSearchBarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LarkSearchBarTests.xctest; path = "/Users/zhangjilong/Documents/xcode_code/LarkClone/build/Debug-iphoneos/LarkClone.app/PlugIns/LarkSearchBarTests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -116,6 +139,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/Tabs/MessengerTab/Sources/Models/Contact.swift,
+				Frameworks/Tabs/MessengerTab/Sources/Models/Message.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Views/ContactCell.swift,
 			);
 			target = 100E66D82DCCC8110011B0F1 /* MessengerTab */;
@@ -206,6 +230,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E08973BF2DD078A300B720D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E08973C92DD078A400B720D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -279,6 +317,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E08973BD2DD078A300B720D4 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -299,6 +344,7 @@
 				100E670A2DCCC90D0011B0F1 /* PBXTargetDependency */,
 				1044EEE32DCDAC5300CC1692 /* PBXTargetDependency */,
 				109008B32DCFACB300BC010A /* PBXTargetDependency */,
+				E08973D62DD078A400B720D4 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				100E63C02DCCC22C0011B0F1 /* LarkClone */,
@@ -413,6 +459,47 @@
 			productReference = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		E08973C12DD078A300B720D4 /* LarkSearchBar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E08973D92DD078A400B720D4 /* Build configuration list for PBXNativeTarget "LarkSearchBar" */;
+			buildPhases = (
+				E08973BD2DD078A300B720D4 /* Headers */,
+				E08973BE2DD078A300B720D4 /* Sources */,
+				E08973BF2DD078A300B720D4 /* Frameworks */,
+				E08973C02DD078A300B720D4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LarkSearchBar;
+			packageProductDependencies = (
+			);
+			productName = LarkSearchBar;
+			productReference = E08973DF2DD078D700B720D4 /* LarkSearchBar.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		E08973CB2DD078A400B720D4 /* LarkSearchBarTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E08973DC2DD078A400B720D4 /* Build configuration list for PBXNativeTarget "LarkSearchBarTests" */;
+			buildPhases = (
+				E08973C82DD078A400B720D4 /* Sources */,
+				E08973C92DD078A400B720D4 /* Frameworks */,
+				E08973CA2DD078A400B720D4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E08973CF2DD078A400B720D4 /* PBXTargetDependency */,
+				E08973D12DD078A400B720D4 /* PBXTargetDependency */,
+			);
+			name = LarkSearchBarTests;
+			packageProductDependencies = (
+			);
+			productName = LarkSearchBarTests;
+			productReference = E08973E02DD078D700B720D4 /* LarkSearchBarTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -442,6 +529,13 @@
 					109008AD2DCFACB300BC010A = {
 						CreatedOnToolsVersion = 16.3;
 					};
+					E08973C12DD078A300B720D4 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					E08973CB2DD078A400B720D4 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 100E63BD2DCCC22C0011B0F1;
+					};
 				};
 			};
 			buildConfigurationList = 100E63B92DCCC22C0011B0F1 /* Build configuration list for PBXProject "LarkClone" */;
@@ -465,6 +559,8 @@
 				100E67042DCCC90D0011B0F1 /* LarkFoundation */,
 				1044EEDD2DCDAC5200CC1692 /* LarkSDK */,
 				109008AD2DCFACB300BC010A /* LarkAvatar */,
+				E08973C12DD078A300B720D4 /* LarkSearchBar */,
+				E08973CB2DD078A400B720D4 /* LarkSearchBarTests */,
 			);
 		};
 /* End PBXProject section */
@@ -506,6 +602,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		109008AC2DCFACB300BC010A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E08973C02DD078A300B720D4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E08973CA2DD078A400B720D4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -582,6 +692,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E08973BE2DD078A300B720D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E08973C82DD078A400B720D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -619,6 +743,21 @@
 			isa = PBXTargetDependency;
 			target = 100E66EE2DCCC8460011B0F1 /* LarkColor */;
 			targetProxy = 109008D12DCFB81900BC010A /* PBXContainerItemProxy */;
+		};
+		E08973CF2DD078A400B720D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E08973C12DD078A300B720D4 /* LarkSearchBar */;
+			targetProxy = E08973CE2DD078A400B720D4 /* PBXContainerItemProxy */;
+		};
+		E08973D12DD078A400B720D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
+			targetProxy = E08973D02DD078A400B720D4 /* PBXContainerItemProxy */;
+		};
+		E08973D62DD078A400B720D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E08973C12DD078A300B720D4 /* LarkSearchBar */;
+			targetProxy = E08973D52DD078A400B720D4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1161,6 +1300,110 @@
 			};
 			name = Release;
 		};
+		E08973DA2DD078A400B720D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = John.LarkSearchBar;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		E08973DB2DD078A400B720D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = John.LarkSearchBar;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		E08973DD2DD078A400B720D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = John.LarkSearchBarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LarkClone.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LarkClone";
+			};
+			name = Debug;
+		};
+		E08973DE2DD078A400B720D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = John.LarkSearchBarTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LarkClone.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LarkClone";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1223,6 +1466,24 @@
 			buildConfigurations = (
 				109008B72DCFACB300BC010A /* Debug */,
 				109008B82DCFACB300BC010A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E08973D92DD078A400B720D4 /* Build configuration list for PBXNativeTarget "LarkSearchBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E08973DA2DD078A400B720D4 /* Debug */,
+				E08973DB2DD078A400B720D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E08973DC2DD078A400B720D4 /* Build configuration list for PBXNativeTarget "LarkSearchBarTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E08973DD2DD078A400B720D4 /* Debug */,
+				E08973DE2DD078A400B720D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
