@@ -112,12 +112,8 @@ class EmailDataGenerator {
         var emails: [[String: Any]] = []
         let currentTime = Date()
         
-        // 添加固定的测试数据
-        let fixedEmails = createFixedEmails()
-        emails.append(contentsOf: fixedEmails)
-        
-        // 生成剩余邮件，按照特殊发件人40%，普通发件人60%的比例
-        for _ in emails.count..<count {
+        // 生成所有邮件数据
+        for i in 0..<count {
             // 根据概率决定使用特殊发件人还是普通发件人
             let useSpecialSender = Double.random(in: 0...1) < 0.4
             
@@ -134,9 +130,9 @@ class EmailDataGenerator {
                 isOfficial = false
             }
             
-            let timestamp = generateRandomDate(relativeTo: currentTime)
+            let timestamp = generateRealisticDate(relativeTo: currentTime)
             let email = createEmail(
-                id: UUID().uuidString,
+                id: "\(i + 1)", // 使用索引+1作为ID确保唯一性
                 sender: sender,
                 isOfficial: isOfficial,
                 timestamp: timestamp
@@ -152,93 +148,6 @@ class EmailDataGenerator {
         }
         
         return sortedEmails
-    }
-    
-    private func createFixedEmails() -> [[String: Any]] {
-        return [
-            [
-                "id": "1",
-                "sender": "ByteTech公共邮箱",
-                "subject": "达人选品",
-                "preview": "Dear ByteDancers, ByteTech 本周为你精选了以下内容：1. 达人选品 AI Agent 简易版发布...",
-                "date": "2025-05-09 10:50:00",
-                "isRead": false,
-                "hasAttachment": false,
-                "isOfficial": true
-            ],
-            [
-                "id": "2",
-                "sender": "张纪龙",
-                "subject": "团队建设",
-                "preview": "团队建设活动安排在下周五，地点在公司附近的文化中心，请提前安排好工作确保能够参加...",
-                "date": "2025-04-25 14:30:00",
-                "isRead": true,
-                "hasAttachment": false,
-                "isOfficial": false
-            ],
-            [
-                "id": "3",
-                "sender": "乔子铭",
-                "subject": "代码审查",
-                "preview": "代码审查发现如下问题，请及时修复：1. 内存泄漏 2. 异步回调处理不当 3. 缺少异常处理...",
-                "date": "2025-04-25 12:15:00",
-                "isRead": true,
-                "hasAttachment": false,
-                "isOfficial": false,
-                "emailCount": 2
-            ],
-            [
-                "id": "4",
-                "sender": "Postman团队",
-                "subject": "培训邀请",
-                "preview": "诚邀您参加下周的产品培训，我们将详细介绍新功能的使用方法和最佳实践，请准时出席...",
-                "date": "2025-04-25 09:40:00",
-                "isRead": true,
-                "hasAttachment": false,
-                "isOfficial": false
-            ],
-            [
-                "id": "5",
-                "sender": "Kodeco平台",
-                "subject": "账号安全",
-                "preview": "Hello supeng.charlie@bytedance.com! 您最近请求重置密码，请点击下面的链接完成操作...",
-                "date": "2025-04-24 16:50:00",
-                "isRead": true,
-                "hasAttachment": true,
-                "isOfficial": false,
-                "emailCount": 2
-            ],
-            [
-                "id": "6",
-                "sender": "系统服务",
-                "subject": "财务通知",
-                "preview": "尊敬的客户，您好：北京钟爱纯粹自然餐饮有限公司已为您开具了一张增值税专用发票...",
-                "date": "2025-04-24 13:20:00",
-                "isRead": true,
-                "hasAttachment": true,
-                "isOfficial": false
-            ],
-            [
-                "id": "7",
-                "sender": "Apple开发者",
-                "subject": "平台更新",
-                "preview": "尊敬的开发者，我们是 Apple 全球开发者关系团队，诚邀您关注我们的官方微信公众号...",
-                "date": "2025-04-24 10:15:00",
-                "isRead": true,
-                "hasAttachment": false,
-                "isOfficial": false
-            ],
-            [
-                "id": "8",
-                "sender": "蒋元",
-                "subject": "用户反馈",
-                "preview": "用户反馈收集完毕，需要优先处理的问题包括页面加载缓慢、按钮点击无响应和数据不同步...",
-                "date": "2025-05-10 09:51:00",
-                "isRead": false,
-                "hasAttachment": false,
-                "isOfficial": false
-            ]
-        ]
     }
     
     private func createEmail(id: String, sender: String, isOfficial: Bool, timestamp: Date) -> [String: Any] {
@@ -285,30 +194,71 @@ class EmailDataGenerator {
         return email
     }
     
-    private func generateRandomDate(relativeTo currentDate: Date) -> Date {
+    // 生成更真实的日期（考虑工作时间、过去时间等因素）
+    private func generateRealisticDate(relativeTo currentDate: Date) -> Date {
         let calendar = Calendar.current
-        let randomDays = Int.random(in: -90...0)
-        let randomHours = Int.random(in: 0...23)
-        let randomMinutes = Int.random(in: 0...59)
-        let randomSeconds = Int.random(in: 0...59)
         
-        var dateComponents = calendar.dateComponents([.year, .month, .day], from: currentDate)
-        dateComponents.day! += randomDays
-        dateComponents.hour = randomHours
-        dateComponents.minute = randomMinutes
-        dateComponents.second = randomSeconds
+        // 生成0到-90天之间的随机天数（包括今天）
+        let randomDays = Int.random(in: -90...0)
+        
+        // 获取目标日期（不包含时分秒）
+        let targetDay = calendar.date(byAdding: .day, value: randomDays, to: currentDate)!
+        
+        let weekday = calendar.component(.weekday, from: targetDay)
+        let isWeekend = (weekday == 1 || weekday == 7) // 1是周日，7是周六
+        
+        // 获取当前时间的小时和分钟
+        let currentHour = calendar.component(.hour, from: currentDate)
+        let currentMinute = calendar.component(.minute, from: currentDate)
+        
+        // 生成随机时间
+        var randomHour: Int
+        var randomMinute: Int
+        var randomSecond: Int
+        
+        // 根据周末或工作日生成初始小时
+        if isWeekend {
+            randomHour = Int.random(in: 10...17) // 周末时间
+        } else {
+            // 工作日有80%的概率在工作时间（8:00-19:00）
+            if Double.random(in: 0...1) < 0.8 {
+                randomHour = Int.random(in: 8...19) // 工作时间
+            } else {
+                // 20%的概率在非工作时间
+                randomHour = Int.random(in: 0...23)
+            }
+        }
+        
+        // 随机分钟和秒数
+        randomMinute = Int.random(in: 0...59)
+        randomSecond = Int.random(in: 0...59)
+        
+        // 如果是今天，确保时间早于当前时间
+        if randomDays == 0 {
+            // 检查生成的时间是否晚于当前时间
+            if randomHour > currentHour || (randomHour == currentHour && randomMinute >= currentMinute) {
+                // 如果随机生成的时间晚于或等于当前时间，则将时间设为1-3小时前
+                let hoursAgo = Int.random(in: 1...3)
+                randomHour = max(8, currentHour - hoursAgo)
+                randomMinute = Int.random(in: 0...59)
+            }
+        }
+        
+        // 组合日期和时间
+        var dateComponents = calendar.dateComponents([.year, .month, .day], from: targetDay)
+        dateComponents.hour = randomHour
+        dateComponents.minute = randomMinute
+        dateComponents.second = randomSecond
         
         return calendar.date(from: dateComponents) ?? currentDate
     }
 }
 
-// 主函数调用
-GenerateEmails.main()
-
-struct GenerateEmails {
-    static func main() {
-        print("开始生成邮件数据...")
-        
+// 主函数
+func main() {
+    print("开始生成邮件数据...")
+    
+    do {
         let generator = EmailDataGenerator()
         let emails = generator.generateEmails(count: 10000)
         
@@ -320,49 +270,53 @@ struct GenerateEmails {
         let currentPath = FileManager.default.currentDirectoryPath
         print("当前工作目录：\(currentPath)")
         
-        do {
-            // 确保目录存在
-            let directoryPath = URL(fileURLWithPath: outputPath).deletingLastPathComponent()
-            print("目标目录：\(directoryPath.path)")
-            
-            try FileManager.default.createDirectory(
-                at: directoryPath,
-                withIntermediateDirectories: true,
-                attributes: nil
-            )
-            print("目录创建成功")
-            
-            // 将数据转换为 plist 格式
-            let plistData = try PropertyListSerialization.data(
-                fromPropertyList: emails,
-                format: .xml,
-                options: 0
-            )
-            
-            // 写入文件
-            try plistData.write(to: URL(fileURLWithPath: outputPath))
-            print("文件写入成功：\(outputPath)")
-            
-            // 简单验证文件是否成功创建
-            if FileManager.default.fileExists(atPath: outputPath) {
-                // 成功创建文件
-                let attributes = try FileManager.default.attributesOfItem(atPath: outputPath)
-                if let fileSize = attributes[.size] as? Int64, fileSize > 0 {
-                    // 文件大小正常
-                    print("文件创建成功，大小：\(fileSize) 字节")
-                }
+        // 确保目录存在
+        let directoryPath = URL(fileURLWithPath: outputPath).deletingLastPathComponent()
+        print("目标目录：\(directoryPath.path)")
+        
+        try FileManager.default.createDirectory(
+            at: directoryPath,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
+        print("目录创建成功")
+        
+        // 将数据转换为 plist 格式
+        let plistData = try PropertyListSerialization.data(
+            fromPropertyList: emails,
+            format: .xml,
+            options: 0
+        )
+        
+        // 写入文件
+        try plistData.write(to: URL(fileURLWithPath: outputPath))
+        print("文件写入成功：\(outputPath)")
+        
+        // 简单验证文件是否成功创建
+        if FileManager.default.fileExists(atPath: outputPath) {
+            // 成功创建文件
+            let attributes = try FileManager.default.attributesOfItem(atPath: outputPath)
+            if let fileSize = attributes[.size] as? Int64, fileSize > 0 {
+                // 文件大小正常
+                print("文件创建成功，大小：\(fileSize) 字节")
             } else {
-                // 文件未创建成功
-                print("错误：文件未创建成功")
-                exit(1)
+                print("警告：文件大小为零")
             }
-        } catch {
-            // 出现错误
-            print("错误：\(error)")
-            print("详细信息：\(error.localizedDescription)")
+        } else {
+            // 文件未创建成功
+            print("错误：文件未创建成功")
             exit(1)
         }
         
         print("邮件数据生成完成")
+        
+    } catch {
+        // 出现错误，直接输出错误信息并退出
+        print("错误：\(error)")
+        print("详细信息：\(error.localizedDescription)")
+        exit(1)
     }
 }
+
+// 调用主函数
+main()

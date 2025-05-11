@@ -1,5 +1,5 @@
 //
-//  GenerateContactData.swift
+//  GenerateContacts.swift
 //  Feishu-clone
 //
 //  Created by 张纪龙 on 2025/4/27.
@@ -8,7 +8,7 @@
 import Foundation
 
 // 这个脚本用于生成联系人数据并保存到plist文件中
-// 可以单独运行这个文件来生成mock_contacts.plist
+// 单独运行这个文件来生成mock_contacts.plist
 
 enum ScriptContactType: String {
     case user = "user"
@@ -90,20 +90,84 @@ func generateRandomTime() -> String {
     }
 }
 
-// 生成随机联系人数据
-func generateRandomContacts(count: Int) -> [ContactData] {
-    // 随机姓名 - 用于普通用户
-    let names = ["张三", "李四", "王五", "赵六", "钱七", "孙八", "周九", "吴十",
-                "郑十一", "冯十二", "陈十三", "楚十四", "魏十五", "蒋十六", "沈十七", "韩十八",
-                "沈十七", "魏十八"]
+// 生成随机姓名
+func generateRandomName() -> String {
+    // 常用姓氏
+    let familyNames = ["王", "李", "张", "刘", "陈", "杨", "赵", "黄", "周", "吴",
+                       "徐", "孙", "马", "朱", "胡", "林", "郭", "何", "高", "罗",
+                       "郑", "梁", "谢", "宋", "唐", "许", "邓", "冯", "韩", "曹"]
     
-    // 随机消息
-    let messages = ["你好，最近怎么样？", "明天开会别忘了带文件", "已收到，谢谢", "请问这个问题解决了吗？",
-                   "稍等，我马上回复你", "好的，没问题", "周五晚上有空吗？", "这个方案我很满意",
-                   "麻烦再确认一下日期", "文档我已经发到你邮箱了", "需要我帮忙吗？", "辛苦了！"]
+    // 常用名字
+    let givenNames = ["伟", "芳", "娜", "秀英", "敏", "静", "丽", "强", "磊", "军",
+                     "洋", "勇", "艳", "杰", "娟", "涛", "明", "超", "秀兰", "霞",
+                     "平", "刚", "桂英", "英", "华", "俊", "文", "云", "建华", "建国",
+                     "欣怡", "雪", "旭", "宇", "荣", "健", "志", "嘉", "佳","泽楷"]
+    
+    let familyName = familyNames.randomElement()!
+    let givenName = givenNames.randomElement()!
+    
+    return familyName + givenName
+}
+
+// 生成随机消息
+func generateRandomMessage() -> String {
+    // 消息模板
+    let messageTemplates = [
+        "关于%@的事情，你怎么看？",
+        "下午%02d:%02d的会议别忘了",
+        "能帮我确认一下%@的进度吗？",
+        "%@文件我已经发到你邮箱了",
+        "周末有空一起%@吗？",
+        "这个%@方案我觉得很不错",
+        "需要我协助处理%@的问题吗？",
+        "早上好！%@的报告准备得怎么样了？",
+        "请查收%@的最新版本",
+        "刚才开会讨论的%@事项，你有什么想法？"
+    ]
+    
+    // 填充词
+    let fillers = ["项目", "产品", "设计", "开发", "聚餐", "看电影", "讨论",
+                  "测试", "报告", "方案", "数据", "文档", "计划", "培训", "会议"]
+    
+    // 基本消息
+    let basicMessages = [
+        "你好，最近怎么样？",
+        "已收到，谢谢",
+        "好的，没问题",
+        "这个方案我很满意",
+        "辛苦了！",
+        "有时间聊一下吗？",
+        "一切顺利",
+        "谢谢你的帮助"
+    ]
+    
+    // 70%概率使用模板消息，30%概率使用基本消息
+    if Int.random(in: 1...10) <= 7 {
+        let template = messageTemplates.randomElement()!
+        let filler = fillers.randomElement()!
+        
+        if template.contains("%02d:%02d") {
+            // 处理时间格式的模板
+            let hour = Int.random(in: 13...17) // 下午1点到5点
+            let minute = Int.random(in: 0...59)
+            return String(format: template, hour, minute)
+        } else {
+            // 处理普通替换的模板
+            return String(format: template, filler)
+        }
+    } else {
+        return basicMessages.randomElement()!
+    }
+}
+
+// 生成随机联系人数据
+func generateRandomContacts(count: Int) -> [ScriptContactData] {
+    // 头像名称
+    let userAvatars = ["cao-wenlong", "li-jianhao", "zhang-jilong"]
+    let externalAvatars = ["jiang-yuan", "liang-weixi", "su-peng", "wang-xun", "xiao-kaiqin", "yan-wenhua"]
     
     // 特殊联系人 - 每个特殊联系人只出现一次，且有固定的消息
-    let specialContacts: [(name: String, avatarName: String, type: ContactType, message: String)] = [
+    let specialContacts: [(name: String, avatarName: String, type: ScriptContactType, message: String)] = [
         ("账号安全中心", "account-assist", .bot, "您的账号已完成安全检查"),
         ("联系人助手", "contact-assist", .bot, "您有新的联系人申请"),
         ("飞书训练营", "group1", .user, "欢迎加入飞书训练营！"),
@@ -112,12 +176,8 @@ func generateRandomContacts(count: Int) -> [ContactData] {
         ("云文档助手", "doc-assist", .bot, "您有新共享文档需要查看")
     ]
     
-    // 头像名称
-    let userAvatars = ["cao-wenlong", "li-jianhao", "zhang-jilong"]
-    let externalAvatars = ["jiang-yuan", "liang-weixi", "su-peng", "wang-xun", "xiao-kaiqin", "yan-wenhua"]
-    
     // 生成随机联系人
-    var contacts: [ContactData] = []
+    var contacts: [ScriptContactData] = []
     
     // 1. 首先添加特殊联系人 - 只添加一次，时间设置为较近的时间确保它们显示在前面
     for special in specialContacts {
@@ -138,7 +198,7 @@ func generateRandomContacts(count: Int) -> [ContactData] {
             datetime = String(format: "%02d:%02d", currentHour, adjustedMinute)
         }
         
-        let contact = ContactData(
+        let contact = ScriptContactData(
             name: special.name,
             avatarName: special.avatarName,
             latestMsg: special.message,
@@ -158,7 +218,7 @@ func generateRandomContacts(count: Int) -> [ContactData] {
         let typeRandom = Int.random(in: 1...10)
         let type: ScriptContactType
         let avatarName: String
-        let name: String = names.randomElement()!
+        let name: String = generateRandomName()
         
         if typeRandom <= 6 {
             // 用户类型 - 使用用户头像
@@ -171,10 +231,10 @@ func generateRandomContacts(count: Int) -> [ContactData] {
         }
         
         // 创建联系人
-        let contact = ContactData(
+        let contact = ScriptContactData(
             name: name,
             avatarName: avatarName,
-            latestMsg: messages.randomElement()!,
+            latestMsg: generateRandomMessage(),
             datetime: datetime,
             type: type.rawValue
         )
@@ -186,32 +246,65 @@ func generateRandomContacts(count: Int) -> [ContactData] {
 }
 
 // 将联系人数据保存到plist文件
-func saveContactsToPlist(contacts: [ContactData], filename: String) {
-    let encoder = PropertyListEncoder()
-    encoder.outputFormat = .xml
+func saveContactsToPlist(contacts: [ScriptContactData], filename: String) {
+    // 正确的相对路径：从Scripts文件夹到MockData文件夹
+    let outputPath = "../../Resources/MockData/\(filename)"
+    print("输出路径：\(outputPath)")
+    
+    // 获取当前工作目录
+    let currentPath = FileManager.default.currentDirectoryPath
+    print("当前工作目录：\(currentPath)")
     
     do {
-        let data = try encoder.encode(contacts)
+        // 确保目录存在
+        let directoryPath = URL(fileURLWithPath: outputPath).deletingLastPathComponent()
+        print("目标目录：\(directoryPath.path)")
         
-        // 直接保存到项目目录中，与Info.plist同级
-        let outputPath = "../../Resources/MockData/\(filename)"
-        let fileURL = URL(fileURLWithPath: outputPath)
+        try FileManager.default.createDirectory(
+            at: directoryPath,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
+        print("目录创建成功")
         
-        try data.write(to: fileURL)
-        print("成功将联系人数据保存到: \(fileURL.path)")
-        print("文件已保存到项目目录中，与Info.plist同级")
+        // 将数据编码为 plist 格式
+        let encoder = PropertyListEncoder()
+        encoder.outputFormat = .xml
+        let plistData = try encoder.encode(contacts)
+        
+        // 写入文件
+        try plistData.write(to: URL(fileURLWithPath: outputPath))
+        print("文件写入成功：\(outputPath)")
+        
+        // 简单验证文件是否成功创建
+        if FileManager.default.fileExists(atPath: outputPath) {
+            let attributes = try FileManager.default.attributesOfItem(atPath: outputPath)
+            if let fileSize = attributes[.size] as? Int64, fileSize > 0 {
+                print("文件创建成功，大小：\(fileSize) 字节")
+            }
+        } else {
+            print("错误：文件未创建成功")
+            exit(1)
+        }
     } catch {
-        print("保存联系人数据失败: \(error)")
+        print("错误：\(error)")
+        print("详细信息：\(error.localizedDescription)")
+        exit(1)
     }
 }
 
-@main
-struct Script {
-    static func main() {
-        // 生成10000个随机联系人
-        let randomContacts = generateRandomContacts(count: 10000)
-        
-        // 保存到plist文件
-        saveContactsToPlist(contacts: randomContacts, filename: "mock_contacts.plist")
-    }
+// 主函数
+func main() {
+    print("开始生成联系人数据...")
+    
+    // 生成10000个随机联系人
+    let randomContacts = generateRandomContacts(count: 10000)
+    
+    // 保存到plist文件
+    saveContactsToPlist(contacts: randomContacts, filename: "mock_contacts.plist")
+    
+    print("联系人数据生成完成")
 }
+
+// 运行主函数
+main()
