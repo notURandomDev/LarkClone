@@ -118,4 +118,23 @@ public class LarkColorConfig: NSObject {
             }
         }
     }
+    
+    public struct AppBackground {
+        public static var `default`: UIColor {
+            return UIColor { traitCollection in
+                switch traitCollection.userInterfaceStyle {
+                case .dark:
+                    return UIColor(red: 31/255.0, green: 32/255.0, blue: 31/255.0, alpha: 1.0)
+                case .light, .unspecified:
+                    return .white @unknown
+                    default: return .white }
+            }
+        }
+        
+        /// 纯暗黑模式背景颜色
+        public static let dark: UIColor = UIColor(red: 31/255.0, green: 32/255.0, blue: 31/255.0, alpha: 1.0)
+        
+        /// 纯亮色模式背景颜色。
+        public static let light: UIColor = .white
+    }
 }
