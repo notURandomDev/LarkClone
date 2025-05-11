@@ -8,7 +8,7 @@
 import UIKit
 import LarkColor
 
-// 聊天控制器 - 优化版本
+// 聊天控制器
 class ChatDetailViewController: UIViewController {
     
     // MARK: - UI组件
@@ -89,12 +89,18 @@ class ChatDetailViewController: UIViewController {
         
         // 移除键盘监听
         removeKeyboardObservers()
+        
+        // 确保退出时不会污染导航栏状态
+        if isMovingFromParent {
+            navigationController?.navigationBar.prefersLargeTitles = false
+            navigationItem.largeTitleDisplayMode = .never
+        }
     }
     
     // MARK: - UI设置
     private func setupUI() {
-        // 使用动态背景色 - 深色模式下为黑色
-        view.backgroundColor = getBackgroundColor()
+        // 使用动态背景色
+        view.backgroundColor = LarkColorStyle.Chat.backgroundColor
         
         // 确保导航栏设置正确
         setupNavigationBar()
@@ -121,17 +127,17 @@ class ChatDetailViewController: UIViewController {
     
     private func updateColorForCurrentTraitCollection() {
         // 更新视图的背景色
-        view.backgroundColor = getBackgroundColor()
-        tableView.backgroundColor = getBackgroundColor()
-        inputContainer.backgroundColor = getInputContainerColor()
+        view.backgroundColor = LarkColorStyle.Chat.backgroundColor
+        tableView.backgroundColor = LarkColorStyle.Chat.backgroundColor
+        inputContainer.backgroundColor = LarkColorStyle.Chat.inputContainerColor
         
         // 更新输入框颜色
-        inputField.backgroundColor = getInputFieldColor()
+        inputField.backgroundColor = LarkColorStyle.Chat.inputFieldColor
         
         // 更新导航栏颜色
         if let navigationBar = navigationController?.navigationBar {
             navigationBar.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : .systemBlue
-            navigationBar.barTintColor = getBackgroundColor()
+            navigationBar.barTintColor = LarkColorStyle.Chat.backgroundColor
             
             // 更新标题颜色
             if let titleLabel = navigationItem.titleView as? UILabel {
@@ -140,31 +146,10 @@ class ChatDetailViewController: UIViewController {
         }
     }
     
-    private func getBackgroundColor() -> UIColor {
-        return UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ? .black : .white
-        }
-    }
-    
-    private func getInputContainerColor() -> UIColor {
-        return UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ?
-                UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0) : .white
-        }
-    }
-    
-    private func getInputFieldColor() -> UIColor {
-        return UIColor { traitCollection in
-            return traitCollection.userInterfaceStyle == .dark ?
-                UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0) :
-                UIColor(red: 0.92, green: 0.92, blue: 0.92, alpha: 1.0) // 更浅的灰色背景
-        }
-    }
-    
     private func setupNavigationBar() {
         // 设置导航栏样式
-        navigationController?.navigationBar.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : .systemBlue
-        navigationController?.navigationBar.barTintColor = getBackgroundColor()
+        navigationController?.navigationBar.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : LarkColorStyle.TabBar.tintColor
+        navigationController?.navigationBar.barTintColor = LarkColorStyle.Chat.backgroundColor
         navigationController?.navigationBar.isTranslucent = false
         navigationController?.navigationBar.shadowImage = UIImage()
         
@@ -176,7 +161,7 @@ class ChatDetailViewController: UIViewController {
     }
     
     private func setupTableView() {
-        tableView.backgroundColor = getBackgroundColor()
+        tableView.backgroundColor = LarkColorStyle.Chat.backgroundColor
         tableView.register(MessageCell.self, forCellReuseIdentifier: "MessageCell")
         tableView.delegate = self
         tableView.dataSource = self
@@ -193,15 +178,15 @@ class ChatDetailViewController: UIViewController {
     }
     
     private func setupInputContainer() {
-        inputContainer.backgroundColor = getInputContainerColor()
-        inputContainer.layer.borderColor = UIColor.lightGray.withAlphaComponent(0.3).cgColor
+        inputContainer.backgroundColor = LarkColorStyle.Chat.inputContainerColor
+        inputContainer.layer.borderColor = LarkColorStyle.UI.borderColor.cgColor
         inputContainer.layer.borderWidth = 0.5
         view.addSubview(inputContainer)
         
         // 设置输入框 - 修复浅色模式下的颜色
         inputField.borderStyle = .roundedRect
         inputField.placeholder = "输入消息..."
-        inputField.backgroundColor = getInputFieldColor()
+        inputField.backgroundColor = LarkColorStyle.Chat.inputFieldColor
         inputField.textColor = LarkColorStyle.Text.primary
         inputContainer.addSubview(inputField)
         
@@ -305,7 +290,7 @@ class ChatDetailViewController: UIViewController {
     @objc private func sendMessage() {
         guard let text = inputField.text, !text.isEmpty else { return }
         
-        // 创建当前用户（如果在实际应用中，这部分应该从用户系统获取）
+        // 创建当前用户
         let currentUser = Contact(
             avatar: UIImage(named: "zhang-jilong") ?? UIImage(systemName: "person.circle.fill") ?? UIImage(),
             name: "我",
@@ -336,7 +321,7 @@ class ChatDetailViewController: UIViewController {
             let indexPath = IndexPath(row: messages.count - 1, section: 0)
             // 确保UI更新完成后再滚动
             DispatchQueue.main.async {
-                if self.tableView.window != nil { // 确保tableView已添加到视图层级
+                if self.tableView.window != nil {
                     self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: animated)
                 }
             }
