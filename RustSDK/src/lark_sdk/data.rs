@@ -4,4 +4,5 @@ pub struct Contact {
     pub latest_msg: String,
     pub datetime: String,
     pub contact_type: String,
+    pub avatar_name: String,
 }

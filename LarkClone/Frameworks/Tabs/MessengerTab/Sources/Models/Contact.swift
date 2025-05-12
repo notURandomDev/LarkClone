@@ -42,7 +42,7 @@ struct Contact {
         let avatar: UIImage?
         
         // 获取图片
-        if let image = UIImage(named: larkContact.name) {
+        if let image = UIImage(named: larkContact.avatarName) {
             avatar = image
         } else {
             // 使用默认头像或创建一个占位头像

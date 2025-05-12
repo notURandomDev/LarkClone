@@ -18,11 +18,13 @@ pub fn parse_plist(file_path: &str) -> Vec<Contact> {
             let latest_msg = dict.get("latestMsg")?.as_string()?.to_string();
             let datetime = dict.get("datetime")?.as_string()?.to_string();
             let contact_type = dict.get("type")?.as_string()?.to_string();
+            let avatar_name = dict.get("avatarName")?.as_string()?.to_string();
             Some(Contact {
                 name,
                 latest_msg,
                 datetime,
                 contact_type,
+                avatar_name,
             })
         })
         .collect()

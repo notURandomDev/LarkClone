@@ -11,39 +11,37 @@ class ContactDataManager {
     // 每页显示的联系人数量
     private let contactsPerPage = 20
     private var allContacts: [Contact] = []
+    var onLoadComplete: (() -> Void)?
     
     init() {
         // 尝试从plist文件加载联系人数据
-        loadContactsFromPlist()
+        // loadContactsFromPlist()
         // 尝试从rust侧加载联系人数据
         loadContactsFromRust()
     }
     
     // 从 Rust 获取联系人数据
     private func loadContactsFromRust() {
-            // 获取 plist 文件路径
             guard let path = Bundle.main.path(forResource: "mock_contacts", ofType: "plist") else {
                 print("无法找到 mock_contacts.plist 文件，加载默认联系人")
                 allContacts = getDefaultContacts()
                 sortContactsByTime()
+                onLoadComplete?()
                 return
             }
-            
-            // 使用 RustBridge.fetchContactsAsync 获取联系人
+
             RustBridge.fetchContacts(page: 0, pageSize: 10000, filePath: path) { result in
                 switch result {
                 case .success(let larkContacts):
                     print("✅ 从 Rust 获取到 \(larkContacts.count) 个联系人")
-                    // 将 Lark_Contact 转换为 Contact
                     self.allContacts = larkContacts.map { Contact.from(larkContact: $0) }
-                    // 加载后对联系人按时间排序
                     self.sortContactsByTime()
                 case .failure(let error):
                     print("❌ 从 Rust 获取联系人失败：\(error)")
-                    // 失败时加载默认联系人
                     self.allContacts = self.getDefaultContacts()
                     self.sortContactsByTime()
                 }
+                self.onLoadComplete?() // 通知数据加载完成
             }
         }
     

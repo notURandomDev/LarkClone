@@ -13,6 +13,7 @@
 		100E66F62DCCC8460011B0F1 /* LarkColor.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 100E66EF2DCCC8460011B0F1 /* LarkColor.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		100E670B2DCCC90D0011B0F1 /* LarkFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */; };
 		100E670C2DCCC90D0011B0F1 /* LarkFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		107F76A12DD1E4B200F385D3 /* librust_sdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 107F76A02DD1E4B200F385D3 /* librust_sdk.a */; };
 		109008B42DCFACB300BC010A /* LarkAvatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; };
 		109008B52DCFACB300BC010A /* LarkAvatar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		109008CA2DCFB5D700BC010A /* LarkAvatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; };
@@ -28,6 +29,8 @@
 		10CAECA62DD1A7EC003F9242 /* SwiftProtobufPluginLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 10CAECA52DD1A7EC003F9242 /* SwiftProtobufPluginLibrary */; };
 		10CAECA82DD1A7EC003F9242 /* protoc-gen-swift in Frameworks */ = {isa = PBXBuildFile; productRef = 10CAECA72DD1A7EC003F9242 /* protoc-gen-swift */; };
 		10CAECB12DD1A8C0003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
+		10CAEF552DD1DE6C003F9242 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 10CAEF542DD1DE6C003F9242 /* SwiftProtobuf */; };
+		10CAEF582DD1DEA4003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +111,13 @@
 			remoteGlobalIDString = 10CAEC902DD1A778003F9242;
 			remoteInfo = LarkSDKPB;
 		};
+		10CAEF562DD1DE9F003F9242 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10CAEC902DD1A778003F9242;
+			remoteInfo = LarkSDKPB;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -137,6 +147,7 @@
 		100E66EF2DCCC8460011B0F1 /* LarkColor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkColor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67892DCD04350011B0F1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		107F76A02DD1E4B200F385D3 /* librust_sdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librust_sdk.a; path = libs/librust_sdk.a; sourceTree = "<group>"; };
 		109008AE2DCFACB300BC010A /* LarkAvatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkAvatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkLaunchScreen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10CAE47C2DD1902C003F9242 /* LarkSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,6 +160,7 @@
 			membershipExceptions = (
 				Frameworks/Core/LarkSDK/LarkSDK.swift,
 				Frameworks/Core/LarkSDK/RustBridge.swift,
+				Frameworks/Core/LarkSDKPB/ContactList.pb.swift,
 				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
 				Frameworks/UI/LarkLaunchScreen/LaunchViewController.swift,
@@ -159,6 +171,7 @@
 		109008C92DCFB53100BC010A /* Exceptions for "LarkClone" folder in "MessengerTab" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Frameworks/Core/LarkSDKPB/ContactList.pb.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Models/Contact.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Views/ContactCell.swift,
 			);
@@ -199,14 +212,7 @@
 			);
 			target = 10CAE47B2DD1902C003F9242 /* LarkSDK */;
 		};
-		10CAE4A02DD196E1003F9242 /* Exceptions for "RustSDK" folder in "LarkSDK" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"target/aarch64-apple-ios-sim/release/librust_sdk.a",
-			);
-			target = 10CAE47B2DD1902C003F9242 /* LarkSDK */;
-		};
-		10CAECB92DD1AA44003F9242 /* Exceptions for "LarkClone" folder in "LarkSDKPB" target */ = {
+		10CAEF472DD1DC78003F9242 /* Exceptions for "LarkClone" folder in "LarkSDKPB" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/Core/LarkSDKPB/ContactList.pb.swift,
@@ -225,16 +231,13 @@
 				109008CC2DCFB71E00BC010A /* Exceptions for "LarkClone" folder in "LarkAvatar" target */,
 				10900F912DD04E5E00BC010A /* Exceptions for "LarkClone" folder in "LarkLaunchScreen" target */,
 				10CAE48A2DD1903A003F9242 /* Exceptions for "LarkClone" folder in "LarkSDK" target */,
-				10CAECB92DD1AA44003F9242 /* Exceptions for "LarkClone" folder in "LarkSDKPB" target */,
+				10CAEF472DD1DC78003F9242 /* Exceptions for "LarkClone" folder in "LarkSDKPB" target */,
 			);
 			path = LarkClone;
 			sourceTree = "<group>";
 		};
 		100E66D32DCCC7590011B0F1 /* RustSDK */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				10CAE4A02DD196E1003F9242 /* Exceptions for "RustSDK" folder in "LarkSDK" target */,
-			);
 			path = RustSDK;
 			sourceTree = "<group>";
 		};
@@ -259,8 +262,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10CAEF582DD1DEA4003F9242 /* LarkSDKPB.framework in Frameworks */,
 				109008D02DCFB81300BC010A /* LarkColor.framework in Frameworks */,
 				109008CA2DCFB5D700BC010A /* LarkAvatar.framework in Frameworks */,
+				10CAEF552DD1DE6C003F9242 /* SwiftProtobuf in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +302,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				107F76A12DD1E4B200F385D3 /* librust_sdk.a in Frameworks */,
 				10CAECB12DD1A8C0003F9242 /* LarkSDKPB.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,6 +350,7 @@
 		1044F03E2DCDCCD000CC1692 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				107F76A02DD1E4B200F385D3 /* librust_sdk.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -445,11 +452,14 @@
 			buildRules = (
 			);
 			dependencies = (
+				10CAEF572DD1DE9F003F9242 /* PBXTargetDependency */,
+				10CAEF532DD1DE68003F9242 /* PBXTargetDependency */,
 				109008D22DCFB81900BC010A /* PBXTargetDependency */,
 				109008C52DCFB32800BC010A /* PBXTargetDependency */,
 			);
 			name = MessengerTab;
 			packageProductDependencies = (
+				10CAEF542DD1DE6C003F9242 /* SwiftProtobuf */,
 			);
 			productName = MessengerTab;
 			productReference = 100E66D92DCCC8110011B0F1 /* MessengerTab.framework */;
@@ -570,6 +580,9 @@
 			buildRules = (
 			);
 			dependencies = (
+				10CAEF4D2DD1DE22003F9242 /* PBXTargetDependency */,
+				10CAEF4F2DD1DE22003F9242 /* PBXTargetDependency */,
+				10CAEF512DD1DE22003F9242 /* PBXTargetDependency */,
 			);
 			name = LarkSDKPB;
 			packageProductDependencies = (
@@ -729,7 +742,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n# 至关重要的指令\nexport PATH=\"$HOME/.cargo/bin:$PATH\"\n\n# 检查 cargo 是否安装\nif ! command -v cargo >/dev/null 2>&1; then\n    echo \"错误: 未检测到 Rust 工具链 (cargo)。请先安装 Rust：\"\n    echo \"步骤 1: 打开终端，运行以下命令：\"\n    echo \"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\"\n    echo \"步骤 2: 安装完成后，重新启动 Xcode。\"\n    exit 1\nfi\n\n# 检查 cbindgen 是否安装\nif ! command -v cbindgen >/dev/null 2>&1; then\n    echo \"错误: 未检测到 cbindgen。请运行以下命令安装：\"\n    echo \"cargo install cbindgen\"\n    exit 1\nfi\n\n# 编译操作\n## 切换到 Rust 项目的根目录（$SRCROOT指向项目的根目录）\ncd \"${SRCROOT}/RustSDK\"\n## 编译 Rust 代码，生成针对 iOS 真机（ARM64）的静态库。\ncargo build --release --target aarch64-apple-ios-sim\n\n# 链接操作\n## 将编译生成的 Rust 静态库（.a 文件）复制（cp）到项目的 libs/ 目录\ncp \"${SRCROOT}/RustSDK/target/aarch64-apple-ios-sim/release/librust_sdk.a\" \"${SRCROOT}/libs/\"\n## 生成 C 头文件（.h），供 Swift 通过 FFI 调用 Rust 函数\ncbindgen --config cbindgen.toml --output \"${SRCROOT}/RustSDK/include/rust_sdk.h\"\n";
+			shellScript = "#!/bin/bash\n\n# 至关重要的指令\nexport PATH=\"$HOME/.cargo/bin:$PATH\"\n\n# 检查 cargo 是否安装\nif ! command -v cargo >/dev/null 2>&1; then\n    echo \"错误: 未检测到 Rust 工具链 (cargo)。请先安装 Rust：\"\n    echo \"步骤 1: 打开终端，运行以下命令：\"\n    echo \"curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh\"\n    echo \"步骤 2: 安装完成后，重新启动 Xcode。\"\n    exit 1\nfi\n\n# 检查 cbindgen 是否安装\nif ! command -v cbindgen >/dev/null 2>&1; then\n    echo \"错误: 未检测到 cbindgen。请运行以下命令安装：\"\n    echo \"cargo install cbindgen\"\n    exit 1\nfi\n\n# 编译操作\n## 切换到 Rust 项目的根目录（$SRCROOT指向项目的根目录）\ncd \"${SRCROOT}/RustSDK\"\n## 编译 Rust 代码，生成针对 iOS 真机（ARM64）的静态库。\ncargo build --release --target aarch64-apple-ios-sim\n\n# 链接操作\n## 将编译生成的 Rust 静态库（.a 文件）复制（cp）到项目的 libs/ 目录\ncp \"${SRCROOT}/RustSDK/target/aarch64-apple-ios-sim/release/librust_sdk.a\" \"${SRCROOT}/libs/\"\n## 生成 C 头文件（.h），供 Swift 通过 FFI 调用 Rust 函数\ncbindgen --config cbindgen.toml --output \"${SRCROOT}/RustSDK/include/rust_sdk.h\"\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -847,6 +860,27 @@
 			isa = PBXTargetDependency;
 			target = 10CAEC902DD1A778003F9242 /* LarkSDKPB */;
 			targetProxy = 10CAECAF2DD1A8B6003F9242 /* PBXContainerItemProxy */;
+		};
+		10CAEF4D2DD1DE22003F9242 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 10CAEF4C2DD1DE22003F9242 /* SwiftProtobuf */;
+		};
+		10CAEF4F2DD1DE22003F9242 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 10CAEF4E2DD1DE22003F9242 /* SwiftProtobufPluginLibrary */;
+		};
+		10CAEF512DD1DE22003F9242 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 10CAEF502DD1DE22003F9242 /* protoc-gen-swift */;
+		};
+		10CAEF532DD1DE68003F9242 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 10CAEF522DD1DE68003F9242 /* SwiftProtobuf */;
+		};
+		10CAEF572DD1DE9F003F9242 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 10CAEC902DD1A778003F9242 /* LarkSDKPB */;
+			targetProxy = 10CAEF562DD1DE9F003F9242 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1401,7 +1435,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/RustSDK/include\"";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/RustSDK/include";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1410,8 +1444,9 @@
 					"@loader_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/libs",
 					"$(SRCROOT)/RustSDK/target/aarch64-apple-ios-sim/release",
-					"$(PROJECT_DIR)/RustSDK/target/aarch64-apple-ios-sim/release",
+					"$(PROJECT_DIR)/libs",
 				);
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
@@ -1443,7 +1478,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/RustSDK/include\"";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/RustSDK/include";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1452,8 +1487,9 @@
 					"@loader_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/libs",
 					"$(SRCROOT)/RustSDK/target/aarch64-apple-ios-sim/release",
-					"$(PROJECT_DIR)/RustSDK/target/aarch64-apple-ios-sim/release",
+					"$(PROJECT_DIR)/libs",
 				);
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
@@ -1660,6 +1696,31 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 10CAECA22DD1A7EC003F9242 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
 			productName = "protoc-gen-swift";
+		};
+		10CAEF4C2DD1DE22003F9242 /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10CAECA22DD1A7EC003F9242 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobuf;
+		};
+		10CAEF4E2DD1DE22003F9242 /* SwiftProtobufPluginLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10CAECA22DD1A7EC003F9242 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobufPluginLibrary;
+		};
+		10CAEF502DD1DE22003F9242 /* protoc-gen-swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10CAECA22DD1A7EC003F9242 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = "protoc-gen-swift";
+		};
+		10CAEF522DD1DE68003F9242 /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10CAECA22DD1A7EC003F9242 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobuf;
+		};
+		10CAEF542DD1DE6C003F9242 /* SwiftProtobuf */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 10CAECA22DD1A7EC003F9242 /* XCRemoteSwiftPackageReference "swift-protobuf" */;
+			productName = SwiftProtobuf;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -12,6 +12,7 @@ class ContactListVC: UIViewController {
     var tableView = UITableView()
     var contacts: [Contact] = []
     
+    
     // 分页加载属性
     private var currentPage = 0 // 当前页码
     private var isLoading = false // 是否正在加载
@@ -31,6 +32,12 @@ class ContactListVC: UIViewController {
         
         // 使用正确的本地化字符串
         title = NSLocalizedString("messenger_title", tableName: "MessengerTab", bundle: Bundle.main, comment: "Messenger title")
+        
+        dataManager.onLoadComplete = { [weak self] in
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }
         
         setupNavBar()
         setupUI()

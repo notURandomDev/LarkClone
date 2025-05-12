@@ -33,6 +33,8 @@ public struct Lark_Contact: Sendable {
 
   public var type: String = String()
 
+  public var avatarName: String = String()
+
   public var unknownFields = SwiftProtobuf.UnknownStorage()
 
   public init() {}
@@ -63,6 +65,7 @@ extension Lark_Contact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
     2: .standard(proto: "latest_msg"),
     3: .same(proto: "datetime"),
     4: .same(proto: "type"),
+    5: .standard(proto: "avatar_name"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -75,6 +78,7 @@ extension Lark_Contact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
       case 2: try { try decoder.decodeSingularStringField(value: &self.latestMsg) }()
       case 3: try { try decoder.decodeSingularStringField(value: &self.datetime) }()
       case 4: try { try decoder.decodeSingularStringField(value: &self.type) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self.avatarName) }()
       default: break
       }
     }
@@ -93,6 +97,9 @@ extension Lark_Contact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
     if !self.type.isEmpty {
       try visitor.visitSingularStringField(value: self.type, fieldNumber: 4)
     }
+    if !self.avatarName.isEmpty {
+      try visitor.visitSingularStringField(value: self.avatarName, fieldNumber: 5)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -101,6 +108,7 @@ extension Lark_Contact: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementat
     if lhs.latestMsg != rhs.latestMsg {return false}
     if lhs.datetime != rhs.datetime {return false}
     if lhs.type != rhs.type {return false}
+    if lhs.avatarName != rhs.avatarName {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

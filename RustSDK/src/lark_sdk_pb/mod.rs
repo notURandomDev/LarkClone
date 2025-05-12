@@ -14,6 +14,7 @@ pub fn serialize_contacts(contacts: Vec<RustContact>) -> Vec<u8> {
                 latest_msg: c.latest_msg,
                 datetime: c.datetime,
                 contact_type: c.contact_type,
+                avatar_name: c.avatar_name,
             }
         })
         .collect();
