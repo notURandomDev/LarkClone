@@ -158,9 +158,9 @@
 		100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Frameworks/Core/LarkSDK/LarkSDK.swift,
 				Frameworks/Core/LarkSDK/RustBridge.swift,
 				Frameworks/Core/LarkSDKPB/ContactList.pb.swift,
+				Frameworks/Core/LarkSDKPB/MailList.pb.swift,
 				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
 				Frameworks/UI/LarkLaunchScreen/LaunchViewController.swift,
@@ -204,7 +204,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h",
-				Frameworks/Core/LarkSDK/LarkSDK.swift,
 				Frameworks/Core/LarkSDK/RustBridge.swift,
 			);
 			publicHeaders = (
@@ -216,6 +215,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/Core/LarkSDKPB/ContactList.pb.swift,
+				Frameworks/Core/LarkSDKPB/MailList.pb.swift,
 			);
 			target = 10CAEC902DD1A778003F9242 /* LarkSDKPB */;
 		};
