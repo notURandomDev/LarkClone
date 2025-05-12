@@ -12,33 +12,6 @@ import LarkSDK
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-//        print("Testing RustBridge.printHello...")
-//        RustBridge.printHello()
-//        print("Testing RustBridge.fetchContacts...")
-//        
-//        if let path = Bundle.main.path(
-//            forResource: "mock_contacts", // 文件名无扩展名
-//            ofType: "plist",              // 扩展名
-//        ) {
-//            RustBridge.fetchContacts(page: 0, pageSize: 20, filePath: path) { result in
-//                switch result {
-//                case .success(let contacts):
-//                    print("✅ 获取到 \(contacts.count) 个联系人")
-//                    for contact in contacts {
-//                        print("""
-//                        👤 联系人:
-//                          - 姓名: \(contact.name)
-//                          - 消息: \(contact.latestMsg)
-//                          - 时间: \(contact.datetime)
-//                          - 类型: \(contact.type)
-//                        """)
-//                    }
-//                case .failure(let error):
-//                    print("❌ 获取联系人失败：\(error)")
-//                }
-//            }
-//        }
 
       // 全局设置导航栏默认样式
         UINavigationBar.appearance().prefersLargeTitles = true
