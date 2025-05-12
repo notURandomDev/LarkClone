@@ -40,6 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        UINavigationBar.appearance().prefersLargeTitles = true
         return true
     }
 
