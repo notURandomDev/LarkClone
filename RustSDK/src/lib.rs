@@ -5,6 +5,12 @@ use lark_sdk::async_handler;
 use std::ffi::CStr;
 use std::os::raw::c_char;
 
+// 用于测试 FFI 调用的测试函数
+#[unsafe(no_mangle)]
+pub extern "C" fn rust_sdk_print_hello() {
+    println!("Hello from Rust!");
+}
+
 // 回调函数类型：传递 Protobuf 数据
 pub type FetchContactsCallback = unsafe extern "C" fn(data: *mut u8, len: usize);
 
