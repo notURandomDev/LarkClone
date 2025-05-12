@@ -126,6 +126,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/Core/LarkSDK/LarkSDK.swift,
+				Frameworks/Core/LarkSDK/RustBridge.swift,
 				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
 				Frameworks/UI/LarkLaunchScreen/LaunchViewController.swift,
@@ -167,7 +168,19 @@
 		10CAE48A2DD1903A003F9242 /* Exceptions for "LarkClone" folder in "LarkSDK" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h",
 				Frameworks/Core/LarkSDK/LarkSDK.swift,
+				Frameworks/Core/LarkSDK/RustBridge.swift,
+			);
+			publicHeaders = (
+				"Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h",
+			);
+			target = 10CAE47B2DD1902C003F9242 /* LarkSDK */;
+		};
+		10CAE4A02DD196E1003F9242 /* Exceptions for "RustSDK" folder in "LarkSDK" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"target/aarch64-apple-ios-sim/release/librust_sdk.a",
 			);
 			target = 10CAE47B2DD1902C003F9242 /* LarkSDK */;
 		};
@@ -189,6 +202,9 @@
 		};
 		100E66D32DCCC7590011B0F1 /* RustSDK */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				10CAE4A02DD196E1003F9242 /* Exceptions for "RustSDK" folder in "LarkSDK" target */,
+			);
 			path = RustSDK;
 			sourceTree = "<group>";
 		};
@@ -474,10 +490,10 @@
 			buildConfigurationList = 10CAE4862DD1902C003F9242 /* Build configuration list for PBXNativeTarget "LarkSDK" */;
 			buildPhases = (
 				10CAE4772DD1902C003F9242 /* Headers */,
+				10CAE48B2DD19058003F9242 /* ShellScript */,
 				10CAE4782DD1902C003F9242 /* Sources */,
 				10CAE4792DD1902C003F9242 /* Frameworks */,
 				10CAE47A2DD1902C003F9242 /* Resources */,
-				10CAE48B2DD19058003F9242 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1269,7 +1285,7 @@
 		10CAE4842DD1902C003F9242 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1286,7 +1302,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/libs\"";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/RustSDK/target/aarch64-apple-ios-sim/release";
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
@@ -1296,6 +1312,8 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/LarkClone/Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1306,7 +1324,7 @@
 		10CAE4852DD1902C003F9242 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1323,7 +1341,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/libs\"";
+				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/RustSDK/target/aarch64-apple-ios-sim/release";
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
@@ -1333,6 +1351,8 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_MODULE = YES;
 				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/LarkClone/Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h";
+				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
