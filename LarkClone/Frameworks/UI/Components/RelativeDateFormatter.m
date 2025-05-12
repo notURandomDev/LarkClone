@@ -32,7 +32,7 @@
     } else if ([self.calendar isDateInYesterday:date]) {
         return NSLocalizedStringFromTable(@"yesterday", @"MailTab", @"Yesterday");
     } else if ([self.calendar isDate:date equalToDate:now toUnitGranularity:NSCalendarUnitWeekOfYear]) {
-        self.dateFormatter.dateFormat = @"E"; // 周几
+        self.dateFormatter.dateFormat = @"E";
         return [self.dateFormatter stringFromDate:date];
     } else if ([self.calendar isDate:date equalToDate:now toUnitGranularity:NSCalendarUnitYear]) {
         self.dateFormatter.dateFormat = @"M月d日";

@@ -7,6 +7,7 @@
 
 #import "EmailDetailVC.h"
 #import "MailItem.h"
+#import "LarkColorObjC.h"
 
 @interface EmailDetailVC ()
 
@@ -63,7 +64,7 @@
 #pragma mark - UI Setup
 
 - (void)setupUI {
-    self.view.backgroundColor = [UIColor systemBackgroundColor];
+    self.view.backgroundColor = [LarkColorConfigUI backgroundColor];
     
     // 设置滚动视图
     self.scrollView = [[UIScrollView alloc] init];
@@ -77,7 +78,7 @@
     
     // 设置标题和头部
     self.headerView = [[UIView alloc] init];
-    self.headerView.backgroundColor = [UIColor systemBackgroundColor];
+    self.headerView.backgroundColor = [LarkColorConfigUI backgroundColor];
     self.headerView.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.subjectLabel = [[UILabel alloc] init];
@@ -95,7 +96,7 @@
     
     self.dateLabel = [[UILabel alloc] init];
     self.dateLabel.font = [UIFont systemFontOfSize:14];
-    self.dateLabel.textColor = [UIColor secondaryLabelColor];
+    self.dateLabel.textColor = [LarkColorConfigText secondaryColor];
     self.dateLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     // 邮件正文
@@ -193,7 +194,7 @@
     dateFormatter.timeStyle = NSDateFormatterShortStyle;
     self.dateLabel.text = [dateFormatter stringFromDate:self.email.date];
     
-    // 只使用原始预览内容，并添加一行文字
+    // 只使用原始预览内容
     NSString *previewContent = [NSString stringWithFormat:@"%@\n\n我不知道写什么OvO", self.email.preview];
     
     self.bodyLabel.text = previewContent;

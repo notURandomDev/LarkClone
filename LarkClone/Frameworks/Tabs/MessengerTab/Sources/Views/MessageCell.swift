@@ -238,7 +238,7 @@ class MessageCell: UITableViewCell {
     // 从当前UI状态尝试重建消息对象
     private func getMessageFromCurrentState() -> Message? {
         guard let text = bubbleView.messageLabel.text,
-              let _ = timeLabel.text else { // 修复"time"未使用的警告
+              let _ = timeLabel.text else {
             return nil
         }
         

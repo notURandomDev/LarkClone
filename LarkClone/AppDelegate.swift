@@ -40,6 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+      // 全局设置导航栏默认样式
         UINavigationBar.appearance().prefersLargeTitles = true
         return true
     }

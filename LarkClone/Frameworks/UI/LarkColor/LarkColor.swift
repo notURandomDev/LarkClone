@@ -57,6 +57,52 @@ public class LarkColorStyle: NSObject {
         }
     }
     
+    // MARK: - 通用界面颜色
+    public struct UI {
+        // 通用背景色
+        public static var backgroundColor: UIColor {
+            return UIColor.systemBackground
+        }
+        
+        // 表格视图背景色
+        public static var tableViewBackgroundColor: UIColor {
+            return UIColor.systemBackground
+        }
+        
+        // 轻微灰色背景 (alpha 0.96)
+        public static var lightGrayBackground: UIColor {
+            return UIColor(white: 0.96, alpha: 1.0)
+        }
+        
+        // 边框颜色 (alpha 0.3)
+        public static var borderColor: UIColor {
+            return UIColor.lightGray.withAlphaComponent(0.3)
+        }
+        
+        // 轻微边框颜色 (alpha 0.5)
+        public static var lightBorderColor: UIColor {
+            return UIColor.lightGray.withAlphaComponent(0.5)
+        }
+        
+        // 空标签颜色
+        public static var emptyLabelColor: UIColor {
+            return UIColor.secondaryLabel
+        }
+    }
+    
+    // MARK: - TabBar相关颜色
+    public struct TabBar {
+        // 标签栏暗色背景
+        public static var darkBackground: UIColor {
+            return UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 0.9)
+        }
+        
+        // 标签栏色调
+        public static var tintColor: UIColor {
+            return UIColor.systemBlue
+        }
+    }
+    
     // MARK: - 其它颜色
     // 标签颜色
     public struct Tag {
@@ -173,6 +219,41 @@ public class LarkColorStyle: NSObject {
                 return traitCollection.userInterfaceStyle == .dark
                     ? UIColor(red: 0.3, green: 0.3, blue: 0.32, alpha: 1.0) // 深色模式下稍亮的灰色
                     : UIColor(red: 0.95, green: 0.95, blue: 0.97, alpha: 1.0) // 浅色模式下的浅灰色
+            }
+        }
+        
+        // AvatarUtility使用的颜色
+        public static var systemGray4: UIColor {
+            return UIColor.systemGray4
+        }
+    }
+    
+    // MARK: - 聊天界面相关颜色
+    public struct Chat {
+        // 背景色
+        public static var backgroundColor: UIColor {
+            return UIColor { traitCollection in
+                return traitCollection.userInterfaceStyle == .dark
+                    ? UIColor.black
+                    : UIColor.white
+            }
+        }
+        
+        // 输入容器背景色
+        public static var inputContainerColor: UIColor {
+            return UIColor { traitCollection in
+                return traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)
+                    : UIColor.white
+            }
+        }
+        
+        // 输入框背景色
+        public static var inputFieldColor: UIColor {
+            return UIColor { traitCollection in
+                return traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
+                    : UIColor(red: 0.92, green: 0.92, blue: 0.92, alpha: 1.0) // 更浅的灰色背景
             }
         }
     }
