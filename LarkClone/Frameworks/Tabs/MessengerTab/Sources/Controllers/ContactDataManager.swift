@@ -13,11 +13,15 @@ class ContactDataManager {
     private var allContacts: [Contact] = []
     var onLoadComplete: (() -> Void)?
     
-    init() {
+    // 将回调闭包作为初始化的参数传入，初始化时立即绑定到 onLoadComplete
+    // 如果回调函数的设置在init之外，那么会导致在回调进行绑定之前，数据就获取到了，从而导致回调丢失
+    init(completion: (() -> Void)? = nil) {
         // 尝试从plist文件加载联系人数据
         // loadContactsFromPlist()
+        
         // 尝试从rust侧加载联系人数据
         loadContactsFromRust()
+        onLoadComplete = completion
     }
     
     // 从 Rust 获取联系人数据

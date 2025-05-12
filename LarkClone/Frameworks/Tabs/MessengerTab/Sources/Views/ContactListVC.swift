@@ -33,15 +33,15 @@ class ContactListVC: UIViewController {
         // 使用正确的本地化字符串
         title = NSLocalizedString("messenger_title", tableName: "MessengerTab", bundle: Bundle.main, comment: "Messenger title")
         
-        dataManager.onLoadComplete = { [weak self] in
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
-            }
-        }
-        
         setupNavBar()
         setupUI()
-        loadInitialData()
+        
+        // 回调函数，当数据加载完成之后调用
+        dataManager.onLoadComplete = { [weak self] in
+            DispatchQueue.main.async {
+                self?.loadInitialData()
+            }
+        }
     }
     
 //    override func viewWillAppear(_ animated: Bool) {
