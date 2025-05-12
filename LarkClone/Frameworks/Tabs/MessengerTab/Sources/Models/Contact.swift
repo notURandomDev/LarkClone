@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import LarkAvatar
+import LarkSDKPB
 
 enum ContactType: String {
     case user
@@ -33,6 +34,27 @@ struct Contact {
             latestMsg: contactData.latestMsg,
             datetime: contactData.datetime,
             type: ContactType(rawValue: contactData.type) ?? .user
+        )
+    }
+    
+    // 从protobuf转成swift的数据中创建Contact
+    static func from(larkContact: LarkSDKPB.Lark_Contact) -> Contact {
+        let avatar: UIImage?
+        
+        // 获取图片
+        if let image = UIImage(named: larkContact.name) {
+            avatar = image
+        } else {
+            // 使用默认头像或创建一个占位头像
+            avatar = AvatarUtility.createPlaceholderAvatar()
+        }
+        
+        return Contact(
+            avatar: avatar,
+            name: larkContact.name,
+            latestMsg: larkContact.latestMsg,
+            datetime: larkContact.datetime,
+            type: ContactType(rawValue: larkContact.type) ?? .user
         )
     }
 }
