@@ -14,6 +14,8 @@
 		100E670B2DCCC90D0011B0F1 /* LarkFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */; };
 		100E670C2DCCC90D0011B0F1 /* LarkFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		107F76A12DD1E4B200F385D3 /* librust_sdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 107F76A02DD1E4B200F385D3 /* librust_sdk.a */; };
+		107F83152DD24F2300F385D3 /* MailTab.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 107F830F2DD24F2300F385D3 /* MailTab.framework */; };
+		107F83162DD24F2300F385D3 /* MailTab.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 107F830F2DD24F2300F385D3 /* MailTab.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		109008B42DCFACB300BC010A /* LarkAvatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; };
 		109008B52DCFACB300BC010A /* LarkAvatar.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		109008CA2DCFB5D700BC010A /* LarkAvatar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 109008AE2DCFACB300BC010A /* LarkAvatar.framework */; };
@@ -54,6 +56,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 100E67042DCCC90D0011B0F1;
 			remoteInfo = LarkFoundation;
+		};
+		107F83132DD24F2300F385D3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 107F830E2DD24F2300F385D3;
+			remoteInfo = MailTab;
 		};
 		109008B22DCFACB300BC010A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -134,6 +143,7 @@
 				100E670C2DCCC90D0011B0F1 /* LarkFoundation.framework in Embed Frameworks */,
 				109008B52DCFACB300BC010A /* LarkAvatar.framework in Embed Frameworks */,
 				10CAEC982DD1A778003F9242 /* LarkSDKPB.framework in Embed Frameworks */,
+				107F83162DD24F2300F385D3 /* MailTab.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -148,6 +158,7 @@
 		100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67892DCD04350011B0F1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		107F76A02DD1E4B200F385D3 /* librust_sdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librust_sdk.a; path = libs/librust_sdk.a; sourceTree = "<group>"; };
+		107F830F2DD24F2300F385D3 /* MailTab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MailTab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		109008AE2DCFACB300BC010A /* LarkAvatar.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkAvatar.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkLaunchScreen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10CAE47C2DD1902C003F9242 /* LarkSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -255,6 +266,7 @@
 				100E670B2DCCC90D0011B0F1 /* LarkFoundation.framework in Frameworks */,
 				109008B42DCFACB300BC010A /* LarkAvatar.framework in Frameworks */,
 				10CAEC972DD1A778003F9242 /* LarkSDKPB.framework in Frameworks */,
+				107F83152DD24F2300F385D3 /* MailTab.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -277,6 +289,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		100E67022DCCC90D0011B0F1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		107F830C2DD24F2300F385D3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -343,6 +362,7 @@
 				10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */,
 				10CAE47C2DD1902C003F9242 /* LarkSDK.framework */,
 				10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */,
+				107F830F2DD24F2300F385D3 /* MailTab.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -373,6 +393,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		100E67002DCCC90D0011B0F1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		107F830A2DD24F2300F385D3 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -429,6 +456,7 @@
 				10900F882DD04E5900BC010A /* PBXTargetDependency */,
 				10CAE4812DD1902C003F9242 /* PBXTargetDependency */,
 				10CAEC962DD1A778003F9242 /* PBXTargetDependency */,
+				107F83142DD24F2300F385D3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				100E63C02DCCC22C0011B0F1 /* LarkClone */,
@@ -503,6 +531,26 @@
 			);
 			productName = LarkFoundation;
 			productReference = 100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		107F830E2DD24F2300F385D3 /* MailTab */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 107F83192DD24F2300F385D3 /* Build configuration list for PBXNativeTarget "MailTab" */;
+			buildPhases = (
+				107F830A2DD24F2300F385D3 /* Headers */,
+				107F830B2DD24F2300F385D3 /* Sources */,
+				107F830C2DD24F2300F385D3 /* Frameworks */,
+				107F830D2DD24F2300F385D3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MailTab;
+			packageProductDependencies = (
+			);
+			productName = MailTab;
+			productReference = 107F830F2DD24F2300F385D3 /* MailTab.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		109008AD2DCFACB300BC010A /* LarkAvatar */ = {
@@ -617,6 +665,9 @@
 					100E67042DCCC90D0011B0F1 = {
 						CreatedOnToolsVersion = 16.3;
 					};
+					107F830E2DD24F2300F385D3 = {
+						CreatedOnToolsVersion = 16.3;
+					};
 					109008AD2DCFACB300BC010A = {
 						CreatedOnToolsVersion = 16.3;
 					};
@@ -658,6 +709,7 @@
 				10900F822DD04E5900BC010A /* LarkLaunchScreen */,
 				10CAE47B2DD1902C003F9242 /* LarkSDK */,
 				10CAEC902DD1A778003F9242 /* LarkSDKPB */,
+				107F830E2DD24F2300F385D3 /* MailTab */,
 			);
 		};
 /* End PBXProject section */
@@ -685,6 +737,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		100E67032DCCC90D0011B0F1 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		107F830D2DD24F2300F385D3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -775,6 +834,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		107F830B2DD24F2300F385D3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		109008AA2DCFACB300BC010A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -820,6 +886,11 @@
 			isa = PBXTargetDependency;
 			target = 100E67042DCCC90D0011B0F1 /* LarkFoundation */;
 			targetProxy = 100E67092DCCC90D0011B0F1 /* PBXContainerItemProxy */;
+		};
+		107F83142DD24F2300F385D3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 107F830E2DD24F2300F385D3 /* MailTab */;
+			targetProxy = 107F83132DD24F2300F385D3 /* PBXContainerItemProxy */;
 		};
 		109008B32DCFACB300BC010A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1281,6 +1352,76 @@
 			};
 			name = Release;
 		};
+		107F83172DD24F2300F385D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = teamNH.LarkClone.MailTab;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		107F83182DD24F2300F385D3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = teamNH.LarkClone.MailTab;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_MODULE = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		109008B72DCFACB300BC010A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1628,6 +1769,15 @@
 			buildConfigurations = (
 				100E670E2DCCC90D0011B0F1 /* Debug */,
 				100E670F2DCCC90D0011B0F1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		107F83192DD24F2300F385D3 /* Build configuration list for PBXNativeTarget "MailTab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				107F83172DD24F2300F385D3 /* Debug */,
+				107F83182DD24F2300F385D3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
