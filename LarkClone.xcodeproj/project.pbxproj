@@ -183,7 +183,6 @@
 		100E66EF2DCCC8460011B0F1 /* LarkColor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkColor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67892DCD04350011B0F1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		1016230C2DD37A9000C1E888 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
 		107F76A02DD1E4B200F385D3 /* librust_sdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librust_sdk.a; path = libs/librust_sdk.a; sourceTree = "<group>"; };
 		107F830F2DD24F2300F385D3 /* MailTab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MailTab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		107F860C2DD2D8A900F385D3 /* LarkBridgeModels.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkBridgeModels.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -293,6 +292,11 @@
 			path = RustSDK;
 			sourceTree = "<group>";
 		};
+		101624422DD39B3200C1E888 /* scripts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = scripts;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -393,7 +397,7 @@
 		100E63B52DCCC22C0011B0F1 = {
 			isa = PBXGroup;
 			children = (
-				1016230C2DD37A9000C1E888 /* setup.sh */,
+				101624422DD39B3200C1E888 /* scripts */,
 				100E63E62DCCC7590011B0F1 /* README.md */,
 				100E66D32DCCC7590011B0F1 /* RustSDK */,
 				100E63C02DCCC22C0011B0F1 /* LarkClone */,
@@ -896,7 +900,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\nset -e\n\necho \"🛠️ 正在执行 Rust 工具链初始化 setup 脚本...\"\n\n# 调用项目中的 setup 脚本\n\"${SRCROOT}/setup.sh\"\n\necho \"✅ Rust 工具链准备完成，继续 Xcode 构建。\"\n";
+			shellScript = "#!/bin/bash\n\nset -e\n\n# 初始化 Rust 工具链（仅首次 clone 项目时会安装）\n\"${SRCROOT}/scripts/setup_rust.sh\"\n\n# 构建 Rust 库（使用 lipo 支持真机/模拟器）\n# \"${SRCROOT}/scripts/build_rust.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
