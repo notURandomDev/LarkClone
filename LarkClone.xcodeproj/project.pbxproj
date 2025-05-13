@@ -183,6 +183,7 @@
 		100E66EF2DCCC8460011B0F1 /* LarkColor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkColor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		100E67892DCD04350011B0F1 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		1016230C2DD37A9000C1E888 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
 		107F76A02DD1E4B200F385D3 /* librust_sdk.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = librust_sdk.a; path = libs/librust_sdk.a; sourceTree = "<group>"; };
 		107F830F2DD24F2300F385D3 /* MailTab.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MailTab.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		107F860C2DD2D8A900F385D3 /* LarkBridgeModels.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkBridgeModels.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -392,6 +393,7 @@
 		100E63B52DCCC22C0011B0F1 = {
 			isa = PBXGroup;
 			children = (
+				1016230C2DD37A9000C1E888 /* setup.sh */,
 				100E63E62DCCC7590011B0F1 /* README.md */,
 				100E66D32DCCC7590011B0F1 /* RustSDK */,
 				100E63C02DCCC22C0011B0F1 /* LarkClone */,
@@ -893,8 +895,8 @@
 				"$(SRCROOT)/RustSDK/include/rust_sdk.h",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n\n# 导出 PATH，包含 Rust 工具链\nexport PATH=\"$HOME/.cargo/bin:/usr/local/bin:/opt/homebrew/bin:$PATH\"\n\n# 导出 iOS SDK 路径，否则链接器会找不到 System 库\nexport SDKROOT=\"$(xcrun --sdk iphonesimulator --show-sdk-path)\"\n\n# 设置 Rust 构建架构\nTARGET=\"aarch64-apple-ios-sim\"\n\n# 添加目标平台（只添加一次）\nrustup target add \"$TARGET\"\n\n# 切换目录到 Rust 项目\ncd \"${SRCROOT}/RustSDK\"\n\n# 构建 Rust 静态库\ncargo build --release --target \"$TARGET\"\nBUILD_RESULT=$?\n\nif [ $BUILD_RESULT -ne 0 ]; then\n    echo \"❌ Rust 编译失败，退出构建\"\n    exit 1\nfi\n\n# 拷贝生成的 .a 文件\ncp \"target/$TARGET/release/librust_sdk.a\" \"${SRCROOT}/libs/\"\n\n# 生成 C header\ncbindgen --config cbindgen.toml --output \"${SRCROOT}/RustSDK/include/rust_sdk.h\"\n";
+			shellPath = /bin/bash;
+			shellScript = "#!/bin/bash\n\nset -e\n\necho \"🛠️ 正在执行 Rust 工具链初始化 setup 脚本...\"\n\n# 调用项目中的 setup 脚本\n\"${SRCROOT}/setup.sh\"\n\necho \"✅ Rust 工具链准备完成，继续 Xcode 构建。\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
