@@ -1,0 +1,54 @@
+module(
+    name = "lark_clone_project",  # Changed from LarkCloneProject
+    version = "0.1.0",
+)
+
+# Bazel 核心工具和常用库
+bazel_dep(name = "bazel_skylib", version = "1.7.1") # 确保版本号是最新的
+
+# Apple 构建规则 (用于 iOS 应用)
+bazel_dep(name = "rules_apple", version = "3.16.1") # Updated from 3.4.0 to 3.20.1
+
+# Swift 构建规则
+bazel_dep(name = "rules_swift", version = "2.8.2") # 请替换为最新的 rules_swift 版本号
+
+bazel_dep(name = "rules_xcodeproj", version = "2.10.0") # 请替换为最新的 rules_xcodeproj 版本号
+
+# Rust 构建规则
+bazel_dep(name = "rules_rust", version = "0.61.0")
+
+# 添加 C/C++ 构建规则
+bazel_dep(name = "rules_cc", version = "0.1.1")
+
+bazel_dep(name = "platforms", version = "0.0.11") # 修改为使用 platforms 而不是 rules_platforms
+
+# 启用 Rust crates 仓库
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    edition = "2024",
+    versions = ["1.86.0"],
+    # 添加额外的平台支持
+    extra_target_triples = [
+        "aarch64-apple-ios",
+        "aarch64-apple-ios-sim", # 添加模拟器支持
+    ],
+)
+use_repo(rust, "rust_toolchains")  # 添加这一行以注册工具链
+register_toolchains("@rust_toolchains//:all")
+
+
+# 添加 crates_repository 支持
+crate = use_extension("@rules_rust//crate_universe:extension.bzl", "crate")
+crate.from_cargo(
+    name = "crates",
+    manifests = ["//RustSDK:Cargo.toml"],
+    # 添加对 iOS 平台的支持
+    supported_platform_triples = [
+        "aarch64-apple-darwin",
+        "aarch64-apple-ios",
+        "aarch64-apple-ios-sim", # 添加模拟器支持
+    ],
+)
+use_repo(crate, "crates")
+
+

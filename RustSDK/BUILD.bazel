@@ -1,0 +1,47 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_rust//rust:defs.bzl", "rust_static_library")
+load("@rules_cc//cc:defs.bzl", "cc_import", "cc_library")
+
+rust_static_library(
+    name = "rust_sdk_lib",
+    srcs = glob(["src/**/*.rs"]),
+    crate_root = "src/lib.rs",
+    deps = [
+        "@crates//:prost",
+        "@crates//:plist",
+        "@crates//:libc",
+    ],
+    features = [
+        "cbindgen",
+    ],
+    target_compatible_with = ["@platforms//os:ios", "@platforms//cpu:aarch64"],
+)
+
+# Generate the Rust SDK header using cbindgen with a direct bash command
+genrule(
+    name = "rust_sdk_header",
+    srcs = [
+        "cbindgen.toml",
+        "src/lib.rs",
+    ],
+    outs = ["rust_sdk.h"],
+    cmd = """
+    # Run cbindgen with direct embedded options
+    cbindgen --config $(location cbindgen.toml) --output $(location rust_sdk.h) $(location src/lib.rs) || \
+    echo "Error running cbindgen. Make sure it's installed via 'cargo install cbindgen'"
+    """,
+)
+
+# 使用 cc_import 来引用预构建的 Rust 静态库
+cc_import(
+    name = "rust_sdk",
+    hdrs = [":rust_sdk_header"],  # 使用生成的头文件
+    static_library = ":rust_sdk_lib",
+    target_compatible_with = ["@platforms//os:ios", "@platforms//cpu:aarch64"],
+)
+
+
+
+
+
