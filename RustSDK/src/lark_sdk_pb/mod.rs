@@ -39,7 +39,6 @@ pub fn serialize_mails(mails: Vec<MailItemBase>) -> Vec<u8> {
         .map(|m| mail::MailItem {
             id: m.id,
             sender: m.sender,
-            sender_avatar: m.sender_avatar,
             subject: m.subject,
             preview: m.preview,
             date_string: m.date_string,

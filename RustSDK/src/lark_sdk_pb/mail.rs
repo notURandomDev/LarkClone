@@ -8,31 +8,27 @@ pub struct MailItem {
     /// 发件人 (对应 NSString *sender)
     #[prost(string, tag = "2")]
     pub sender: ::prost::alloc::string::String,
-    /// 发件人头像URL (对应 nullable NSString *senderAvatar)
-    #[prost(string, tag = "3")]
-    pub sender_avatar: ::prost::alloc::string::String,
     /// 邮件主题 (对应 NSString *subject)
-    #[prost(string, tag = "4")]
+    #[prost(string, tag = "3")]
     pub subject: ::prost::alloc::string::String,
     /// 预览文本 (对应 NSString *preview)
-    #[prost(string, tag = "5")]
+    #[prost(string, tag = "4")]
     pub preview: ::prost::alloc::string::String,
     /// 日期字符串 (对应 NSString *dateString -> NSDate *date)
-    /// 使用标准格式 "yyyy-MM-dd HH:mm:ss" 的字符串
-    #[prost(string, tag = "6")]
+    #[prost(string, tag = "5")]
     pub date_string: ::prost::alloc::string::String,
     /// 是否已读 (对应 BOOL isRead)
-    #[prost(bool, tag = "7")]
+    #[prost(bool, tag = "6")]
     pub is_read: bool,
     /// 是否有附件 (对应 BOOL hasAttachment)
-    #[prost(bool, tag = "8")]
+    #[prost(bool, tag = "7")]
     pub has_attachment: bool,
     /// 是否官方邮件 (对应 BOOL isOfficial)
-    #[prost(bool, tag = "9")]
+    #[prost(bool, tag = "8")]
     pub is_official: bool,
     /// 会话邮件数量 (对应 nullable NSNumber *emailCount)
     /// 使用 optional 表示可空
-    #[prost(int32, optional, tag = "10")]
+    #[prost(int32, optional, tag = "9")]
     pub email_count: ::core::option::Option<i32>,
 }
 /// 邮件列表响应

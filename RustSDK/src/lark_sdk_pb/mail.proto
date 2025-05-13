@@ -11,31 +11,27 @@ message MailItem {
   // 发件人 (对应 NSString *sender)
   string sender = 2;
 
-  // 发件人头像URL (对应 nullable NSString *senderAvatar)
-  string sender_avatar = 3;
-
   // 邮件主题 (对应 NSString *subject)
-  string subject = 4;
+  string subject = 3;
 
   // 预览文本 (对应 NSString *preview)
-  string preview = 5;
+  string preview = 4;
 
   // 日期字符串 (对应 NSString *dateString -> NSDate *date)
-  // 使用标准格式 "yyyy-MM-dd HH:mm:ss" 的字符串
-  string date_string = 6;
+  string date_string = 5;
 
   // 是否已读 (对应 BOOL isRead)
-  bool is_read = 7;
+  bool is_read = 6;
 
   // 是否有附件 (对应 BOOL hasAttachment)
-  bool has_attachment = 8;
+  bool has_attachment = 7;
 
   // 是否官方邮件 (对应 BOOL isOfficial)
-  bool is_official = 9;
+  bool is_official = 8;
 
   // 会话邮件数量 (对应 nullable NSNumber *emailCount)
   // 使用 optional 表示可空
-  optional int32 email_count = 10;
+  optional int32 email_count = 9;
 }
 
 // 邮件列表响应

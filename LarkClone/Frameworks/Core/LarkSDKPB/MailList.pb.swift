@@ -31,9 +31,6 @@ public struct Lark_MailItem: Sendable {
   /// 发件人 (对应 NSString *sender)
   public var sender: String = String()
 
-  /// 发件人头像URL (对应 nullable NSString *senderAvatar)
-  public var senderAvatar: String = String()
-
   /// 邮件主题 (对应 NSString *subject)
   public var subject: String = String()
 
@@ -41,7 +38,6 @@ public struct Lark_MailItem: Sendable {
   public var preview: String = String()
 
   /// 日期字符串 (对应 NSString *dateString -> NSDate *date)
-  /// 使用标准格式 "yyyy-MM-dd HH:mm:ss" 的字符串
   public var dateString: String = String()
 
   /// 是否已读 (对应 BOOL isRead)
@@ -93,14 +89,13 @@ extension Lark_MailItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
   public static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "id"),
     2: .same(proto: "sender"),
-    3: .standard(proto: "sender_avatar"),
-    4: .same(proto: "subject"),
-    5: .same(proto: "preview"),
-    6: .standard(proto: "date_string"),
-    7: .standard(proto: "is_read"),
-    8: .standard(proto: "has_attachment"),
-    9: .standard(proto: "is_official"),
-    10: .standard(proto: "email_count"),
+    3: .same(proto: "subject"),
+    4: .same(proto: "preview"),
+    5: .standard(proto: "date_string"),
+    6: .standard(proto: "is_read"),
+    7: .standard(proto: "has_attachment"),
+    8: .standard(proto: "is_official"),
+    9: .standard(proto: "email_count"),
   ]
 
   public mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
@@ -111,14 +106,13 @@ extension Lark_MailItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
       switch fieldNumber {
       case 1: try { try decoder.decodeSingularStringField(value: &self.id) }()
       case 2: try { try decoder.decodeSingularStringField(value: &self.sender) }()
-      case 3: try { try decoder.decodeSingularStringField(value: &self.senderAvatar) }()
-      case 4: try { try decoder.decodeSingularStringField(value: &self.subject) }()
-      case 5: try { try decoder.decodeSingularStringField(value: &self.preview) }()
-      case 6: try { try decoder.decodeSingularStringField(value: &self.dateString) }()
-      case 7: try { try decoder.decodeSingularBoolField(value: &self.isRead) }()
-      case 8: try { try decoder.decodeSingularBoolField(value: &self.hasAttachment_p) }()
-      case 9: try { try decoder.decodeSingularBoolField(value: &self.isOfficial) }()
-      case 10: try { try decoder.decodeSingularInt32Field(value: &self._emailCount) }()
+      case 3: try { try decoder.decodeSingularStringField(value: &self.subject) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self.preview) }()
+      case 5: try { try decoder.decodeSingularStringField(value: &self.dateString) }()
+      case 6: try { try decoder.decodeSingularBoolField(value: &self.isRead) }()
+      case 7: try { try decoder.decodeSingularBoolField(value: &self.hasAttachment_p) }()
+      case 8: try { try decoder.decodeSingularBoolField(value: &self.isOfficial) }()
+      case 9: try { try decoder.decodeSingularInt32Field(value: &self._emailCount) }()
       default: break
       }
     }
@@ -135,29 +129,26 @@ extension Lark_MailItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
     if !self.sender.isEmpty {
       try visitor.visitSingularStringField(value: self.sender, fieldNumber: 2)
     }
-    if !self.senderAvatar.isEmpty {
-      try visitor.visitSingularStringField(value: self.senderAvatar, fieldNumber: 3)
-    }
     if !self.subject.isEmpty {
-      try visitor.visitSingularStringField(value: self.subject, fieldNumber: 4)
+      try visitor.visitSingularStringField(value: self.subject, fieldNumber: 3)
     }
     if !self.preview.isEmpty {
-      try visitor.visitSingularStringField(value: self.preview, fieldNumber: 5)
+      try visitor.visitSingularStringField(value: self.preview, fieldNumber: 4)
     }
     if !self.dateString.isEmpty {
-      try visitor.visitSingularStringField(value: self.dateString, fieldNumber: 6)
+      try visitor.visitSingularStringField(value: self.dateString, fieldNumber: 5)
     }
     if self.isRead != false {
-      try visitor.visitSingularBoolField(value: self.isRead, fieldNumber: 7)
+      try visitor.visitSingularBoolField(value: self.isRead, fieldNumber: 6)
     }
     if self.hasAttachment_p != false {
-      try visitor.visitSingularBoolField(value: self.hasAttachment_p, fieldNumber: 8)
+      try visitor.visitSingularBoolField(value: self.hasAttachment_p, fieldNumber: 7)
     }
     if self.isOfficial != false {
-      try visitor.visitSingularBoolField(value: self.isOfficial, fieldNumber: 9)
+      try visitor.visitSingularBoolField(value: self.isOfficial, fieldNumber: 8)
     }
     try { if let v = self._emailCount {
-      try visitor.visitSingularInt32Field(value: v, fieldNumber: 10)
+      try visitor.visitSingularInt32Field(value: v, fieldNumber: 9)
     } }()
     try unknownFields.traverse(visitor: &visitor)
   }
@@ -165,7 +156,6 @@ extension Lark_MailItem: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementa
   public static func ==(lhs: Lark_MailItem, rhs: Lark_MailItem) -> Bool {
     if lhs.id != rhs.id {return false}
     if lhs.sender != rhs.sender {return false}
-    if lhs.senderAvatar != rhs.senderAvatar {return false}
     if lhs.subject != rhs.subject {return false}
     if lhs.preview != rhs.preview {return false}
     if lhs.dateString != rhs.dateString {return false}

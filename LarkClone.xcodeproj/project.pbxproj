@@ -13,6 +13,7 @@
 		100E66F62DCCC8460011B0F1 /* LarkColor.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 100E66EF2DCCC8460011B0F1 /* LarkColor.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		100E670B2DCCC90D0011B0F1 /* LarkFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */; };
 		100E670C2DCCC90D0011B0F1 /* LarkFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 100E67052DCCC90D0011B0F1 /* LarkFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		104D6C2D2DD34F27007D3DC0 /* LarkBridgeModels.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 107F860C2DD2D8A900F385D3 /* LarkBridgeModels.framework */; };
 		107F76A12DD1E4B200F385D3 /* librust_sdk.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 107F76A02DD1E4B200F385D3 /* librust_sdk.a */; };
 		107F83152DD24F2300F385D3 /* MailTab.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 107F830F2DD24F2300F385D3 /* MailTab.framework */; };
 		107F83162DD24F2300F385D3 /* MailTab.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 107F830F2DD24F2300F385D3 /* MailTab.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -58,6 +59,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 100E67042DCCC90D0011B0F1;
 			remoteInfo = LarkFoundation;
+		};
+		104D6C2B2DD34EEB007D3DC0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 107F860B2DD2D8A900F385D3;
+			remoteInfo = LarkBridgeModels;
 		};
 		107F83132DD24F2300F385D3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -180,6 +188,7 @@
 		100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Frameworks/Core/LarkBridgeModels/ObjCMailItemList.swift,
 				Frameworks/Core/LarkSDK/RustBridge.swift,
 				Frameworks/Core/LarkSDKPB/ContactList.pb.swift,
 				Frameworks/Core/LarkSDKPB/MailList.pb.swift,
@@ -189,6 +198,17 @@
 				Info.plist,
 			);
 			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
+		};
+		10161E942DD3520B00C1E888 /* Exceptions for "LarkClone" folder in "LarkBridgeModels" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Frameworks/Core/LarkBridgeModels/ObjCMailItemList.h,
+				Frameworks/Core/LarkBridgeModels/ObjCMailItemList.swift,
+			);
+			publicHeaders = (
+				Frameworks/Core/LarkBridgeModels/ObjCMailItemList.h,
+			);
+			target = 107F860B2DD2D8A900F385D3 /* LarkBridgeModels */;
 		};
 		109008C92DCFB53100BC010A /* Exceptions for "LarkClone" folder in "MessengerTab" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -254,6 +274,7 @@
 				10900F912DD04E5E00BC010A /* Exceptions for "LarkClone" folder in "LarkLaunchScreen" target */,
 				10CAE48A2DD1903A003F9242 /* Exceptions for "LarkClone" folder in "LarkSDK" target */,
 				10CAEF472DD1DC78003F9242 /* Exceptions for "LarkClone" folder in "LarkSDKPB" target */,
+				10161E942DD3520B00C1E888 /* Exceptions for "LarkClone" folder in "LarkBridgeModels" target */,
 			);
 			path = LarkClone;
 			sourceTree = "<group>";
@@ -261,11 +282,6 @@
 		100E66D32DCCC7590011B0F1 /* RustSDK */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = RustSDK;
-			sourceTree = "<group>";
-		};
-		107F860D2DD2D8A900F385D3 /* LarkBridgeModels */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LarkBridgeModels;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -345,6 +361,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				104D6C2D2DD34F27007D3DC0 /* LarkBridgeModels.framework in Frameworks */,
 				107F76A12DD1E4B200F385D3 /* librust_sdk.a in Frameworks */,
 				10CAECB12DD1A8C0003F9242 /* LarkSDKPB.framework in Frameworks */,
 			);
@@ -369,7 +386,6 @@
 				100E63E62DCCC7590011B0F1 /* README.md */,
 				100E66D32DCCC7590011B0F1 /* RustSDK */,
 				100E63C02DCCC22C0011B0F1 /* LarkClone */,
-				107F860D2DD2D8A900F385D3 /* LarkBridgeModels */,
 				100E63BF2DCCC22C0011B0F1 /* Products */,
 				100E67892DCD04350011B0F1 /* .gitignore */,
 				1044F03E2DCDCCD000CC1692 /* Frameworks */,
@@ -600,9 +616,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				107F860D2DD2D8A900F385D3 /* LarkBridgeModels */,
-			);
 			name = LarkBridgeModels;
 			packageProductDependencies = (
 			);
@@ -664,6 +677,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				104D6C2C2DD34EEB007D3DC0 /* PBXTargetDependency */,
 				10CAECB02DD1A8B6003F9242 /* PBXTargetDependency */,
 			);
 			name = LarkSDK;
@@ -962,6 +976,11 @@
 			isa = PBXTargetDependency;
 			target = 100E67042DCCC90D0011B0F1 /* LarkFoundation */;
 			targetProxy = 100E67092DCCC90D0011B0F1 /* PBXContainerItemProxy */;
+		};
+		104D6C2C2DD34EEB007D3DC0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 107F860B2DD2D8A900F385D3 /* LarkBridgeModels */;
+			targetProxy = 104D6C2B2DD34EEB007D3DC0 /* PBXContainerItemProxy */;
 		};
 		107F83142DD24F2300F385D3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1753,7 +1772,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_MODULE = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/LarkClone/Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h";
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;
@@ -1796,7 +1815,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_INSTALL_MODULE = YES;
-				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_INSTALL_OBJC_HEADER = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "${SRCROOT}/LarkClone/Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h";
 				SWIFT_PRECOMPILE_BRIDGING_HEADER = YES;
 				SWIFT_VERSION = 5.0;

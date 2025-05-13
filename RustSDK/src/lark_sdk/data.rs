@@ -11,7 +11,6 @@ pub struct Contact {
 pub struct MailItemBase {
     pub id: String,
     pub sender: String,
-    pub sender_avatar: String,
     pub subject: String,
     pub preview: String,
     pub date_string: String,

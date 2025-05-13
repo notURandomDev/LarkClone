@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) NSString *id;
 @property (nonatomic, strong, readonly) NSString *sender;
-@property (nonatomic, strong, readonly, nullable) NSString *senderAvatar;
 @property (nonatomic, strong, readonly) NSString *subject;
 @property (nonatomic, strong, readonly) NSString *preview;
 @property (nonatomic, strong, readonly) NSDate *date;
@@ -25,7 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
 // 初始化方法
 - (instancetype)initWithId:(NSString *)id
                     sender:(NSString *)sender
-              senderAvatar:(nullable NSString *)senderAvatar
                    subject:(NSString *)subject
                    preview:(NSString *)preview
                 dateString:(NSString *)dateString
@@ -36,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 加载邮件数据
 + (NSArray<MailItem *> *)loadFromPlist;
+
+// 异步加载邮件数据
++ (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion;
 
 // 获取模拟数据
 + (NSArray<MailItem *> *)mockEmails;

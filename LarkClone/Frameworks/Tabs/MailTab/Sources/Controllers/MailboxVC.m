@@ -128,11 +128,22 @@
 
 #pragma mark - Data Loading
 
+//- (void)loadEmails {
+//    // 加载示例邮件数据
+//    self.allEmails = [MailItem loadFromPlist];
+//    self.filteredEmails = [self.allEmails mutableCopy];
+//    [self.tableView reloadData];
+//}
+
+// 使用RustSDK加载邮件
 - (void)loadEmails {
-    // 加载示例邮件数据
-    self.allEmails = [MailItem loadFromPlist];
-    self.filteredEmails = [self.allEmails mutableCopy];
-    [self.tableView reloadData];
+    [MailItem loadFromRustBridgeWithCompletion:^(NSArray<MailItem *> *items) {
+        self.allEmails = items;
+        self.filteredEmails = [items mutableCopy];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }];
 }
 
 - (void)filterEmailsWithText:(NSString *)searchText {
