@@ -18,7 +18,7 @@
 成功 clone 项目到本地之后，请在项目根目录中打开终端，运行 `./setup.sh` 脚本安装所需的 Rust 工具链、目标平台与头文件生成工具：
 
 ```bash
-bash ./setup.sh
+bash ./scripts/setup_rust.sh
 ```
 
 该脚本会自动完成以下操作：
@@ -26,7 +26,6 @@ bash ./setup.sh
 - 安装 Rust 工具链（通过 rustup）
 - 安装 cargo 与 cbindgen
 - 安装 iOS 目标平台（aarch64-apple-ios-sim）
-- 构建 RustSDK，生成静态库（.a）和 C 接口头文件（.h）
 
 ### 手动配置
 
@@ -47,14 +46,30 @@ rustup target add aarch64-apple-ios-sim
 
 ```
 
-### 前置步骤
+### RustSDK 构建
+
+目前，项目暂不支持使用 Run Script 在构建阶段自动构建 RustSDK；需要你在项目根目录打开终端，运行以下指令：
+
+```bash
+# 进入 RustSDK 目录
+cd RustSDK
+
+# 构建 RustSDK
+cargo build --release --target aarch64-apple-ios-sim
+```
+
+此方法只是目前的 workaround ，在 Run Script 中构建 RustSDK 会在以后的版本中支持。
+
+### 前置步骤（Deprecated）
+
+> 暂时不用执行该步骤
 
 项目中有两个脚本文件,分别在 MailTab 和 MessengerTab 里面的 Scripts 文件夹中,分别是
 
 - GenerateMails:生成邮件所需的数据文件
 - GenerateContacts:生成联系人的数据信息
 
-需要在项目里面的`Target Membership`中解除这两个文件的绑定,需要分别单独运行这两个脚本文件,随后运行整个项目.
+需要在项目里面的 `Target Membership` 中解除这两个文件的绑定,需要分别单独运行这两个脚本文件,随后运行整个项目.
 
 ## 如何贡献
 
