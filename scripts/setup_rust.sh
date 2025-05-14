@@ -20,6 +20,9 @@ if ! command -v rustup >/dev/null 2>&1; then
     echo "❌ Rustup 安装失败或未生效，请关闭 Xcode 重新打开后重试。"
     exit 1
   fi
+
+  # ✅ 设置默认工具链（解决 "could not choose a version" 错误）
+  rustup default stable
 fi
 
 # 2. 检查 cargo 是否正常（rustup 安装完成后会有）
