@@ -900,7 +900,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\nset -e\n\n# 初始化 Rust 工具链（仅首次 clone 项目时会安装）\n\"${SRCROOT}/scripts/setup_rust.sh\"\n\n# 构建 Rust 库（使用 lipo 支持真机/模拟器）\n# \"${SRCROOT}/scripts/build_rust.sh\"\n";
+			shellScript = "set -e\n\n# 初始化 Rust 工具链（仅首次 clone 项目时会安装）\nbash \"${SRCROOT}/scripts/setup_rust.sh\"\n\n# 检查 Rust 库的构建\nbash \"${SRCROOT}/scripts/check_rust_built.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
