@@ -54,6 +54,9 @@ rustup target add aarch64-apple-ios-sim
 # 进入 RustSDK 目录
 cd RustSDK
 
+# 清空构建
+cargo clean
+
 # 构建 RustSDK
 cargo build --release --target aarch64-apple-ios-sim
 ```
