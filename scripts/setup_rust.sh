@@ -1,41 +1,47 @@
 #!/bin/bash
 
-set -e  # 一旦出错立即退出
-export PATH="$HOME/.cargo/bin:$PATH"
+set -e
 
-echo "🔧 [Rust Setup] 检查 rustup 和 cargo 工具链..."
+echo "🔧 [Rust Setup] 使用 USTC 镜像安装并配置 Rust 工具链..."
 
-# 1. 检查 rustup 是否安装
-if ! command -v rustup >/dev/null 2>&1; then
-  echo "⚠️ Rustup 未安装，开始自动安装（请确保联网且允许执行脚本）..."
+# ============ 使用中科大镜像 ============
+export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+export CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse
 
-  # ✅ 安装 rustup（-y 表示自动确认）
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
-  # ✅ 安装后必须重置 PATH，因为当前 shell 没重载 profile
-  export PATH="$HOME/.cargo/bin:$PATH"
-
-  # ✅ 检查是否真的安装成功
-  if ! command -v rustup >/dev/null 2>&1; then
-    echo "❌ Rustup 安装失败或未生效，请关闭 Xcode 重新打开后重试。"
-    exit 1
-  fi
-
-  # ✅ 设置默认工具链（解决 "could not choose a version" 错误）
-  rustup default stable
+# ============ 确保 ~/.cargo/bin 在 PATH 中 ============
+CARGO_BIN="$HOME/.cargo/bin"
+if [[ ":$PATH:" != *":$CARGO_BIN:"* ]]; then
+    echo "📌 添加 $CARGO_BIN 到 PATH..."
+    echo "export PATH=\"$CARGO_BIN:\$PATH\"" >> ~/.zshrc
+    source ~/.zshrc  # 重新加载 zsh 配置
 fi
 
-# 2. 检查 cargo 是否正常（rustup 安装完成后会有）
-if ! command -v cargo >/dev/null 2>&1; then
-  echo "❌ cargo 未找到，即使已安装 rustup。可能 PATH 未生效，尝试重新打开 Xcode。"
+# ============ 安装 rustup ============
+if ! command -v rustup >/dev/null 2>&1; then
+  echo "⚠️ Rustup 未安装，开始自动安装..."
+  curl -sSf https://mirrors.ustc.edu.cn/rust-static/rustup/rustup-init.sh | \
+    sh -s -- -y --no-modify-path --default-toolchain stable
+fi
+
+# ============ 设置默认版本 ============
+rustup default stable
+
+# ============ 检查 cargo ============
+if ! command -v cargo >/dev/null; then
+  echo "❌ cargo 未找到，请检查安装是否成功"
   exit 1
 fi
 
-# 3. 安装 iOS 构建目标
+# ============ 安装目标平台 ============
 TARGET="aarch64-apple-ios-sim"
-if ! rustup target list | grep "$TARGET (installed)" >/dev/null; then
-  echo "📦 正在安装 Rust 构建目标 $TARGET..."
+if ! rustup target list | grep -q "$TARGET (installed)"; then
+  echo "📦 添加目标 $TARGET..."
   rustup target add "$TARGET"
 fi
 
-echo "✅ Rust 工具链已准备完毕。"
+# ============ 安装组件 ============
+echo "🔍 安装 clippy 和 rustfmt 组件..."
+rustup component add clippy rustfmt
+
+echo "✅ Rust 工具链与目标平台配置完成"
