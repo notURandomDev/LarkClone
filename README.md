@@ -1,8 +1,6 @@
 # 支持多构建系统的混合技术栈（Swift、OC、Rust）仿飞书 APP 开发
 
-## 概览
-
-### 仓库介绍
+## 仓库介绍
 
 该仓库的初始化是基于「Feishu-clone」仓库的代码之上进行重构的；核心的变动是项目中 Framework 的模块划分，以及更加合理的和可扩展的项目架构。
 
@@ -13,26 +11,68 @@
 - LarkClone：使用 Swift 语言开发的 iOS App 工程
 - RustSDK：使用 Rust 语言开发的 SDK 工程
 
-### 开发环境要求
+## 开发环境配置
 
-RustSDK 的静态库通过 Build Phase 的 Run Script 自动生成，因此需要安装 Rust 工具链：
+### 快速配置（推荐）
+
+成功 clone 项目到本地之后，请在项目根目录中打开终端，运行 `./setup.sh` 脚本安装所需的 Rust 工具链、目标平台与头文件生成工具：
 
 ```bash
+bash ./scripts/setup_rust.sh
+```
+
+该脚本会自动完成以下操作：
+
+- 安装 Rust 工具链（通过 rustup）
+- 安装 cargo 与 cbindgen
+- 安装 iOS 目标平台（aarch64-apple-ios-sim）
+
+### 手动配置
+
+你也可以手动执行以下命令：
+
+```bash
+# 安装 Rust 工具链
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# 添加 Rust bin 到 PATH
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# 安装 C 头文件生成工具
+cargo install cbindgen
+
+# 添加 iOS 模拟器目标平台
+rustup target add aarch64-apple-ios-sim
+
 ```
 
-Rust 静态库的函数调用依赖 C 头文件；该头文件的自动生成需要安装 Cargo 包 `cbindgen` ：
+### RustSDK 构建
+
+目前，项目暂不支持使用 Run Script 在构建阶段自动构建 RustSDK；需要你在项目根目录打开终端，运行以下指令：
 
 ```bash
-cargo install cbindgen
+# 进入 RustSDK 目录
+cd RustSDK
+
+# 清空构建
+cargo clean
+
+# 构建 RustSDK
+cargo build --release --target aarch64-apple-ios-sim
 ```
 
-### 前置步骤
-项目中有两个脚本文件,分别在MailTab和MessengerTab里面的Scripts文件夹中,分别是
+此方法只是目前的 workaround ，在 Run Script 中构建 RustSDK 会在以后的版本中支持。
+
+### 前置步骤（Deprecated）
+
+> 暂时不用执行该步骤
+
+项目中有两个脚本文件,分别在 MailTab 和 MessengerTab 里面的 Scripts 文件夹中,分别是
+
 - GenerateMails:生成邮件所需的数据文件
 - GenerateContacts:生成联系人的数据信息
 
-需要在项目里面的`Target Membership`中解除这两个文件的绑定,需要分别单独运行这两个脚本文件,随后运行整个项目.
+需要在项目里面的 `Target Membership` 中解除这两个文件的绑定,需要分别单独运行这两个脚本文件,随后运行整个项目.
 
 ## 如何贡献
 

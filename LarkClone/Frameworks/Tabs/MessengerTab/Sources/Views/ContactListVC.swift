@@ -12,6 +12,7 @@ class ContactListVC: UIViewController {
     var tableView = UITableView()
     var contacts: [Contact] = []
     
+    
     // 分页加载属性
     private var currentPage = 0 // 当前页码
     private var isLoading = false // 是否正在加载
@@ -34,7 +35,13 @@ class ContactListVC: UIViewController {
         
         setupNavBar()
         setupUI()
-        loadInitialData()
+        
+        // 回调函数，当数据加载完成之后调用
+        dataManager.onLoadComplete = { [weak self] in
+            DispatchQueue.main.async {
+                self?.loadInitialData()
+            }
+        }
     }
     
 //    override func viewWillAppear(_ animated: Bool) {

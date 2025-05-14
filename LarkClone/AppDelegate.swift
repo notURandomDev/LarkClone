@@ -6,14 +6,17 @@
 //
 
 import UIKit
+// 测试
+import LarkSDK
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // 全局设置导航栏默认样式
+        
+        // 保证 RustBridge Swift 符号在最终 App 中保留
+        RustBridgeSymbolRetainer.retainSymbol()
+
+      // 全局设置导航栏默认样式
         UINavigationBar.appearance().prefersLargeTitles = true
         return true
     }
