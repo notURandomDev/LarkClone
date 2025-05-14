@@ -5,11 +5,12 @@
 //  Created by 张纪龙 on 2025/5/10.
 
 #import "MailItem.h"
+#import <LarkSDK/LarkSDK-Swift.h>
+#import <LarkBridgeModels/ObjCMailItemList.h>
 
 @interface MailItem ()
 @property (nonatomic, strong) NSString *id;
 @property (nonatomic, strong) NSString *sender;
-@property (nonatomic, strong, nullable) NSString *senderAvatar;
 @property (nonatomic, strong) NSString *subject;
 @property (nonatomic, strong) NSString *preview;
 @property (nonatomic, strong) NSString *dateString;
@@ -25,7 +26,6 @@
 
 - (instancetype)initWithId:(NSString *)id
                     sender:(NSString *)sender
-              senderAvatar:(nullable NSString *)senderAvatar
                    subject:(NSString *)subject
                    preview:(NSString *)preview
                 dateString:(NSString *)dateString
@@ -37,7 +37,6 @@
     if (self) {
         _id = id;
         _sender = sender;
-        _senderAvatar = senderAvatar;
         _subject = subject;
         _preview = preview;
         _dateString = dateString;
@@ -56,8 +55,45 @@
 
 #pragma mark - Static Methods
 
++ (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion {
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
+    if (!path) {
+        NSLog(@"⚠️ 找不到 plist 路径，fallback 到默认数据");
+        completion([self mockEmails]);
+        return;
+    }
+
+    [RustBridge fetchMailItemsWithPage:0
+                              pageSize:10000
+                              filePath:path
+                            completion:^(NSArray<ObjCMailItem *> * _Nullable objcItems, NSError * _Nullable error) {
+        if (error || objcItems == nil) {
+            NSLog(@"❌ RustBridge 加载失败：%@", error);
+            completion([self mockEmails]);
+            return;
+        }
+
+        NSMutableArray<MailItem *> *converted = [NSMutableArray arrayWithCapacity:objcItems.count];
+        for (ObjCMailItem *item in objcItems) {
+            MailItem *mail = [[MailItem alloc] initWithId:item.id
+                                                    sender:item.sender
+                                                   subject:item.subject
+                                                   preview:item.preview
+                                                dateString:item.dateString
+                                                    isRead:item.isRead
+                                             hasAttachment:item.hasAttachment
+                                                isOfficial:item.isOfficial
+                                                emailCount:item.emailCount];
+            [converted addObject:mail];
+        }
+
+        completion([converted copy]);
+    }];
+}
+
+
 + (NSArray<MailItem *> *)loadFromPlist {
-    // 从应用程序包中读取
+    // 从应用程序包中读取loadFromPlist
     NSString *path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist" inDirectory:@"MockData"];
     
     if (!path) {
@@ -115,7 +151,6 @@
     // 邮件1
     [items addObject:[[MailItem alloc] initWithId:@"1"
                                           sender:@"ByteTech 官方公共邮箱"
-                                    senderAvatar:nil
                                          subject:@"ByteTech | MCP x 业务: 达人选品 AI Agent 简易版发布"
                                          preview:@"Dear ByteDancers, ByteTech 本周为你精选了..."
                                       dateString:@"2025-05-09 10:50:00"
@@ -127,7 +162,6 @@
     // 邮件2
     [items addObject:[[MailItem alloc] initWithId:@"2"
                                           sender:@"张纪龙"
-                                    senderAvatar:nil
                                          subject:@"v7.44 版本启动邮件 - Lark IM & AI Architecture & UI"
                                          preview:@"一、版本时间信息 节点 时间 排人会议 2025/04..."
                                       dateString:@"2025-04-25 14:30:00"
@@ -139,7 +173,6 @@
     // 邮件3
     [items addObject:[[MailItem alloc] initWithId:@"3"
                                           sender:@"乔子铭"
-                                    senderAvatar:nil
                                          subject:@"v7.43 版本启动邮件 - Lark IM & AI Architecture & UI"
                                          preview:@"[Lark IM & Product Architecture & AI Arch v7..."
                                       dateString:@"2025-04-25 12:15:00"
@@ -151,7 +184,6 @@
     // 邮件4
     [items addObject:[[MailItem alloc] initWithId:@"4"
                                           sender:@"The Postman Team"
-                                    senderAvatar:nil
                                          subject:@"[External] Postman API Night 東京のご案内"
                                          preview:@""
                                       dateString:@"2025-04-25 09:40:00"
@@ -163,7 +195,6 @@
     // 邮件5
     [items addObject:[[MailItem alloc] initWithId:@"5"
                                           sender:@"kodeco.com"
-                                    senderAvatar:nil
                                          subject:@"[External] Reset password instructions"
                                          preview:@"[图片] Hello supeng.charlie@bytedance.com! ..."
                                       dateString:@"2025-04-24 16:50:00"
@@ -175,7 +206,6 @@
     // 邮件6
     [items addObject:[[MailItem alloc] initWithId:@"6"
                                           sender:@"系统服务"
-                                    senderAvatar:nil
                                          subject:@"[External] 您有一张来自【北京钟爱纯粹自然餐饮有限公司】的增值税专用发票"
                                          preview:@"[图片] 尊敬的客户，您好：北京钟爱纯粹自然..."
                                       dateString:@"2025-04-24 13:20:00"
@@ -187,7 +217,6 @@
     // 邮件7
     [items addObject:[[MailItem alloc] initWithId:@"7"
                                           sender:@"DeveloperCenter Shanghai"
-                                    senderAvatar:nil
                                          subject:@"[External] Apple 开发者官方微信公众号现已上线"
                                          preview:@"尊敬的开发者，我们是 Apple 全球开发者关系团队..."
                                       dateString:@"2025-04-24 10:15:00"
@@ -229,7 +258,6 @@
         
         [items addObject:[[MailItem alloc] initWithId:[NSString stringWithFormat:@"%d", i]
                                              sender:senders[randomIndex]
-                                       senderAvatar:nil
                                             subject:subjects[randomSubjectIndex]
                                             preview:previews[randomPreviewIndex]
                                          dateString:dateString
@@ -264,7 +292,6 @@
     }
     
     // 获取可选字段
-    NSString *senderAvatar = dict[@"senderAvatar"];
     NSNumber *emailCount = dict[@"emailCount"];
     
     // 处理空预览
@@ -272,7 +299,6 @@
     
     return [[MailItem alloc] initWithId:id
                                  sender:sender
-                           senderAvatar:senderAvatar
                                 subject:subject
                                 preview:finalPreview
                              dateString:dateString

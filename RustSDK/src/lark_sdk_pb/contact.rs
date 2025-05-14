@@ -8,6 +8,8 @@ pub struct Contact {
     pub datetime: prost::alloc::string::String,
     #[prost(string, tag = "4")]
     pub contact_type: prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub avatar_name: prost::alloc::string::String,
 }
 
 #[derive(Clone, PartialEq, prost::Message)]

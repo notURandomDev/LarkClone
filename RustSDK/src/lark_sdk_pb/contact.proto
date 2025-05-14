@@ -6,6 +6,7 @@ message Contact {
     string latest_msg = 2;
     string datetime = 3;
     string type = 4;
+    string avatar_name = 5;
 }
 
 // Protobuf的顶层消息

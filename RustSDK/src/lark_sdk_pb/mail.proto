@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package lark;
+
+option objc_class_prefix = "Lark";
+
+message MailItem {
+  // 唯一标识符 (对应 NSString *id)
+  string id = 1;
+
+  // 发件人 (对应 NSString *sender)
+  string sender = 2;
+
+  // 邮件主题 (对应 NSString *subject)
+  string subject = 3;
+
+  // 预览文本 (对应 NSString *preview)
+  string preview = 4;
+
+  // 日期字符串 (对应 NSString *dateString -> NSDate *date)
+  string date_string = 5;
+
+  // 是否已读 (对应 BOOL isRead)
+  bool is_read = 6;
+
+  // 是否有附件 (对应 BOOL hasAttachment)
+  bool has_attachment = 7;
+
+  // 是否官方邮件 (对应 BOOL isOfficial)
+  bool is_official = 8;
+
+  // 会话邮件数量 (对应 nullable NSNumber *emailCount)
+  // 使用 optional 表示可空
+  optional int32 email_count = 9;
+}
+
+// 邮件列表响应
+message MailItemList {
+  repeated MailItem items = 1;
+}
