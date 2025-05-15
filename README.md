@@ -101,6 +101,16 @@ bash ./scripts/simctl/run.sh
 bash ./scripts/simctl/shutdown.sh
 ```
 
+### 集成 VS Code 开发环境
+
+1. 在 VS Code 中打开项目
+2. 按下 Cmd + Shift + P 选择 Run Task
+3. 选择 Task 并运行，将会自动运行脚本
+   1. `[xcodebuild] 清理 LarkClone 构建` : 运行 `./scripts/xcodebuild/build.sh`
+   2. `[xcodebuild] 构建 LarkClone` : 运行 `./scripts/xcodebuild/clean.sh`
+   3. `[simctl] 启动模拟器，并安装和运行应用` : 运行 `./scripts/simctl/run.sh`
+   4. `[simctl] 关闭正在运行的模拟器` : 运行 `./scripts/simctl/shutdown.sh`
+
 ### 前置步骤（Deprecated）
 
 > 暂时不用执行该步骤
