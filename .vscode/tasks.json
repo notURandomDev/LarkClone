@@ -1,0 +1,27 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "[xcodebuild] 构建 LarkClone",
+      "type": "shell",
+      "command": "bash ./scripts/xcodebuild/build.sh"
+    },
+    {
+      "label": "[xcodebuild] 清理 LarkClone 构建",
+      "type": "shell",
+      "command": "bash ./scripts/xcodebuild/clean.sh"
+    },
+    {
+      "label": "[simctl] 启动模拟器，并安装和运行应用",
+      "type": "shell",
+      "command": "bash ./scripts/simctl/run.sh"
+    },
+    {
+      "label": "[simctl] 关闭正在运行的模拟器",
+      "type": "shell",
+      "command": "bash ./scripts/simctl/shutdown.sh"
+    }
+  ]
+}
