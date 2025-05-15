@@ -16,6 +16,7 @@ class ChatDetailViewController: UIViewController {
     private let inputField = UITextField()
     private let sendButton = UIButton(type: .system)
     private let inputContainer = UIView()
+    private let loadingIndicator = UIActivityIndicatorView(style: .medium)
     
     // MARK: - 数据
     private let contact: Contact
@@ -23,16 +24,15 @@ class ChatDetailViewController: UIViewController {
     private var inputContainerBottomConstraint: NSLayoutConstraint!
     private var isViewAppeared = false
     private var registrationToken: NSObjectProtocol?
-    
-    // MARK: - 状态栏样式控制 - 简化为只返回系统默认样式
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default // 使用系统默认样式，避免与主列表页不同
-    }
+    private var isDataLoaded = false
     
     // MARK: - 初始化
     init(contact: Contact) {
         self.contact = contact
         super.init(nibName: nil, bundle: nil)
+        
+        // 性能优化：在初始化时就开始异步预加载消息数据
+        preloadMessages()
     }
     
     required init?(coder: NSCoder) {
@@ -45,19 +45,21 @@ class ChatDetailViewController: UIViewController {
         }
     }
     
+    // 预加载消息数据
+    private func preloadMessages() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            // 预加载消息数据但不更新UI
+            self.messages = Message.getMockMessages(contact: self.contact)
+            self.isDataLoaded = true
+        }
+    }
+    
     // MARK: - 生命周期
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
-        
-        // 只设置当前页面的标题显示模式
-        navigationItem.largeTitleDisplayMode = .never
-        
-        // 设置标题
-        setupTitleView()
-        
-        // 注册外观变化监听
         registerForAppearanceChanges()
     }
     
@@ -67,25 +69,38 @@ class ChatDetailViewController: UIViewController {
         // 添加键盘监听
         addKeyboardObservers()
         
-        // 确保标题样式正确
+        // 确保标题居中
         navigationItem.largeTitleDisplayMode = .never
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.prefersLargeTitles = false
+            
+            // 确保标题视图正确居中
+            let titleLabel = UILabel()
+            titleLabel.text = contact.name
+            titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
+            titleLabel.textAlignment = .center
+            titleLabel.textColor = LarkColorStyle.Text.primary
+            navigationItem.titleView = titleLabel
+        }
         
-        // 请求状态栏更新但不修改导航栏全局设置
-        setNeedsStatusBarAppearanceUpdate()
+        // 如果数据已加载但UI尚未更新，立即更新UI
+        if isDataLoaded && messages.count > 0 && tableView.numberOfRows(inSection: 0) == 0 {
+            updateUIWithLoadedMessages()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // 视图完全展示后才加载消息和布局
-        if !isViewAppeared {
-            isViewAppeared = true
-            loadMessages()
-        }
+        isViewAppeared = true
         
-        // 确保表格视图有内容时滚动到底部
-        DispatchQueue.main.async {
-            self.scrollToBottom(animated: false)
+        // 如果预加载已完成，显示消息
+        if isDataLoaded {
+            updateUIWithLoadedMessages()
+        } else {
+            // 如果预加载未完成，显示加载指示器
+            loadingIndicator.startAnimating()
+            loadMessages()
         }
     }
     
@@ -94,12 +109,24 @@ class ChatDetailViewController: UIViewController {
         
         // 移除键盘监听
         removeKeyboardObservers()
+        
+        // 确保退出时正确恢复导航栏状态
+        if isMovingFromParent {
+            // 使用扩展中的方法恢复大标题
+            navigationController?.navigationBar.prefersLargeTitles = true
+            if let previousVC = navigationController?.viewControllers.last {
+                previousVC.navigationItem.largeTitleDisplayMode = .automatic
+            }
+        }
     }
     
     // MARK: - UI设置
     private func setupUI() {
         // 使用动态背景色
         view.backgroundColor = LarkColorStyle.Chat.backgroundColor
+        
+        // 确保导航栏设置正确
+        setupNavigationBar()
         
         // 1. 设置表格视图
         setupTableView()
@@ -109,16 +136,21 @@ class ChatDetailViewController: UIViewController {
         
         // 3. 设置约束
         setupConstraints()
+        
+        // 4. 设置加载指示器
+        setupLoadingIndicator()
     }
     
-    private func setupTitleView() {
-        // 设置标题视图
-        let titleLabel = UILabel()
-        titleLabel.text = contact.name
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
-        titleLabel.textAlignment = .center
-        titleLabel.textColor = LarkColorStyle.Text.primary
-        navigationItem.titleView = titleLabel
+    private func setupLoadingIndicator() {
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.color = LarkColorStyle.Text.secondary
+        view.addSubview(loadingIndicator)
+        
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50)
+        ])
     }
     
     private func registerForAppearanceChanges() {
@@ -131,34 +163,39 @@ class ChatDetailViewController: UIViewController {
         }
     }
     
-    // 仅iOS 16及以下版本使用此方法
-    #if !os(visionOS) && !targetEnvironment(macCatalyst)
-    @available(iOS, deprecated: 17.0, message: "Use UITraitChangeObservable")
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        
-        if #available(iOS 17.0, *) {
-            // iOS 17+不在这里执行
-        } else {
-            // 主题变化时更新颜色
-            if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-                updateColorForCurrentTraitCollection()
-            }
-        }
-    }
-    #endif
-    
     private func updateColorForCurrentTraitCollection() {
-        // 更新视图颜色
+        // 更新视图的背景色
         view.backgroundColor = LarkColorStyle.Chat.backgroundColor
         tableView.backgroundColor = LarkColorStyle.Chat.backgroundColor
         inputContainer.backgroundColor = LarkColorStyle.Chat.inputContainerColor
+        
+        // 更新输入框颜色
         inputField.backgroundColor = LarkColorStyle.Chat.inputFieldColor
         
-        // 更新标题颜色
-        if let titleLabel = navigationItem.titleView as? UILabel {
-            titleLabel.textColor = LarkColorStyle.Text.primary
+        // 更新导航栏颜色
+        if let navigationBar = navigationController?.navigationBar {
+            navigationBar.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : .systemBlue
+            navigationBar.barTintColor = LarkColorStyle.Chat.backgroundColor
+            
+            // 更新标题颜色
+            if let titleLabel = navigationItem.titleView as? UILabel {
+                titleLabel.textColor = LarkColorStyle.Text.primary
+            }
         }
+    }
+    
+    private func setupNavigationBar() {
+        // 设置导航栏样式
+        navigationController?.navigationBar.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : LarkColorStyle.TabBar.tintColor
+        navigationController?.navigationBar.barTintColor = LarkColorStyle.Chat.backgroundColor
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.shadowImage = UIImage()
+        
+        // 设置返回按钮
+        let backButtonImage = UIImage(systemName: "chevron.left")
+        navigationController?.navigationBar.backIndicatorImage = backButtonImage
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = backButtonImage
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
     private func setupTableView() {
@@ -278,12 +315,39 @@ class ChatDetailViewController: UIViewController {
     
     // MARK: - 数据加载
     private func loadMessages() {
-        // 从Message类获取测试数据
-        messages = Message.getMockMessages(contact: contact)
+        // 如果数据已经加载，直接更新UI
+        if isDataLoaded {
+            updateUIWithLoadedMessages()
+            return
+        }
         
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-            self.scrollToBottom(animated: false)
+        // 否则异步加载
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
+            // 从Message类获取测试数据
+            self.messages = Message.getMockMessages(contact: self.contact)
+            self.isDataLoaded = true
+            
+            // 在主线程更新UI
+            DispatchQueue.main.async {
+                self.updateUIWithLoadedMessages()
+            }
+        }
+    }
+    
+    // 更新UI显示已加载的消息
+    private func updateUIWithLoadedMessages() {
+        loadingIndicator.stopAnimating()
+        
+        // 使用无动画更新视图
+        UIView.performWithoutAnimation {
+            tableView.reloadData()
+        }
+        
+        // 滚动到底部
+        if messages.count > 0 {
+            scrollToBottom(animated: false)
         }
     }
     
@@ -351,5 +415,26 @@ extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+}
+
+// MARK: - 性能优化：预取数据
+extension ChatDetailViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        // 预加载头像图像
+        for indexPath in indexPaths {
+            if indexPath.row < messages.count {
+                let message = messages[indexPath.row]
+                
+                // 在后台线程预加载头像
+                DispatchQueue.global(qos: .background).async {
+                    _ = message.sender.avatar
+                }
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        // 可以取消正在进行的加载操作
     }
 }
