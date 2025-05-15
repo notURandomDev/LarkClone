@@ -111,17 +111,6 @@ bash ./scripts/simctl/shutdown.sh
    3. `[simctl] 启动模拟器，并安装和运行应用` : 运行 `./scripts/simctl/run.sh`
    4. `[simctl] 关闭正在运行的模拟器` : 运行 `./scripts/simctl/shutdown.sh`
 
-### 前置步骤（Deprecated）
-
-> 暂时不用执行该步骤
-
-项目中有两个脚本文件,分别在 MailTab 和 MessengerTab 里面的 Scripts 文件夹中,分别是
-
-- GenerateMails:生成邮件所需的数据文件
-- GenerateContacts:生成联系人的数据信息
-
-需要在项目里面的 `Target Membership` 中解除这两个文件的绑定,需要分别单独运行这两个脚本文件,随后运行整个项目.
-
 ## 如何贡献
 
 ### Pull Request
