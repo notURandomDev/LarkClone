@@ -315,21 +315,45 @@
     self.currentPage = 0;
     self.hasMoreData = YES;
     
+    // 停止刷新动画（提前停止可以改善体验）
+    [self.refreshControl endRefreshing];
+    
+    // 显示加载指示器
+    [self.loadingIndicator startAnimating];
+    self.isLoading = YES;
+    
+    __weak typeof(self) weakSelf = self;
+    
+    // 根据是否有筛选条件决定刷新方式
     if (self.currentFilterType) {
-        // 如果有筛选条件，保持筛选状态
-        [self loadEmails];
+        // 在后台线程刷新筛选数据
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // 重新从plist加载筛选数据
+            [MailItem loadFilteredEmailsWithPage:0
+                                        pageSize:weakSelf.pageSize
+                                     filterType:weakSelf.currentFilterType
+                                     completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+                // 更新数据状态
+                weakSelf.hasMoreData = hasMoreData;
+                weakSelf.totalEmailCount = totalItems;
+                
+                // 清空并添加新数据
+                [weakSelf.filteredEmails removeAllObjects];
+                [weakSelf.filteredEmails addObjectsFromArray:items];
+                
+                // 重新加载整个表格
+                [weakSelf.tableView reloadData];
+                
+                // 结束加载状态
+                weakSelf.isLoading = NO;
+                [weakSelf.loadingIndicator stopAnimating];
+            }];
+        });
     } else {
-        // 没有筛选条件，按正常方式刷新
-        self.isSearching = NO;
-        
-        // 从Rust重新加载第一页数据
-        __weak typeof(self) weakSelf = self;
+        // 使用常规方式刷新所有邮件
         [MailItem loadFromRustBridgeWithPage:self.currentPage
                                     pageSize:self.pageSize
                                   completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
-            // 停止刷新动画
-            [weakSelf.refreshControl endRefreshing];
-            
             // 更新数据状态
             weakSelf.hasMoreData = hasMoreData;
             weakSelf.totalEmailCount = totalItems;
@@ -343,6 +367,10 @@
             
             // 重新加载整个表格
             [weakSelf.tableView reloadData];
+            
+            // 结束加载状态
+            weakSelf.isLoading = NO;
+            [weakSelf.loadingIndicator stopAnimating];
             
             // 确保TabBar外观在刷新后保持一致
             if (weakSelf.tabBarController) {
