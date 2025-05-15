@@ -24,6 +24,11 @@ class ChatDetailViewController: UIViewController {
     private var isViewAppeared = false
     private var registrationToken: NSObjectProtocol?
     
+    // MARK: - 状态栏样式控制 - 简化为只返回系统默认样式
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .default // 使用系统默认样式，避免与主列表页不同
+    }
+    
     // MARK: - 初始化
     init(contact: Contact) {
         self.contact = contact
@@ -45,6 +50,14 @@ class ChatDetailViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        
+        // 只设置当前页面的标题显示模式
+        navigationItem.largeTitleDisplayMode = .never
+        
+        // 设置标题
+        setupTitleView()
+        
+        // 注册外观变化监听
         registerForAppearanceChanges()
     }
     
@@ -54,19 +67,11 @@ class ChatDetailViewController: UIViewController {
         // 添加键盘监听
         addKeyboardObservers()
         
-        // 确保标题居中
+        // 确保标题样式正确
         navigationItem.largeTitleDisplayMode = .never
-        if let navigationBar = navigationController?.navigationBar {
-            navigationBar.prefersLargeTitles = false
-            
-            // 确保标题视图正确居中
-            let titleLabel = UILabel()
-            titleLabel.text = contact.name
-            titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
-            titleLabel.textAlignment = .center
-            titleLabel.textColor = LarkColorStyle.Text.primary
-            navigationItem.titleView = titleLabel
-        }
+        
+        // 请求状态栏更新但不修改导航栏全局设置
+        setNeedsStatusBarAppearanceUpdate()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -89,21 +94,12 @@ class ChatDetailViewController: UIViewController {
         
         // 移除键盘监听
         removeKeyboardObservers()
-        
-        // 确保退出时不会污染导航栏状态
-        if isMovingFromParent {
-            navigationController?.navigationBar.prefersLargeTitles = false
-            navigationItem.largeTitleDisplayMode = .never
-        }
     }
     
     // MARK: - UI设置
     private func setupUI() {
         // 使用动态背景色
         view.backgroundColor = LarkColorStyle.Chat.backgroundColor
-        
-        // 确保导航栏设置正确
-        setupNavigationBar()
         
         // 1. 设置表格视图
         setupTableView()
@@ -113,6 +109,16 @@ class ChatDetailViewController: UIViewController {
         
         // 3. 设置约束
         setupConstraints()
+    }
+    
+    private func setupTitleView() {
+        // 设置标题视图
+        let titleLabel = UILabel()
+        titleLabel.text = contact.name
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 17)
+        titleLabel.textAlignment = .center
+        titleLabel.textColor = LarkColorStyle.Text.primary
+        navigationItem.titleView = titleLabel
     }
     
     private func registerForAppearanceChanges() {
@@ -125,39 +131,34 @@ class ChatDetailViewController: UIViewController {
         }
     }
     
-    private func updateColorForCurrentTraitCollection() {
-        // 更新视图的背景色
-        view.backgroundColor = LarkColorStyle.Chat.backgroundColor
-        tableView.backgroundColor = LarkColorStyle.Chat.backgroundColor
-        inputContainer.backgroundColor = LarkColorStyle.Chat.inputContainerColor
+    // 仅iOS 16及以下版本使用此方法
+    #if !os(visionOS) && !targetEnvironment(macCatalyst)
+    @available(iOS, deprecated: 17.0, message: "Use UITraitChangeObservable")
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
         
-        // 更新输入框颜色
-        inputField.backgroundColor = LarkColorStyle.Chat.inputFieldColor
-        
-        // 更新导航栏颜色
-        if let navigationBar = navigationController?.navigationBar {
-            navigationBar.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : .systemBlue
-            navigationBar.barTintColor = LarkColorStyle.Chat.backgroundColor
-            
-            // 更新标题颜色
-            if let titleLabel = navigationItem.titleView as? UILabel {
-                titleLabel.textColor = LarkColorStyle.Text.primary
+        if #available(iOS 17.0, *) {
+            // iOS 17+不在这里执行
+        } else {
+            // 主题变化时更新颜色
+            if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+                updateColorForCurrentTraitCollection()
             }
         }
     }
+    #endif
     
-    private func setupNavigationBar() {
-        // 设置导航栏样式
-        navigationController?.navigationBar.tintColor = traitCollection.userInterfaceStyle == .dark ? .white : LarkColorStyle.TabBar.tintColor
-        navigationController?.navigationBar.barTintColor = LarkColorStyle.Chat.backgroundColor
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.shadowImage = UIImage()
+    private func updateColorForCurrentTraitCollection() {
+        // 更新视图颜色
+        view.backgroundColor = LarkColorStyle.Chat.backgroundColor
+        tableView.backgroundColor = LarkColorStyle.Chat.backgroundColor
+        inputContainer.backgroundColor = LarkColorStyle.Chat.inputContainerColor
+        inputField.backgroundColor = LarkColorStyle.Chat.inputFieldColor
         
-        // 设置返回按钮
-        let backButtonImage = UIImage(systemName: "chevron.left")
-        navigationController?.navigationBar.backIndicatorImage = backButtonImage
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = backButtonImage
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        // 更新标题颜色
+        if let titleLabel = navigationItem.titleView as? UILabel {
+            titleLabel.textColor = LarkColorStyle.Text.primary
+        }
     }
     
     private func setupTableView() {
