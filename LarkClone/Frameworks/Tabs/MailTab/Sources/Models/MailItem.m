@@ -134,13 +134,11 @@
     // 获取Documents目录路径
     NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
     NSString *plistPath = [documentsPath stringByAppendingPathComponent:@"mock_emails.plist"];
-    NSLog(@"📍 检查文件路径: %@", plistPath);
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     // 检查bundle中的文件
     NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
-    NSLog(@"📍 Bundle中的文件路径: %@", bundlePath);
     
     // 检查是否需要更新文件
     if (bundlePath) {
@@ -154,9 +152,6 @@
             
             NSDate *bundleDate = bundleAttrs[NSFileModificationDate];
             NSDate *docDate = docAttrs[NSFileModificationDate];
-            
-            NSLog(@"📍 Bundle文件修改时间: %@", bundleDate);
-            NSLog(@"📍 Documents文件修改时间: %@", docDate);
             
             // 如果bundle文件更新，则使用bundle文件
             if ([bundleDate compare:docDate] == NSOrderedDescending) {
@@ -181,36 +176,10 @@
             // 复制新文件
             NSError *copyError;
             [fileManager copyItemAtPath:bundlePath toPath:plistPath error:&copyError];
-            
-            if (copyError) {
-                NSLog(@"📍 复制Bundle文件失败: %@，将创建备用文件", copyError);
-                // 创建备用文件
-                NSArray *mockData = [self mockEmails];
-                NSMutableArray *dictArray = [NSMutableArray array];
-                for (MailItem *item in mockData) {
-                    [dictArray addObject:@{
-                        @"id": item.id,
-                        @"sender": item.sender,
-                        @"subject": item.subject,
-                        @"preview": item.preview ?: @"",
-                        @"date": item.dateString,
-                        @"isRead": @(item.isRead),
-                        @"hasAttachment": @(item.hasAttachment),
-                        @"isOfficial": @(item.isOfficial),
-                        @"emailCount": item.emailCount ?: [NSNull null]
-                    }];
-                }
-                BOOL success = [dictArray writeToFile:plistPath atomically:YES];
-                NSLog(@"📍 创建备用文件%@", success ? @"成功" : @"失败");
-            } else {
-                NSLog(@"📍 已从Bundle成功复制文件到Documents");
-            }
         }
     } else {
         NSLog(@"📍 Bundle中不存在文件，使用Documents文件或创建新文件");
     }
-    
-    NSLog(@"📍 最终使用的文件路径: %@", plistPath);
     return plistPath;
 }
 

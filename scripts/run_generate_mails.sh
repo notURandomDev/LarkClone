@@ -41,11 +41,6 @@ if [ $? -eq 0 ] && [ -x "$COMPILED_BINARY" ]; then
         echo "将 $OUTPUT_FILE 添加到Copy Bundle Resources..."
         cp "${OUTPUT_FILE}" "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/mock_emails.plist"
         
-        # 新增步骤：将文件复制到Documents目录
-        echo "将 $OUTPUT_FILE 复制到Documents目录..."
-        DOCUMENTS_DIR=$(cd ~/Documents && pwd)  # 获取Documents目录路径
-        cp "$OUTPUT_FILE" "$DOCUMENTS_DIR/mock_emails.plist"  # 复制文件到Documents目录
-        
         exit 0
     else
         echo "✗ 执行失败，错误码: $RESULT"
