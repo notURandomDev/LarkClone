@@ -23,6 +23,14 @@
 @property (nonatomic, strong) NSMutableArray<MailItem *> *filteredEmails;
 @property (nonatomic, assign) BOOL isSearching;
 
+// 分页加载相关属性
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) BOOL isLoading;
+@property (nonatomic, assign) BOOL hasMoreData;
+@property (nonatomic, strong) UIActivityIndicatorView *loadingIndicator;
+@property (nonatomic, assign) NSInteger pageSize;
+@property (nonatomic, assign) NSInteger totalEmailCount;
+
 @end
 
 @implementation MailboxVC
@@ -36,8 +44,15 @@
     // 使用本地化的标题
     self.title = NSLocalizedStringFromTable(@"mailbox_title", @"MailTab", @"Mailbox title");
     
+    // 初始化分页加载相关属性
+    self.currentPage = 0; // Rust桥接从0开始
+    self.isLoading = NO;
+    self.hasMoreData = YES;
+    self.pageSize = 15; // 每页显示15封邮件
+    self.filteredEmails = [NSMutableArray array];
+    
     [self setupUI];
-    [self loadEmails];
+    [self loadInitialEmails];
     
     // 配置导航栏右侧按钮
     [self setupNavigationBarButtons];
@@ -90,6 +105,12 @@
     [self.refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
     self.tableView.refreshControl = self.refreshControl;
     
+    // 设置加载指示器
+    self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+    self.loadingIndicator.hidesWhenStopped = YES;
+    self.loadingIndicator.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    self.tableView.tableFooterView = self.loadingIndicator;
+    
     // 添加视图
     [self.view addSubview:self.searchBarView];
     [self.view addSubview:self.tableView];
@@ -128,44 +149,105 @@
 
 #pragma mark - Data Loading
 
-//- (void)loadEmails {
-//    // 加载示例邮件数据
-//    self.allEmails = [MailItem loadFromPlist];
-//    self.filteredEmails = [self.allEmails mutableCopy];
-//    [self.tableView reloadData];
-//}
+// 加载初始邮件数据
+- (void)loadInitialEmails {
+    self.currentPage = 0;
+    self.hasMoreData = YES;
+    self.filteredEmails = [NSMutableArray array];
+    
+    [self loadEmails];
+}
 
-// 使用RustSDK加载邮件
+// 使用RustSDK分页加载邮件 - 改进的方法
 - (void)loadEmails {
-    [MailItem loadFromRustBridgeWithCompletion:^(NSArray<MailItem *> *items) {
-        self.allEmails = items;
-        self.filteredEmails = [items mutableCopy];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
+    if (self.isLoading || !self.hasMoreData) {
+        return;
+    }
+    
+    self.isLoading = YES;
+    [self.loadingIndicator startAnimating];
+    
+    __weak typeof(self) weakSelf = self;
+    [MailItem loadFromRustBridgeWithPage:self.currentPage
+                                pageSize:self.pageSize
+                              completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+        // 保存全局信息
+        weakSelf.hasMoreData = hasMoreData;
+        weakSelf.totalEmailCount = totalItems;
+        
+        if (weakSelf.currentPage == 0) {
+            // 第一页，保存所有邮件以备搜索和筛选
+            weakSelf.allEmails = items;
+            
+            // 清空并添加新数据
+            [weakSelf.filteredEmails removeAllObjects];
+            [weakSelf.filteredEmails addObjectsFromArray:items];
+            
+            // 重新加载整个表格
+            [weakSelf.tableView reloadData];
+        } else {
+            // 记录当前数据数量，用于创建indexPaths
+            NSInteger currentCount = weakSelf.filteredEmails.count;
+            
+            // 添加新数据
+            [weakSelf.filteredEmails addObjectsFromArray:items];
+            
+            // 创建indexPaths用于插入新行
+            NSMutableArray *indexPaths = [NSMutableArray array];
+            for (NSInteger i = 0; i < items.count; i++) {
+                [indexPaths addObject:[NSIndexPath indexPathForRow:currentCount + i inSection:0]];
+            }
+            
+            // 使用动画插入新行
+            if (indexPaths.count > 0) {
+                [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+            }
+        }
+        
+        weakSelf.isLoading = NO;
+        [weakSelf.loadingIndicator stopAnimating];
     }];
+}
+
+// 加载更多数据
+- (void)loadMoreData {
+    if (self.isLoading || !self.hasMoreData || self.isSearching) {
+        return;
+    }
+    
+    self.currentPage++;
+    [self loadEmails];
 }
 
 - (void)filterEmailsWithText:(NSString *)searchText {
     if (searchText.length == 0) {
         self.isSearching = NO;
-        self.filteredEmails = [self.allEmails mutableCopy];
+        
+        // 重置分页并重新加载
+        [self loadInitialEmails];
     } else {
         self.isSearching = YES;
         
-        NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in self.allEmails) {
-            if ([email.sender.lowercaseString containsString:searchText.lowercaseString] ||
-                [email.subject.lowercaseString containsString:searchText.lowercaseString] ||
-                [email.preview.lowercaseString containsString:searchText.lowercaseString]) {
-                [filtered addObject:email];
+        // 如果全部邮件已加载，则直接在内存中筛选
+        if (self.allEmails.count > 0) {
+            NSMutableArray *filtered = [NSMutableArray array];
+            for (MailItem *email in self.allEmails) {
+                if ([email.sender.lowercaseString containsString:searchText.lowercaseString] ||
+                    [email.subject.lowercaseString containsString:searchText.lowercaseString] ||
+                    [email.preview.lowercaseString containsString:searchText.lowercaseString]) {
+                    [filtered addObject:email];
+                }
             }
+            
+            self.filteredEmails = filtered;
+            [self.tableView reloadData];
+        } else {
+            // 如果全部邮件未加载，则简单显示空结果
+            [self.filteredEmails removeAllObjects];
+            [self.tableView reloadData];
+            [self showEmptyState];
         }
-        
-        self.filteredEmails = filtered;
     }
-    
-    [self.tableView reloadData];
 }
 
 // 标记邮件为已读
@@ -196,23 +278,44 @@
 #pragma mark - Actions
 
 - (void)refreshData {
-    // 模拟网络请求延迟
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        // 刷新邮件数据
-        [self loadEmails];
-        [self.refreshControl endRefreshing];
+    // 重置到第一页
+    self.currentPage = 0;
+    self.hasMoreData = YES;
+    self.isSearching = NO;
+    
+    // 从Rust重新加载第一页数据
+    __weak typeof(self) weakSelf = self;
+    [MailItem loadFromRustBridgeWithPage:self.currentPage
+                                pageSize:self.pageSize
+                              completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+        // 停止刷新动画
+        [weakSelf.refreshControl endRefreshing];
+        
+        // 更新数据状态
+        weakSelf.hasMoreData = hasMoreData;
+        weakSelf.totalEmailCount = totalItems;
+        
+        // 保存所有邮件以备搜索和筛选
+        weakSelf.allEmails = items;
+        
+        // 清空并添加新数据
+        [weakSelf.filteredEmails removeAllObjects];
+        [weakSelf.filteredEmails addObjectsFromArray:items];
+        
+        // 重新加载整个表格
+        [weakSelf.tableView reloadData];
         
         // 确保TabBar外观在刷新后保持一致
-        if (self.tabBarController) {
+        if (weakSelf.tabBarController) {
             SEL setupSelector = NSSelectorFromString(@"setupTabBarAppearance");
-            if ([self.tabBarController respondsToSelector:setupSelector]) {
+            if ([weakSelf.tabBarController respondsToSelector:setupSelector]) {
                 #pragma clang diagnostic push
                 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                [self.tabBarController performSelector:setupSelector];
+                [weakSelf.tabBarController performSelector:setupSelector];
                 #pragma clang diagnostic pop
             }
         }
-    });
+    }];
 }
 
 - (void)filterButtonTapped {
@@ -225,13 +328,14 @@
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"all_emails", @"MailTab", @"All Emails")
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
-        weakSelf.filteredEmails = [weakSelf.allEmails mutableCopy];
-        [weakSelf.tableView reloadData];
+        weakSelf.isSearching = NO;
+        [weakSelf loadInitialEmails];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"unread", @"MailTab", @"Unread")
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
+        weakSelf.isSearching = YES;
         NSMutableArray *filtered = [NSMutableArray array];
         for (MailItem *email in weakSelf.allEmails) {
             if (!email.isRead) {
@@ -245,6 +349,7 @@
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"with_attachments", @"MailTab", @"With Attachments")
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
+        weakSelf.isSearching = YES;
         NSMutableArray *filtered = [NSMutableArray array];
         for (MailItem *email in weakSelf.allEmails) {
             if (email.hasAttachment) {
@@ -292,6 +397,11 @@
     MailItem *email = self.filteredEmails[indexPath.row];
     [cell configureWithEmail:email];
     
+    // 触发加载更多数据的逻辑
+    if (indexPath.row >= self.filteredEmails.count - 5 && !self.isLoading && self.hasMoreData && !self.isSearching) {
+        [self loadMoreData];
+    }
+    
     return cell;
 }
 
@@ -307,6 +417,18 @@
     }];
     
     [self.navigationController pushViewController:detailVC animated:YES];
+}
+
+// 实现滚动到底部加载更多
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // 计算距离底部的位置
+    CGFloat offsetY = scrollView.contentOffset.y;
+    CGFloat contentHeight = scrollView.contentSize.height;
+    CGFloat screenHeight = scrollView.frame.size.height;
+    
+    if (offsetY > contentHeight - screenHeight - 100 && !self.isLoading && self.hasMoreData && !self.isSearching) {
+        [self loadMoreData];
+    }
 }
 
 #pragma mark - Empty State

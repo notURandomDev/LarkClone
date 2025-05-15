@@ -38,6 +38,12 @@ NS_ASSUME_NONNULL_BEGIN
 // 异步加载邮件数据
 + (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion;
 
+// 分页加载邮件
++ (void)loadFromRustBridgeWithPage:(NSInteger)page
+                          pageSize:(NSInteger)pageSize
+                        completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion;
+
+
 // 获取模拟数据
 + (NSArray<MailItem *> *)mockEmails;
 
