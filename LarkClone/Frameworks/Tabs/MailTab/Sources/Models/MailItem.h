@@ -62,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (BOOL)deleteEmail:(NSString *)emailId;
 
++ (void)loadFilteredEmailsWithPage:(NSInteger)page pageSize:(NSInteger)pageSize filterType:(NSString *)filterType completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion;
 
  // 先尝试获取Documents目录下的文件，如果不存在则复制bundle中的文件
 + (NSString *)getMailPlistPath;

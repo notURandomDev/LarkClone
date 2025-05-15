@@ -130,6 +130,91 @@
     }];
 }
 
++ (void)loadFilteredEmailsWithPage:(NSInteger)page
+                         pageSize:(NSInteger)pageSize
+                      filterType:(NSString *)filterType
+                      completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion {
+    
+    // 获取plist文件路径
+    NSString *plistPath = [self getMailPlistPath];
+    if (!plistPath) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(@[], NO, 0);
+        });
+        return;
+    }
+    
+    // 在后台线程处理
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        // 读取plist文件内容 - 使用属性列表序列化以提高效率
+        NSData *plistData = [NSData dataWithContentsOfFile:plistPath];
+        if (!plistData) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(@[], NO, 0);
+            });
+            return;
+        }
+        
+        NSError *error;
+        NSArray *allEmailDicts = [NSPropertyListSerialization propertyListWithData:plistData
+                                                                         options:NSPropertyListImmutable
+                                                                          format:NULL
+                                                                           error:&error];
+        
+        if (error || ![allEmailDicts isKindOfClass:[NSArray class]]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(@[], NO, 0);
+            });
+            return;
+        }
+        
+        // 筛选邮件 - 只获取当前页需要的部分
+        NSMutableArray *filteredDicts = [NSMutableArray array];
+        
+        // 首先筛选出符合条件的所有字典
+        for (NSDictionary *emailDict in allEmailDicts) {
+            BOOL shouldInclude = NO;
+            
+            if ([filterType isEqualToString:@"unread"]) {
+                shouldInclude = ![emailDict[@"isRead"] boolValue];
+            } else if ([filterType isEqualToString:@"attachment"]) {
+                shouldInclude = [emailDict[@"hasAttachment"] boolValue];
+            }
+            
+            if (shouldInclude) {
+                [filteredDicts addObject:emailDict];
+            }
+        }
+        
+        // 计算分页
+        NSInteger totalItems = filteredDicts.count;
+        NSInteger startIndex = page * pageSize;
+        NSInteger endIndex = MIN(startIndex + pageSize, totalItems);
+        BOOL hasMoreData = endIndex < totalItems;
+        
+        // 提取当前页的数据
+        NSMutableArray *pagedDicts = [NSMutableArray array];
+        if (startIndex < totalItems) {
+            NSRange range = NSMakeRange(startIndex, endIndex - startIndex);
+            [pagedDicts addObjectsFromArray:[filteredDicts subarrayWithRange:range]];
+        }
+        
+        // 转换为MailItem对象
+        NSMutableArray<MailItem *> *items = [NSMutableArray arrayWithCapacity:pagedDicts.count];
+        for (NSDictionary *dict in pagedDicts) {
+            MailItem *item = [self createMailItemFromDictionary:dict];
+            if (item) {
+                [items addObject:item];
+            }
+        }
+        
+        // 在主线程返回结果
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion([items copy], hasMoreData, totalItems);
+        });
+    });
+}
+
 + (NSString *)getMailPlistPath {
     // 获取Documents目录路径
     NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];

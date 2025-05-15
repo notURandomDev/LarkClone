@@ -31,6 +31,9 @@
 @property (nonatomic, assign) NSInteger pageSize;
 @property (nonatomic, assign) NSInteger totalEmailCount;
 
+// 筛选类型属性
+@property (nonatomic, strong) NSString *currentFilterType;
+
 @end
 
 @implementation MailboxVC
@@ -50,6 +53,7 @@
     self.hasMoreData = YES;
     self.pageSize = 15; // 每页显示15封邮件
     self.filteredEmails = [NSMutableArray array];
+    self.currentFilterType = nil; // 初始化为nil表示无筛选
     
     [self setupUI];
     [self loadInitialEmails];
@@ -155,6 +159,7 @@
     self.currentPage = 0;
     self.hasMoreData = YES;
     self.filteredEmails = [NSMutableArray array];
+    self.currentFilterType = nil; // 重置筛选类型
     
     [self loadEmails];
 }
@@ -169,50 +174,69 @@
     [self.loadingIndicator startAnimating];
     
     __weak typeof(self) weakSelf = self;
-    [MailItem loadFromRustBridgeWithPage:self.currentPage
-                                pageSize:self.pageSize
-                              completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
-        // 保存全局信息
-        weakSelf.hasMoreData = hasMoreData;
-        weakSelf.totalEmailCount = totalItems;
-        
-        if (weakSelf.currentPage == 0) {
-            // 第一页，保存所有邮件以备搜索和筛选
-            weakSelf.allEmails = items;
-            
-            // 清空并添加新数据
-            [weakSelf.filteredEmails removeAllObjects];
-            [weakSelf.filteredEmails addObjectsFromArray:items];
-            
-            // 重新加载整个表格
-            [weakSelf.tableView reloadData];
-        } else {
-            // 记录当前数据数量，用于创建indexPaths
-            NSInteger currentCount = weakSelf.filteredEmails.count;
-            
-            // 添加新数据
-            [weakSelf.filteredEmails addObjectsFromArray:items];
-            
-            // 创建indexPaths用于插入新行
-            NSMutableArray *indexPaths = [NSMutableArray array];
-            for (NSInteger i = 0; i < items.count; i++) {
-                [indexPaths addObject:[NSIndexPath indexPathForRow:currentCount + i inSection:0]];
-            }
-            
-            // 使用动画插入新行
-            if (indexPaths.count > 0) {
-                [weakSelf.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-            }
+    
+    // 根据是否有筛选类型决定加载方式
+    if (self.currentFilterType) {
+        // 使用优化的筛选方法加载
+        [MailItem loadFilteredEmailsWithPage:self.currentPage
+                                   pageSize:self.pageSize
+                                filterType:self.currentFilterType
+                                completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+            [weakSelf handleLoadedEmails:items hasMoreData:hasMoreData totalItems:totalItems];
+        }];
+    } else {
+        // 使用常规方式加载
+        [MailItem loadFromRustBridgeWithPage:self.currentPage
+                                  pageSize:self.pageSize
+                                completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+            [weakSelf handleLoadedEmails:items hasMoreData:hasMoreData totalItems:totalItems];
+        }];
+    }
+}
+// 处理加载的邮件数据
+- (void)handleLoadedEmails:(NSArray<MailItem *> *)items hasMoreData:(BOOL)hasMoreData totalItems:(NSInteger)totalItems {
+    // 保存全局信息
+    self.hasMoreData = hasMoreData;
+    self.totalEmailCount = totalItems;
+    
+    if (self.currentPage == 0) {
+        // 第一页，保存所有邮件以备搜索和筛选
+        if (!self.currentFilterType) {
+            self.allEmails = items;
         }
         
-        weakSelf.isLoading = NO;
-        [weakSelf.loadingIndicator stopAnimating];
-    }];
+        // 清空并添加新数据
+        [self.filteredEmails removeAllObjects];
+        [self.filteredEmails addObjectsFromArray:items];
+        
+        // 重新加载整个表格
+        [self.tableView reloadData];
+    } else {
+        // 记录当前数据数量，用于创建indexPaths
+        NSInteger currentCount = self.filteredEmails.count;
+        
+        // 添加新数据
+        [self.filteredEmails addObjectsFromArray:items];
+        
+        // 创建indexPaths用于插入新行
+        NSMutableArray *indexPaths = [NSMutableArray array];
+        for (NSInteger i = 0; i < items.count; i++) {
+            [indexPaths addObject:[NSIndexPath indexPathForRow:currentCount + i inSection:0]];
+        }
+        
+        // 使用动画插入新行
+        if (indexPaths.count > 0) {
+            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+        }
+    }
+    
+    self.isLoading = NO;
+    [self.loadingIndicator stopAnimating];
 }
 
 // 加载更多数据
 - (void)loadMoreData {
-    if (self.isLoading || !self.hasMoreData || self.isSearching) {
+    if (self.isLoading || !self.hasMoreData || (self.isSearching && !self.currentFilterType)) {
         return;
     }
     
@@ -224,10 +248,15 @@
     if (searchText.length == 0) {
         self.isSearching = NO;
         
-        // 重置分页并重新加载
-        [self loadInitialEmails];
+        // 保持当前筛选状态，但重置分页
+        self.currentPage = 0;
+        self.hasMoreData = YES;
+        [self loadEmails];
     } else {
         self.isSearching = YES;
+        
+        // 文本搜索时不支持分页，设置筛选类型为nil
+        self.currentFilterType = nil;
         
         // 如果全部邮件已加载，则直接在内存中筛选
         if (self.allEmails.count > 0) {
@@ -285,41 +314,48 @@
     // 重置到第一页
     self.currentPage = 0;
     self.hasMoreData = YES;
-    self.isSearching = NO;
     
-    // 从Rust重新加载第一页数据
-    __weak typeof(self) weakSelf = self;
-    [MailItem loadFromRustBridgeWithPage:self.currentPage
-                                pageSize:self.pageSize
-                              completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
-        // 停止刷新动画
-        [weakSelf.refreshControl endRefreshing];
+    if (self.currentFilterType) {
+        // 如果有筛选条件，保持筛选状态
+        [self loadEmails];
+    } else {
+        // 没有筛选条件，按正常方式刷新
+        self.isSearching = NO;
         
-        // 更新数据状态
-        weakSelf.hasMoreData = hasMoreData;
-        weakSelf.totalEmailCount = totalItems;
-        
-        // 保存所有邮件以备搜索和筛选
-        weakSelf.allEmails = items;
-        
-        // 清空并添加新数据
-        [weakSelf.filteredEmails removeAllObjects];
-        [weakSelf.filteredEmails addObjectsFromArray:items];
-        
-        // 重新加载整个表格
-        [weakSelf.tableView reloadData];
-        
-        // 确保TabBar外观在刷新后保持一致
-        if (weakSelf.tabBarController) {
-            SEL setupSelector = NSSelectorFromString(@"setupTabBarAppearance");
-            if ([weakSelf.tabBarController respondsToSelector:setupSelector]) {
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                [weakSelf.tabBarController performSelector:setupSelector];
-                #pragma clang diagnostic pop
+        // 从Rust重新加载第一页数据
+        __weak typeof(self) weakSelf = self;
+        [MailItem loadFromRustBridgeWithPage:self.currentPage
+                                    pageSize:self.pageSize
+                                  completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+            // 停止刷新动画
+            [weakSelf.refreshControl endRefreshing];
+            
+            // 更新数据状态
+            weakSelf.hasMoreData = hasMoreData;
+            weakSelf.totalEmailCount = totalItems;
+            
+            // 保存所有邮件以备搜索和筛选
+            weakSelf.allEmails = items;
+            
+            // 清空并添加新数据
+            [weakSelf.filteredEmails removeAllObjects];
+            [weakSelf.filteredEmails addObjectsFromArray:items];
+            
+            // 重新加载整个表格
+            [weakSelf.tableView reloadData];
+            
+            // 确保TabBar外观在刷新后保持一致
+            if (weakSelf.tabBarController) {
+                SEL setupSelector = NSSelectorFromString(@"setupTabBarAppearance");
+                if ([weakSelf.tabBarController respondsToSelector:setupSelector]) {
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+                    [weakSelf.tabBarController performSelector:setupSelector];
+                    #pragma clang diagnostic pop
+                }
             }
-        }
-    }];
+        }];
+    }
 }
 
 - (void)filterButtonTapped {
@@ -333,6 +369,7 @@
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
         weakSelf.isSearching = NO;
+        weakSelf.currentFilterType = nil;
         [weakSelf loadInitialEmails];
     }]];
     
@@ -340,48 +377,20 @@
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
         weakSelf.isSearching = YES;
-        
-        // 显示加载指示器
-        [weakSelf.loadingIndicator startAnimating];
-        
-        // 从持久化存储加载全部邮件
-        NSArray<MailItem *> *allStoredEmails = [MailItem loadFromPlist];
-        
-        // 筛选未读邮件
-        NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in allStoredEmails) {
-            if (!email.isRead) {
-                [filtered addObject:email];
-            }
-        }
-        
-        weakSelf.filteredEmails = filtered;
-        [weakSelf.tableView reloadData];
-        [weakSelf.loadingIndicator stopAnimating];
+        weakSelf.currentFilterType = @"unread";
+        weakSelf.currentPage = 0;
+        weakSelf.hasMoreData = YES;
+        [weakSelf loadEmails];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"with_attachments", @"MailTab", @"With Attachments")
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
         weakSelf.isSearching = YES;
-        
-        // 显示加载指示器
-        [weakSelf.loadingIndicator startAnimating];
-        
-        // 从持久化存储加载全部邮件
-        NSArray<MailItem *> *allStoredEmails = [MailItem loadFromPlist];
-        
-        // 筛选带附件邮件
-        NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in allStoredEmails) {
-            if (email.hasAttachment) {
-                [filtered addObject:email];
-            }
-        }
-        
-        weakSelf.filteredEmails = filtered;
-        [weakSelf.tableView reloadData];
-        [weakSelf.loadingIndicator stopAnimating];
+        weakSelf.currentFilterType = @"attachment";
+        weakSelf.currentPage = 0;
+        weakSelf.hasMoreData = YES;
+        [weakSelf loadEmails];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"cancel", @"MailTab", @"Cancel")
@@ -422,7 +431,7 @@
     [cell configureWithEmail:email];
     
     // 触发加载更多数据的逻辑
-    if (indexPath.row >= self.filteredEmails.count - 5 && !self.isLoading && self.hasMoreData && !self.isSearching) {
+    if (indexPath.row >= self.filteredEmails.count - 5 && !self.isLoading && self.hasMoreData) {
         [self loadMoreData];
     }
     
@@ -487,7 +496,7 @@
     CGFloat contentHeight = scrollView.contentSize.height;
     CGFloat screenHeight = scrollView.frame.size.height;
     
-    if (offsetY > contentHeight - screenHeight - 100 && !self.isLoading && self.hasMoreData && !self.isSearching) {
+    if (offsetY > contentHeight - screenHeight - 100 && !self.isLoading && self.hasMoreData) {
         [self loadMoreData];
     }
 }
