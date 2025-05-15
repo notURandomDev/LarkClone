@@ -14,6 +14,7 @@
 // 属性
 @property (nonatomic, strong) MailItem *email;
 @property (nonatomic, copy) void (^onMarkAsRead)(NSString *emailId);
+@property (nonatomic, copy) void (^onDeleteEmail)(NSString *emailId);
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *contentView;
@@ -36,11 +37,15 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithEmail:(MailItem *)email onMarkAsRead:(void (^)(NSString *emailId))onMarkAsRead {
+// 只保留一个初始化方法
+- (instancetype)initWithEmail:(MailItem *)email
+                 onMarkAsRead:(void (^)(NSString *emailId))onMarkAsRead
+                onDeleteEmail:(void (^)(NSString *emailId))onDeleteEmail {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _email = email;
         _onMarkAsRead = onMarkAsRead;
+        _onDeleteEmail = onDeleteEmail;
     }
     return self;
 }
@@ -285,10 +290,22 @@
 }
 
 - (void)trashButtonTapped {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"删除"
-                                                                   message:@"删除功能正在开发中"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"删除邮件"
+                                                                   message:@"确定要删除这封邮件吗？"
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    
+    __weak typeof(self) weakSelf = self; // 使用 weakSelf 避免循环引用
+    [alert addAction:[UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        // 调用回调通知邮箱控制器删除邮件
+        if (weakSelf.onDeleteEmail) {
+            weakSelf.onDeleteEmail(weakSelf.email.id);
+        }
+        // 返回邮箱列表界面
+        [weakSelf.navigationController popViewControllerAnimated:YES];
+    }]];
+    
     [self presentViewController:alert animated:YES completion:nil];
 }
 

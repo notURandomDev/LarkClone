@@ -2,8 +2,6 @@
 //  MailItem.h
 //  LarkClone
 //
-//  Created by 张纪龙 on 2025/5/10.
-//
 
 #import <Foundation/Foundation.h>
 
@@ -11,17 +9,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MailItem : NSObject
 
-@property (nonatomic, strong, readonly) NSString *id;
-@property (nonatomic, strong, readonly) NSString *sender;
-@property (nonatomic, strong, readonly) NSString *subject;
-@property (nonatomic, strong, readonly) NSString *preview;
-@property (nonatomic, strong, readonly) NSDate *date;
+@property (nonatomic, readonly) NSString *id;
+@property (nonatomic, readonly) NSString *sender;
+@property (nonatomic, readonly) NSString *subject;
+@property (nonatomic, readonly) NSString *preview;
+@property (nonatomic, readonly) NSString *dateString;
+@property (nonatomic, readonly) NSDate *date;
 @property (nonatomic, assign) BOOL isRead;
-@property (nonatomic, assign, readonly) BOOL hasAttachment;
-@property (nonatomic, assign, readonly) BOOL isOfficial;
-@property (nonatomic, strong, readonly, nullable) NSNumber *emailCount;
+@property (nonatomic, readonly) BOOL hasAttachment;
+@property (nonatomic, readonly) BOOL isOfficial;
+@property (nonatomic, readonly, nullable) NSNumber *emailCount;
 
-// 初始化方法
+#pragma mark - Initialization
 - (instancetype)initWithId:(NSString *)id
                     sender:(NSString *)sender
                    subject:(NSString *)subject
@@ -32,20 +31,28 @@ NS_ASSUME_NONNULL_BEGIN
                 isOfficial:(BOOL)isOfficial
                 emailCount:(nullable NSNumber *)emailCount;
 
-// 加载邮件数据
+#pragma mark - Loading Methods
+// 基本加载方法
 + (NSArray<MailItem *> *)loadFromPlist;
++ (NSArray<MailItem *> *)mockEmails;
 
-// 异步加载邮件数据
+// 分页加载方法
 + (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion;
-
-// 分页加载邮件
 + (void)loadFromRustBridgeWithPage:(NSInteger)page
                           pageSize:(NSInteger)pageSize
                         completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion;
 
+// 筛选和搜索方法
++ (void)loadCombinedResultsWithPage:(NSInteger)page
+                           pageSize:(NSInteger)pageSize
+                         searchText:(NSString *)searchText
+                         filterType:(NSString *)filterType
+                         completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion;
 
-// 获取模拟数据
-+ (NSArray<MailItem *> *)mockEmails;
+#pragma mark - File Management
++ (NSString *)getMailPlistPath;
++ (BOOL)updateReadStatus:(NSString *)emailId isRead:(BOOL)isRead;
++ (BOOL)deleteEmail:(NSString *)emailId;
 
 @end
 
