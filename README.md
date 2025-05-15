@@ -74,13 +74,13 @@ cargo build --release --target aarch64-apple-ios-sim
 **运行构建 LarkClone 的脚本：**
 
 ```bash
-./scripts/xcodebuild/build.sh
+bash ./scripts/xcodebuild/build.sh
 ```
 
 **运行清理 LarkClone 构建的脚本：**
 
 ```bash
-./scripts/xcodebuild/clean.sh
+bash ./scripts/xcodebuild/clean.sh
 ```
 
 ### 使用 simctl 控制模拟器
@@ -92,13 +92,13 @@ cargo build --release --target aarch64-apple-ios-sim
 **启动模拟器，并安装和运行应用：**
 
 ```bash
-./scripts/simctl/run.sh
+bash ./scripts/simctl/run.sh
 ```
 
 **关闭正在运行的模拟器：**
 
 ```bash
-./scripts/simctl/shutdown.sh
+bash ./scripts/simctl/shutdown.sh
 ```
 
 ### 前置步骤（Deprecated）
