@@ -36,6 +36,11 @@ if [ $? -eq 0 ] && [ -x "$COMPILED_BINARY" ]; then
         echo "✓ 成功生成邮件数据"
         [ -f "$OUTPUT_FILE" ] && echo "  文件: $OUTPUT_FILE"
         rm -rf "$TEMP_DIR"
+        
+        # 将生成的plist文件添加到Copy Bundle Resources
+        echo "将 $OUTPUT_FILE 添加到Copy Bundle Resources..."
+        cp "${OUTPUT_FILE}" "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/mock_emails.plist"
+        
         exit 0
     else
         echo "✗ 执行失败，错误码: $RESULT"

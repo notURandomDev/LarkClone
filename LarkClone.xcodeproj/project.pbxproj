@@ -913,6 +913,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/LarkClone/Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift",
+				"$(SRCROOT)/scripts/run_generate_contacts.sh",
 			);
 			outputFileListPaths = (
 			);
@@ -921,7 +922,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\nset +e\n\n# 为脚本添加执行权限\nchmod +x \"${SRCROOT}/scripts/run_generate_contacts.sh\"\n\n# 执行脚本\n\"${SRCROOT}/scripts/run_generate_contacts.sh\"\n\nexit 0\n\n";
+			shellScript = "#!/bin/bash\n\nset +e\n\n\n\n# 执行脚本\nbash \"${SRCROOT}/scripts/run_generate_contacts.sh\"\n\nexit 0\n\n";
 		};
 		E04867F92DD4A83900BA8434 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -932,6 +933,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/LarkClone/Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift",
+				"$(SRCROOT)/scripts/run_generate_mails.sh",
 			);
 			outputFileListPaths = (
 			);
