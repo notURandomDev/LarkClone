@@ -47,7 +47,6 @@ Cargo.lock
 
 # 其他
 ## 虚拟机和 IDE 文件
-.vscode/
 .idea/
 
 ## macOS 系统文件
