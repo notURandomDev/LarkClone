@@ -274,6 +274,9 @@
             break;
         }
     }
+    
+    // 持久化保存已读状态到plist文件
+    [MailItem updateReadStatus:emailId isRead:YES];
 }
 
 #pragma mark - Actions
