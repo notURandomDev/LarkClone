@@ -47,6 +47,25 @@ NS_ASSUME_NONNULL_BEGIN
 // 获取模拟数据
 + (NSArray<MailItem *> *)mockEmails;
 
+/**
+ * 将邮件的已读状态并持久化到文件
+ * @param emailId 需要更新的邮件ID
+ * @param isRead 是否已读
+ * @return 操作是否成功
+ */
++ (BOOL)updateReadStatus:(NSString *)emailId isRead:(BOOL)isRead;
+
+/**
+ * 删除指定ID的邮件并持久化到文件
+ * @param emailId 需要删除的邮件ID
+ * @return 操作是否成功
+ */
++ (BOOL)deleteEmail:(NSString *)emailId;
+
+
+ // 先尝试获取Documents目录下的文件，如果不存在则复制bundle中的文件
++ (NSString *)getMailPlistPath;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -59,7 +59,7 @@
 + (void)loadFromRustBridgeWithPage:(NSInteger)page
                           pageSize:(NSInteger)pageSize
                         completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
+    NSString *path = [self getMailPlistPath];
     if (!path) {
         NSLog(@"⚠️ 找不到 plist 路径，fallback 到默认数据");
         NSArray *mockData = [self mockEmails];
@@ -130,19 +130,125 @@
     }];
 }
 
++ (NSString *)getMailPlistPath {
+    // 获取Documents目录路径
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *plistPath = [documentsPath stringByAppendingPathComponent:@"mock_emails.plist"];
+    
+    // 检查文件是否存在，如果不存在则从bundle中复制
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:plistPath]) {
+        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
+        if (bundlePath) {
+            NSError *error;
+            [fileManager copyItemAtPath:bundlePath toPath:plistPath error:&error];
+            if (error) {
+                NSLog(@"无法复制plist文件: %@", error.localizedDescription);
+                // 不要返回bundle路径，而是创建一个新的空plist
+                NSArray *mockData = [self mockEmails];
+                NSMutableArray *dictArray = [NSMutableArray array];
+                for (MailItem *item in mockData) {
+                    [dictArray addObject:@{
+                        @"id": item.id,
+                        @"sender": item.sender,
+                        @"subject": item.subject,
+                        @"preview": item.preview ?: @"",
+                        @"date": item.dateString,
+                        @"isRead": @(item.isRead),
+                        @"hasAttachment": @(item.hasAttachment),
+                        @"isOfficial": @(item.isOfficial),
+                        @"emailCount": item.emailCount ?: [NSNull null]
+                    }];
+                }
+                BOOL success = [dictArray writeToFile:plistPath atomically:YES];
+                if (!success) {
+                    NSLog(@"创建新的plist文件失败");
+                } else {
+                    NSLog(@"成功创建新的plist文件");
+                }
+                return plistPath;
+            }
+        } else {
+            NSLog(@"在bundle中找不到mock_emails.plist文件");
+            // 创建一个包含默认数据的plist文件
+            NSArray *mockData = [self mockEmails];
+            NSMutableArray *dictArray = [NSMutableArray array];
+            for (MailItem *item in mockData) {
+                [dictArray addObject:@{
+                    @"id": item.id,
+                    @"sender": item.sender,
+                    @"subject": item.subject,
+                    @"preview": item.preview ?: @"",
+                    @"date": item.dateString,
+                    @"isRead": @(item.isRead),
+                    @"hasAttachment": @(item.hasAttachment),
+                    @"isOfficial": @(item.isOfficial),
+                    @"emailCount": item.emailCount ?: [NSNull null]
+                }];
+            }
+            BOOL success = [dictArray writeToFile:plistPath atomically:YES];
+            if (!success) {
+                NSLog(@"创建新的plist文件失败");
+                // 如果创建失败，返回nil可能导致程序崩溃，所以返回一个临时路径
+                return NSTemporaryDirectory();
+            } else {
+                NSLog(@"成功创建新的plist文件");
+            }
+        }
+    }
+    
+    return plistPath;
+}
+
++ (BOOL)updateReadStatus:(NSString *)emailId isRead:(BOOL)isRead {
+    // 获取plist文件路径
+    NSString *plistPath = [self getMailPlistPath];
+    if (!plistPath) {
+        NSLog(@"无法获取plist文件路径");
+        return NO;
+    }
+    
+    // 读取plist文件内容
+    NSMutableArray *emails = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    if (!emails) {
+        NSLog(@"无法读取plist文件内容");
+        return NO;
+    }
+    
+    // 查找并更新邮件的已读状态
+    BOOL found = NO;
+    for (NSMutableDictionary *email in emails) {
+        if ([email[@"id"] isEqualToString:emailId]) {
+            email[@"isRead"] = isRead ? @YES : @NO;
+            found = YES;
+            break;
+        }
+    }
+    
+    if (!found) {
+        NSLog(@"未找到ID为%@的邮件", emailId);
+        return NO;
+    }
+    
+    // 写回plist文件
+    BOOL success = [emails writeToFile:plistPath atomically:YES];
+    if (!success) {
+        NSLog(@"写入plist文件失败");
+    } else {
+        NSLog(@"成功更新邮件已读状态: ID=%@, isRead=%@", emailId, isRead ? @"YES" : @"NO");
+    }
+    
+    return success;
+}
+
 + (NSArray<MailItem *> *)loadFromPlist {
-    // 从应用程序包中读取loadFromPlist
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist" inDirectory:@"MockData"];
+    // 获取plist文件路径
+    NSString *path = [self getMailPlistPath];
     
     if (!path) {
-        // 如果找不到文件，尝试直接从根目录加载
-        path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
-        
-        if (!path) {
-            // 如果仍然找不到文件，使用模拟数据
-            NSLog(@"警告: 无法找到mock_emails.plist文件，使用内置模拟数据");
-            return [self mockEmails];
-        }
+        // 如果找不到文件，使用模拟数据
+        NSLog(@"警告: 无法找到mock_emails.plist文件，使用内置模拟数据");
+        return [self mockEmails];
     }
     
     @autoreleasepool {
@@ -180,6 +286,50 @@
         NSLog(@"成功从plist加载了 %lu 封邮件", (unsigned long)items.count);
         return [items copy];
     }
+}
+
++ (BOOL)deleteEmail:(NSString *)emailId {
+    // 获取plist文件路径
+    NSString *plistPath = [self getMailPlistPath];
+    if (!plistPath) {
+        NSLog(@"无法获取plist文件路径");
+        return NO;
+    }
+    
+    // 读取plist文件内容
+    NSMutableArray *emails = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    if (!emails) {
+        NSLog(@"无法读取plist文件内容");
+        return NO;
+    }
+    
+    // 查找并删除邮件
+    NSInteger indexToDelete = -1;
+    for (NSInteger i = 0; i < emails.count; i++) {
+        NSDictionary *email = emails[i];
+        if ([email[@"id"] isEqualToString:emailId]) {
+            indexToDelete = i;
+            break;
+        }
+    }
+    
+    if (indexToDelete == -1) {
+        NSLog(@"未找到ID为%@的邮件", emailId);
+        return NO;
+    }
+    
+    // 删除邮件
+    [emails removeObjectAtIndex:indexToDelete];
+    
+    // 写回plist文件
+    BOOL success = [emails writeToFile:plistPath atomically:YES];
+    if (!success) {
+        NSLog(@"写入plist文件失败");
+    } else {
+        NSLog(@"成功删除邮件: ID=%@", emailId);
+    }
+    
+    return success;
 }
 
 + (NSArray<MailItem *> *)mockEmails {

@@ -337,28 +337,48 @@
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
         weakSelf.isSearching = YES;
+        
+        // 显示加载指示器
+        [weakSelf.loadingIndicator startAnimating];
+        
+        // 从持久化存储加载全部邮件
+        NSArray<MailItem *> *allStoredEmails = [MailItem loadFromPlist];
+        
+        // 筛选未读邮件
         NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in weakSelf.allEmails) {
+        for (MailItem *email in allStoredEmails) {
             if (!email.isRead) {
                 [filtered addObject:email];
             }
         }
+        
         weakSelf.filteredEmails = filtered;
         [weakSelf.tableView reloadData];
+        [weakSelf.loadingIndicator stopAnimating];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"with_attachments", @"MailTab", @"With Attachments")
                                              style:UIAlertActionStyleDefault
                                            handler:^(UIAlertAction * _Nonnull action) {
         weakSelf.isSearching = YES;
+        
+        // 显示加载指示器
+        [weakSelf.loadingIndicator startAnimating];
+        
+        // 从持久化存储加载全部邮件
+        NSArray<MailItem *> *allStoredEmails = [MailItem loadFromPlist];
+        
+        // 筛选带附件邮件
         NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in weakSelf.allEmails) {
+        for (MailItem *email in allStoredEmails) {
             if (email.hasAttachment) {
                 [filtered addObject:email];
             }
         }
+        
         weakSelf.filteredEmails = filtered;
         [weakSelf.tableView reloadData];
+        [weakSelf.loadingIndicator stopAnimating];
     }]];
     
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"cancel", @"MailTab", @"Cancel")
@@ -406,18 +426,52 @@
     return cell;
 }
 
+// 添加删除邮件的方法
+- (void)deleteEmail:(NSString *)emailId {
+    // 从内存中的数组删除邮件
+    NSMutableArray *allEmailsCopy = [self.allEmails mutableCopy];
+    for (NSInteger i = 0; i < allEmailsCopy.count; i++) {
+        MailItem *email = allEmailsCopy[i];
+        if ([email.id isEqualToString:emailId]) {
+            [allEmailsCopy removeObjectAtIndex:i];
+            break;
+        }
+    }
+    self.allEmails = allEmailsCopy;
+    
+    // 从过滤后的数组删除邮件
+    for (NSInteger i = 0; i < self.filteredEmails.count; i++) {
+        MailItem *email = self.filteredEmails[i];
+        if ([email.id isEqualToString:emailId]) {
+            [self.filteredEmails removeObjectAtIndex:i];
+            break;
+        }
+    }
+    
+    // 刷新表格视图
+    [self.tableView reloadData];
+    
+    // 持久化删除到plist文件
+    [MailItem deleteEmail:emailId];
+}
+
+// 添加删除回调
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     MailItem *selectedEmail = self.filteredEmails[indexPath.row];
     
-    // 创建详情页面并传递标记已读的回调
+    // 创建详情页面并传递标记已读和删除的回调
     __weak typeof(self) weakSelf = self;
-    EmailDetailVC *detailVC = [[EmailDetailVC alloc] initWithEmail:selectedEmail onMarkAsRead:^(NSString *emailId) {
+    EmailDetailVC *detailVC = [[EmailDetailVC alloc] initWithEmail:selectedEmail
+                                                      onMarkAsRead:^(NSString *emailId) {
         [weakSelf markEmailAsRead:emailId];
+    }
+                                                     onDeleteEmail:^(NSString *emailId) {
+        [weakSelf deleteEmail:emailId];
     }];
     
-    // 隐藏标签栏
+    // 设置隐藏标签栏
     detailVC.hidesBottomBarWhenPushed = YES;
     
     [self.navigationController pushViewController:detailVC animated:YES];

@@ -11,8 +11,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface EmailDetailVC : UIViewController
 
-// 初始化方法，传入email和标记已读的回调
-- (instancetype)initWithEmail:(MailItem *)email onMarkAsRead:(void (^)(NSString *emailId))onMarkAsRead;
+// 修改初始化方法，添加删除回调参数
+- (instancetype)initWithEmail:(MailItem *)email
+                 onMarkAsRead:(void (^)(NSString *emailId))onMarkAsRead
+                onDeleteEmail:(void (^)(NSString *emailId))onDeleteEmail;
 
 @end
 
