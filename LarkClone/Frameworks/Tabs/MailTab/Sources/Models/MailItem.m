@@ -55,42 +55,80 @@
 
 #pragma mark - Static Methods
 
-+ (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion {
+// 新增分页加载方法
++ (void)loadFromRustBridgeWithPage:(NSInteger)page
+                          pageSize:(NSInteger)pageSize
+                        completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion {
     NSString *path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
     if (!path) {
         NSLog(@"⚠️ 找不到 plist 路径，fallback 到默认数据");
-        completion([self mockEmails]);
+        NSArray *mockData = [self mockEmails];
+        // 在主线程返回结果
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(mockData, NO, mockData.count);
+        });
         return;
     }
 
-    [RustBridge fetchMailItemsWithPage:0
-                              pageSize:10000
+    // 使用真实的分页参数
+    [RustBridge fetchMailItemsWithPage:(int)page
+                              pageSize:(int)pageSize
                               filePath:path
                             completion:^(NSArray<ObjCMailItem *> * _Nullable objcItems, NSError * _Nullable error) {
         if (error || objcItems == nil) {
             NSLog(@"❌ RustBridge 加载失败：%@", error);
-            completion([self mockEmails]);
+            NSArray *mockData = [self mockEmails];
+            // 在主线程返回结果
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(mockData, NO, mockData.count);
+            });
             return;
         }
 
+        // 获取总条目数（模拟，实际应该从Rust获取）
+        // 这里假设获取全部数据以确定总数量
+        NSInteger totalItems = 0;
+        BOOL hasMoreData = NO;
+        
+        if (objcItems.count == pageSize) {
+            // 如果返回数量等于页大小，可能还有更多数据
+            // 这是一个简单的启发式方法，更好的方案是让Rust返回总数
+            hasMoreData = YES;
+            totalItems = (page + 1) * pageSize + pageSize; // 估计值
+        } else {
+            // 如果返回数量小于页大小，那么这是最后一页
+            totalItems = page * pageSize + objcItems.count;
+            hasMoreData = NO;
+        }
+        
         NSMutableArray<MailItem *> *converted = [NSMutableArray arrayWithCapacity:objcItems.count];
         for (ObjCMailItem *item in objcItems) {
             MailItem *mail = [[MailItem alloc] initWithId:item.id
-                                                    sender:item.sender
-                                                   subject:item.subject
-                                                   preview:item.preview
-                                                dateString:item.dateString
-                                                    isRead:item.isRead
-                                             hasAttachment:item.hasAttachment
-                                                isOfficial:item.isOfficial
-                                                emailCount:item.emailCount];
+                                                   sender:item.sender
+                                                  subject:item.subject
+                                                  preview:item.preview
+                                               dateString:item.dateString
+                                                   isRead:item.isRead
+                                            hasAttachment:item.hasAttachment
+                                               isOfficial:item.isOfficial
+                                               emailCount:item.emailCount];
             [converted addObject:mail];
         }
-
-        completion([converted copy]);
+        
+        // 确保在主线程上返回结果
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion([converted copy], hasMoreData, totalItems);
+        });
     }];
 }
 
+// 为了向后兼容保留的方法
++ (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion {
+    // 调用新方法，默认加载第一页，每页15条
+    [self loadFromRustBridgeWithPage:0 pageSize:15 completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+        completion(items);
+    }];
+}
 
 + (NSArray<MailItem *> *)loadFromPlist {
     // 从应用程序包中读取loadFromPlist
