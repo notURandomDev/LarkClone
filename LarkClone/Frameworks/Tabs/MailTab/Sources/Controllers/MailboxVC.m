@@ -113,6 +113,7 @@
     
     // 添加视图
     [self.view addSubview:self.searchBarView];
+    [self.view addSubview:self.searchBarView];
     [self.view addSubview:self.tableView];
     
     // 设置约束
@@ -415,6 +416,9 @@
     EmailDetailVC *detailVC = [[EmailDetailVC alloc] initWithEmail:selectedEmail onMarkAsRead:^(NSString *emailId) {
         [weakSelf markEmailAsRead:emailId];
     }];
+    
+    // 隐藏标签栏
+    detailVC.hidesBottomBarWhenPushed = YES;
     
     [self.navigationController pushViewController:detailVC animated:YES];
 }
