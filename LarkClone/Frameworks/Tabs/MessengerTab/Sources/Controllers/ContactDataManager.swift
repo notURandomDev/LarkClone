@@ -49,7 +49,7 @@ class ContactDataManager {
             }
         }
     
-    // 从plist文件加载联系人数据
+    //「Deprecated」从plist文件加载联系人数据
     private func loadContactsFromPlist() {
         // 尝试获取文件路径 - 先尝试从Bundle中读取
         if let path = Bundle.main.path(forResource: "mock_contacts", ofType: "plist") {
