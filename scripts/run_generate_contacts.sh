@@ -54,8 +54,14 @@ fi
 
 # 检查结果
 if [ $? -eq 0 ]; then
-    echo "✓ 成功生成联系人数据"
+    echo "✓ 成功生成联系人数据！！！"
     [ -f "$OUTPUT_FILE" ] && echo "  文件: $OUTPUT_FILE"
+    
+    # 将生成的plist文件添加到Copy Bundle Resources
+    echo "将 $OUTPUT_FILE 添加到Copy Bundle Resources..."
+    cp "${OUTPUT_FILE}" "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/mock_contacts.plist"
+    
+    
 else
     echo "✗ 生成失败"
     exit 1
