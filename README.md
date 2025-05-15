@@ -15,6 +15,8 @@
 
 ### 快速配置（推荐）
 
+> 注：在最新的代码版本中，无需进行该配置；在首次构建项目时，Rust 工具链会自动下载。下载需要 1min - 2min（视网络情况），请耐心等待
+
 成功 clone 项目到本地之后，请在项目根目录中打开终端，运行 `./setup.sh` 脚本安装所需的 Rust 工具链、目标平台与头文件生成工具：
 
 ```bash
@@ -62,6 +64,42 @@ cargo build --release --target aarch64-apple-ios-sim
 ```
 
 此方法只是目前的 workaround ，在 Run Script 中构建 RustSDK 会在以后的版本中支持。
+
+### 使用 xcodebuild 进行构建
+
+如果你想将此项目进行 CI/CD 集成；或者有脱离 Xcode，使用其它 IDE 或者代码编辑器进行开发的需求，可以通过命令行进行项目的构建：
+
+> 注：请在项目根目录中运行指令
+
+**运行构建 LarkClone 的脚本：**
+
+```bash
+./scripts/xcodebuild/build.sh
+```
+
+**运行清理 LarkClone 构建的脚本：**
+
+```bash
+./scripts/xcodebuild/clean.sh
+```
+
+### 使用 simctl 控制模拟器
+
+在项目构建完成之后，可以通过以下命令来控制模拟器以及 _Simulator_ 的图形化界面：
+
+> 注：请在项目根目录中运行指令
+
+**启动模拟器，并安装和运行应用：**
+
+```bash
+./scripts/simctl/run.sh
+```
+
+**关闭正在运行的模拟器：**
+
+```bash
+./scripts/simctl/shutdown.sh
+```
 
 ### 前置步骤（Deprecated）
 
