@@ -5,7 +5,7 @@
 # Function to show help
 show_help() {
     echo "Usage: ./build.sh [OPTION]"
-    echo "Build and manage the LarkClone application."
+    echo "Build and manage the LarkClone application using bazel."
     echo
     echo "Options:"
     echo "  1, --clean     Clean build directory"
@@ -28,6 +28,8 @@ clean_build() {
 setupenv(){
     echo "Setting up rust development environment..."
     ./script/setup_rust.sh
+    echo "Setting up bazel development environment..."
+    ./script/setup_bazel.sh
 }
 
 generate(){
