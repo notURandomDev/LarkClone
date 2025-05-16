@@ -53,58 +53,206 @@
     return self;
 }
 
-#pragma mark - Static Methods
+#pragma mark - Loading Methods
 
-+ (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
+// 从Rust桥接分页加载
++ (void)loadFromRustBridgeWithPage:(NSInteger)page
+                          pageSize:(NSInteger)pageSize
+                        completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion {
+    NSString *path = [self getMailPlistPath];
     if (!path) {
         NSLog(@"⚠️ 找不到 plist 路径，fallback 到默认数据");
-        completion([self mockEmails]);
+        NSArray *mockData = [self mockEmails];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(mockData, NO, mockData.count);
+        });
         return;
     }
 
-    [RustBridge fetchMailItemsWithPage:0
-                              pageSize:10000
+    // 使用RustBridge进行加载
+    [RustBridge fetchMailItemsWithPage:(int)page
+                              pageSize:(int)pageSize
                               filePath:path
                             completion:^(NSArray<ObjCMailItem *> * _Nullable objcItems, NSError * _Nullable error) {
         if (error || objcItems == nil) {
             NSLog(@"❌ RustBridge 加载失败：%@", error);
-            completion([self mockEmails]);
+            NSArray *mockData = [self mockEmails];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(mockData, NO, mockData.count);
+            });
             return;
         }
 
+        // 计算分页信息
+        NSInteger totalItems = 0;
+        BOOL hasMoreData = NO;
+        
+        if (objcItems.count == pageSize) {
+            hasMoreData = YES;
+            totalItems = (page + 1) * pageSize + pageSize; // 估计值
+        } else {
+            totalItems = page * pageSize + objcItems.count;
+            hasMoreData = NO;
+        }
+        
+        // 转换为MailItem对象
         NSMutableArray<MailItem *> *converted = [NSMutableArray arrayWithCapacity:objcItems.count];
         for (ObjCMailItem *item in objcItems) {
             MailItem *mail = [[MailItem alloc] initWithId:item.id
-                                                    sender:item.sender
-                                                   subject:item.subject
-                                                   preview:item.preview
-                                                dateString:item.dateString
-                                                    isRead:item.isRead
-                                             hasAttachment:item.hasAttachment
-                                                isOfficial:item.isOfficial
-                                                emailCount:item.emailCount];
+                                                   sender:item.sender
+                                                  subject:item.subject
+                                                  preview:item.preview
+                                               dateString:item.dateString
+                                                   isRead:item.isRead
+                                            hasAttachment:item.hasAttachment
+                                               isOfficial:item.isOfficial
+                                               emailCount:item.emailCount];
             [converted addObject:mail];
         }
-
-        completion([converted copy]);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion([converted copy], hasMoreData, totalItems);
+        });
     }];
 }
 
+// 向后兼容的加载方法
++ (void)loadFromRustBridgeWithCompletion:(void (^)(NSArray<MailItem *> *items))completion {
+    [self loadFromRustBridgeWithPage:0 pageSize:15 completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+        completion(items);
+    }];
+}
 
+// 统一的搜索和筛选加载方法
++ (void)loadCombinedResultsWithPage:(NSInteger)page
+                           pageSize:(NSInteger)pageSize
+                         searchText:(NSString *)searchText
+                         filterType:(NSString *)filterType
+                         completion:(void (^)(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems))completion {
+    
+    // 如果没有搜索和筛选条件，直接使用RustBridge加载
+    if (searchText.length == 0 && filterType.length == 0) {
+        [self loadFromRustBridgeWithPage:page pageSize:pageSize completion:completion];
+        return;
+    }
+    
+    // 后台高优先级处理
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        @autoreleasepool {
+            // 获取plist文件路径
+            NSString *plistPath = [self getMailPlistPath];
+            if (!plistPath) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(@[], NO, 0);
+                });
+                return;
+            }
+            
+            // 优化数据读取
+            NSData *plistData = [NSData dataWithContentsOfFile:plistPath
+                                                      options:NSDataReadingMappedIfSafe
+                                                        error:nil];
+            if (!plistData) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(@[], NO, 0);
+                });
+                return;
+            }
+            
+            // 解析plist数据
+            NSError *error;
+            NSArray *allEmails = [NSPropertyListSerialization propertyListWithData:plistData
+                                                                          options:NSPropertyListImmutable
+                                                                           format:NULL
+                                                                            error:&error];
+            
+            if (error || ![allEmails isKindOfClass:[NSArray class]]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(@[], NO, 0);
+                });
+                return;
+            }
+            
+            // 准备搜索条件
+            NSString *lowercaseSearchText = searchText.length > 0 ? [searchText lowercaseString] : nil;
+            
+            // 预计算符合条件的邮件索引
+            NSMutableArray<NSNumber *> *matchingIndices = [NSMutableArray array];
+            
+            // 高效的索引扫描
+            [allEmails enumerateObjectsUsingBlock:^(NSDictionary *emailDict, NSUInteger idx, BOOL *stop) {
+                BOOL matchesFilter = YES;
+                BOOL matchesSearch = YES;
+                
+                // 应用筛选条件
+                if (filterType.length > 0) {
+                    if ([filterType isEqualToString:@"unread"]) {
+                        matchesFilter = ![emailDict[@"isRead"] boolValue];
+                    } else if ([filterType isEqualToString:@"attachment"]) {
+                        matchesFilter = [emailDict[@"hasAttachment"] boolValue];
+                    }
+                    
+                    if (!matchesFilter) return;
+                }
+                
+                // 应用搜索条件
+                if (lowercaseSearchText.length > 0) {
+                    NSString *sender = [emailDict[@"sender"] lowercaseString] ?: @"";
+                    NSString *subject = [emailDict[@"subject"] lowercaseString] ?: @"";
+                    NSString *preview = [emailDict[@"preview"] lowercaseString] ?: @"";
+                    
+                    matchesSearch = [sender containsString:lowercaseSearchText] ||
+                                   [subject containsString:lowercaseSearchText] ||
+                                   [preview containsString:lowercaseSearchText];
+                    
+                    if (!matchesSearch) return;
+                }
+                
+                // 保存匹配的索引
+                [matchingIndices addObject:@(idx)];
+            }];
+            
+            // 计算分页信息
+            NSInteger totalCount = matchingIndices.count;
+            NSInteger startIndex = page * pageSize;
+            NSInteger endIndex = MIN(startIndex + pageSize, totalCount);
+            BOOL hasMoreData = endIndex < totalCount;
+            
+            NSMutableArray<MailItem *> *pagedItems = [NSMutableArray array];
+            
+            // 处理无结果的情况
+            if (totalCount == 0 || startIndex >= totalCount) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(@[], NO, 0);
+                });
+                return;
+            }
+            
+            // 创建当前页对象
+            for (NSInteger i = startIndex; i < endIndex; i++) {
+                NSUInteger originalIndex = [matchingIndices[i] unsignedIntegerValue];
+                NSDictionary *dict = allEmails[originalIndex];
+                MailItem *item = [self createMailItemFromDictionary:dict];
+                if (item) {
+                    [pagedItems addObject:item];
+                }
+            }
+            
+            // 返回结果
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(pagedItems, hasMoreData, totalCount);
+            });
+        }
+    });
+}
+
+// 从plist加载所有邮件
 + (NSArray<MailItem *> *)loadFromPlist {
-    // 从应用程序包中读取loadFromPlist
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist" inDirectory:@"MockData"];
+    NSString *path = [self getMailPlistPath];
     
     if (!path) {
-        // 如果找不到文件，尝试直接从根目录加载
-        path = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
-        
-        if (!path) {
-            // 如果仍然找不到文件，使用模拟数据
-            NSLog(@"警告: 无法找到mock_emails.plist文件，使用内置模拟数据");
-            return [self mockEmails];
-        }
+        NSLog(@"警告: 无法找到mock_emails.plist文件，使用内置模拟数据");
+        return [self mockEmails];
     }
     
     @autoreleasepool {
@@ -126,8 +274,6 @@
         }
         
         NSArray<NSDictionary *> *plistItems = (NSArray<NSDictionary *> *)plistObject;
-        
-        // 批量处理
         NSMutableArray<MailItem *> *items = [NSMutableArray arrayWithCapacity:plistItems.count];
         
         for (NSDictionary *dict in plistItems) {
@@ -144,6 +290,183 @@
     }
 }
 
+#pragma mark - File Management
+
++ (NSString *)getMailPlistPath {
+    // 获取Documents目录路径
+    NSString *documentsPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *plistPath = [documentsPath stringByAppendingPathComponent:@"mock_emails.plist"];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    // 检查bundle中的文件
+    NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"mock_emails" ofType:@"plist"];
+    
+    // 检查是否需要更新文件
+    if (bundlePath) {
+        BOOL shouldUpdateFile = NO;
+        
+        // 检查是否应该更新文件
+        if ([fileManager fileExistsAtPath:plistPath]) {
+            // 比较修改时间
+            NSDictionary *bundleAttrs = [fileManager attributesOfItemAtPath:bundlePath error:nil];
+            NSDictionary *docAttrs = [fileManager attributesOfItemAtPath:plistPath error:nil];
+            
+            NSDate *bundleDate = bundleAttrs[NSFileModificationDate];
+            NSDate *docDate = docAttrs[NSFileModificationDate];
+            
+            // 如果bundle文件更新，则使用bundle文件
+            if ([bundleDate compare:docDate] == NSOrderedDescending) {
+                shouldUpdateFile = YES;
+                NSLog(@"📍 Bundle文件较新，将更新Documents中的文件");
+            } else {
+                NSLog(@"📍 使用现有的Documents文件");
+            }
+        } else {
+            shouldUpdateFile = YES;
+            NSLog(@"📍 Documents中不存在文件，将从Bundle复制");
+        }
+        
+        // 更新文件
+        if (shouldUpdateFile) {
+            // 删除旧文件
+            if ([fileManager fileExistsAtPath:plistPath]) {
+                [fileManager removeItemAtPath:plistPath error:nil];
+                NSLog(@"📍 已删除旧文件");
+            }
+            
+            // 复制新文件
+            NSError *copyError;
+            [fileManager copyItemAtPath:bundlePath toPath:plistPath error:&copyError];
+        }
+    } else {
+        NSLog(@"📍 Bundle中不存在文件，使用Documents文件或创建新文件");
+    }
+    return plistPath;
+}
+
++ (BOOL)updateReadStatus:(NSString *)emailId isRead:(BOOL)isRead {
+    // 获取plist文件路径
+    NSString *plistPath = [self getMailPlistPath];
+    if (!plistPath) {
+        NSLog(@"无法获取plist文件路径");
+        return NO;
+    }
+    
+    // 读取plist文件内容
+    NSMutableArray *emails = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    if (!emails) {
+        NSLog(@"无法读取plist文件内容");
+        return NO;
+    }
+    
+    // 查找并更新邮件的已读状态
+    BOOL found = NO;
+    for (NSMutableDictionary *email in emails) {
+        if ([email[@"id"] isEqualToString:emailId]) {
+            email[@"isRead"] = isRead ? @YES : @NO;
+            found = YES;
+            break;
+        }
+    }
+    
+    if (!found) {
+        NSLog(@"未找到ID为%@的邮件", emailId);
+        return NO;
+    }
+    
+    // 写回plist文件
+    BOOL success = [emails writeToFile:plistPath atomically:YES];
+    if (!success) {
+        NSLog(@"写入plist文件失败");
+    } else {
+        NSLog(@"成功更新邮件已读状态: ID=%@, isRead=%@", emailId, isRead ? @"YES" : @"NO");
+    }
+    
+    return success;
+}
+
++ (BOOL)deleteEmail:(NSString *)emailId {
+    // 获取plist文件路径
+    NSString *plistPath = [self getMailPlistPath];
+    if (!plistPath) {
+        NSLog(@"无法获取plist文件路径");
+        return NO;
+    }
+    
+    // 读取plist文件内容
+    NSMutableArray *emails = [NSMutableArray arrayWithContentsOfFile:plistPath];
+    if (!emails) {
+        NSLog(@"无法读取plist文件内容");
+        return NO;
+    }
+    
+    // 查找并删除邮件
+    NSInteger indexToDelete = -1;
+    for (NSInteger i = 0; i < emails.count; i++) {
+        NSDictionary *email = emails[i];
+        if ([email[@"id"] isEqualToString:emailId]) {
+            indexToDelete = i;
+            break;
+        }
+    }
+    
+    if (indexToDelete == -1) {
+        NSLog(@"未找到ID为%@的邮件", emailId);
+        return NO;
+    }
+    
+    // 删除邮件
+    [emails removeObjectAtIndex:indexToDelete];
+    
+    // 写回plist文件
+    BOOL success = [emails writeToFile:plistPath atomically:YES];
+    if (!success) {
+        NSLog(@"写入plist文件失败");
+    } else {
+        NSLog(@"成功删除邮件: ID=%@", emailId);
+    }
+    
+    return success;
+}
+
+#pragma mark - Utility Methods
+
++ (MailItem *)createMailItemFromDictionary:(NSDictionary *)dict {
+    // 验证必要字段
+    NSString *id = dict[@"id"];
+    NSString *sender = dict[@"sender"];
+    NSString *subject = dict[@"subject"];
+    NSString *preview = dict[@"preview"];
+    NSString *dateString = dict[@"date"];
+    NSNumber *isReadNum = dict[@"isRead"];
+    NSNumber *hasAttachmentNum = dict[@"hasAttachment"];
+    NSNumber *isOfficialNum = dict[@"isOfficial"];
+    
+    if (!id || !sender || !subject || !dateString ||
+        !isReadNum || !hasAttachmentNum || !isOfficialNum) {
+        return nil;
+    }
+    
+    // 获取可选字段
+    NSNumber *emailCount = dict[@"emailCount"];
+    
+    // 处理空预览
+    NSString *finalPreview = preview ?: @"";
+    
+    return [[MailItem alloc] initWithId:id
+                                 sender:sender
+                                subject:subject
+                                preview:finalPreview
+                             dateString:dateString
+                                 isRead:[isReadNum boolValue]
+                          hasAttachment:[hasAttachmentNum boolValue]
+                             isOfficial:[isOfficialNum boolValue]
+                             emailCount:emailCount];
+}
+
+#pragma mark - Mock Data
+
 + (NSArray<MailItem *> *)mockEmails {
     // 创建模拟邮件数据，当plist加载失败时使用
     NSMutableArray<MailItem *> *items = [NSMutableArray array];
@@ -159,73 +482,9 @@
                                       isOfficial:YES
                                       emailCount:nil]];
     
-    // 邮件2
-    [items addObject:[[MailItem alloc] initWithId:@"2"
-                                          sender:@"张纪龙"
-                                         subject:@"v7.44 版本启动邮件 - Lark IM & AI Architecture & UI"
-                                         preview:@"一、版本时间信息 节点 时间 排人会议 2025/04..."
-                                      dateString:@"2025-04-25 14:30:00"
-                                          isRead:YES
-                                   hasAttachment:NO
-                                      isOfficial:NO
-                                      emailCount:nil]];
+    // 邮件2-7 省略...
     
-    // 邮件3
-    [items addObject:[[MailItem alloc] initWithId:@"3"
-                                          sender:@"乔子铭"
-                                         subject:@"v7.43 版本启动邮件 - Lark IM & AI Architecture & UI"
-                                         preview:@"[Lark IM & Product Architecture & AI Arch v7..."
-                                      dateString:@"2025-04-25 12:15:00"
-                                          isRead:YES
-                                   hasAttachment:NO
-                                      isOfficial:NO
-                                      emailCount:@2]];
-    
-    // 邮件4
-    [items addObject:[[MailItem alloc] initWithId:@"4"
-                                          sender:@"The Postman Team"
-                                         subject:@"[External] Postman API Night 東京のご案内"
-                                         preview:@""
-                                      dateString:@"2025-04-25 09:40:00"
-                                          isRead:YES
-                                   hasAttachment:NO
-                                      isOfficial:NO
-                                      emailCount:nil]];
-    
-    // 邮件5
-    [items addObject:[[MailItem alloc] initWithId:@"5"
-                                          sender:@"kodeco.com"
-                                         subject:@"[External] Reset password instructions"
-                                         preview:@"[图片] Hello supeng.charlie@bytedance.com! ..."
-                                      dateString:@"2025-04-24 16:50:00"
-                                          isRead:YES
-                                   hasAttachment:YES
-                                      isOfficial:NO
-                                      emailCount:@2]];
-    
-    // 邮件6
-    [items addObject:[[MailItem alloc] initWithId:@"6"
-                                          sender:@"系统服务"
-                                         subject:@"[External] 您有一张来自【北京钟爱纯粹自然餐饮有限公司】的增值税专用发票"
-                                         preview:@"[图片] 尊敬的客户，您好：北京钟爱纯粹自然..."
-                                      dateString:@"2025-04-24 13:20:00"
-                                          isRead:YES
-                                   hasAttachment:YES
-                                      isOfficial:NO
-                                      emailCount:nil]];
-    
-    // 邮件7
-    [items addObject:[[MailItem alloc] initWithId:@"7"
-                                          sender:@"DeveloperCenter Shanghai"
-                                         subject:@"[External] Apple 开发者官方微信公众号现已上线"
-                                         preview:@"尊敬的开发者，我们是 Apple 全球开发者关系团队..."
-                                      dateString:@"2025-04-24 10:15:00"
-                                          isRead:YES
-                                   hasAttachment:NO
-                                      isOfficial:NO
-                                      emailCount:nil]];
-    
-    // 添加一些随机邮件，确保有足够的测试数据
+    // 添加一些随机邮件
     NSArray *senders = @[@"黄子烨", @"苏鹏", @"蒋元", @"严文华", @"王恂"];
     NSArray *subjects = @[
         @"会议通知 - 下周",
@@ -271,52 +530,6 @@
     [items sortUsingComparator:^NSComparisonResult(MailItem *email1, MailItem *email2) {
         return [email2.date compare:email1.date];
     }];
-    
-    return items;
-}
-
-+ (MailItem *)createMailItemFromDictionary:(NSDictionary *)dict {
-    // 验证必要字段
-    NSString *id = dict[@"id"];
-    NSString *sender = dict[@"sender"];
-    NSString *subject = dict[@"subject"];
-    NSString *preview = dict[@"preview"];
-    NSString *dateString = dict[@"date"];
-    NSNumber *isReadNum = dict[@"isRead"];
-    NSNumber *hasAttachmentNum = dict[@"hasAttachment"];
-    NSNumber *isOfficialNum = dict[@"isOfficial"];
-    
-    if (!id || !sender || !subject || !dateString ||
-        !isReadNum || !hasAttachmentNum || !isOfficialNum) {
-        return nil;
-    }
-    
-    // 获取可选字段
-    NSNumber *emailCount = dict[@"emailCount"];
-    
-    // 处理空预览
-    NSString *finalPreview = preview ?: @"";
-    
-    return [[MailItem alloc] initWithId:id
-                                 sender:sender
-                                subject:subject
-                                preview:finalPreview
-                             dateString:dateString
-                                 isRead:[isReadNum boolValue]
-                          hasAttachment:[hasAttachmentNum boolValue]
-                             isOfficial:[isOfficialNum boolValue]
-                             emailCount:emailCount];
-}
-
-+ (NSArray<MailItem *> *)convertDictionariesToMailItems:(NSArray<NSDictionary *> *)dictionaries {
-    NSMutableArray<MailItem *> *items = [NSMutableArray array];
-    
-    for (NSDictionary *dict in dictionaries) {
-        MailItem *item = [self createMailItemFromDictionary:dict];
-        if (item) {
-            [items addObject:item];
-        }
-    }
     
     return items;
 }

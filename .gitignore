@@ -34,6 +34,7 @@ DerivedData/
 *.perspectivev3
 *.xcuserstate
 xcuserdata/
+xcshareddata/
 
 # Rust 相关（针对 rust-sdk）
 ## Rust 构建输出
@@ -46,11 +47,13 @@ Cargo.lock
 
 # 其他
 ## 虚拟机和 IDE 文件
-.vscode/
 .idea/
 
 ## macOS 系统文件
 .DS_Store
+
+## 模拟数据
+**/MockData/**
 
 ## 手动添加的忽略文件（如果有）
 # 示例：忽略特定的 plist 文件（如果不希望版本控制）

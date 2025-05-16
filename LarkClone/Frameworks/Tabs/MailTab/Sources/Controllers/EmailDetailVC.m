@@ -14,6 +14,7 @@
 // 属性
 @property (nonatomic, strong) MailItem *email;
 @property (nonatomic, copy) void (^onMarkAsRead)(NSString *emailId);
+@property (nonatomic, copy) void (^onDeleteEmail)(NSString *emailId);
 
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) UIView *contentView;
@@ -24,17 +25,27 @@
 @property (nonatomic, strong) UILabel *dateLabel;
 @property (nonatomic, strong) UILabel *bodyLabel;
 
+// 自定义导航栏属性
+@property (nonatomic, strong) UIView *customNavigationView;
+@property (nonatomic, strong) UIButton *backButton;
+@property (nonatomic, strong) UIButton *replyButton;
+@property (nonatomic, strong) UIButton *trashButton;
+
 @end
 
 @implementation EmailDetailVC
 
 #pragma mark - Initialization
 
-- (instancetype)initWithEmail:(MailItem *)email onMarkAsRead:(void (^)(NSString *emailId))onMarkAsRead {
+// 只保留一个初始化方法
+- (instancetype)initWithEmail:(MailItem *)email
+                 onMarkAsRead:(void (^)(NSString *emailId))onMarkAsRead
+                onDeleteEmail:(void (^)(NSString *emailId))onDeleteEmail {
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         _email = email;
         _onMarkAsRead = onMarkAsRead;
+        _onDeleteEmail = onDeleteEmail;
     }
     return self;
 }
@@ -43,13 +54,30 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // 隐藏底部标签栏
+    self.hidesBottomBarWhenPushed = YES;
+    
     [self setupUI];
+    [self setupCustomNavigation]; // 添加自定义导航栏
     [self configureWithEmail];
     
     // 标记邮件为已读
     if (!self.email.isRead) {
         [self markAsRead];
     }
+}
+
+// 隐藏导航栏
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+}
+
+// 恢复导航栏
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
 #pragma mark - Private Methods
@@ -62,6 +90,74 @@
 }
 
 #pragma mark - UI Setup
+
+- (void)setupCustomNavigation {
+    // 创建自定义导航视图
+    self.customNavigationView = [[UIView alloc] init];
+    self.customNavigationView.backgroundColor = [LarkColorConfigUI backgroundColor];
+    self.customNavigationView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.customNavigationView];
+    
+    // 创建返回按钮
+    self.backButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.backButton setImage:[UIImage systemImageNamed:@"chevron.left"] forState:UIControlStateNormal];
+    [self.backButton addTarget:self action:@selector(backButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.backButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.customNavigationView addSubview:self.backButton];
+    
+    // 创建回复按钮
+    self.replyButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.replyButton setImage:[UIImage systemImageNamed:@"arrowshape.turn.up.left"] forState:UIControlStateNormal];
+    [self.replyButton addTarget:self action:@selector(replyButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.replyButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.customNavigationView addSubview:self.replyButton];
+    
+    // 创建删除按钮
+    self.trashButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.trashButton setImage:[UIImage systemImageNamed:@"trash"] forState:UIControlStateNormal];
+    [self.trashButton addTarget:self action:@selector(trashButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+    self.trashButton.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.customNavigationView addSubview:self.trashButton];
+    
+    // 设置约束
+    [NSLayoutConstraint activateConstraints:@[
+        // 自定义导航视图
+        [self.customNavigationView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [self.customNavigationView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.customNavigationView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.customNavigationView.heightAnchor constraintEqualToConstant:44],
+        
+        // 返回按钮
+        [self.backButton.leadingAnchor constraintEqualToAnchor:self.customNavigationView.leadingAnchor constant:16],
+        [self.backButton.centerYAnchor constraintEqualToAnchor:self.customNavigationView.centerYAnchor],
+        [self.backButton.widthAnchor constraintEqualToConstant:30],
+        [self.backButton.heightAnchor constraintEqualToConstant:30],
+        
+        // 删除按钮
+        [self.trashButton.trailingAnchor constraintEqualToAnchor:self.customNavigationView.trailingAnchor constant:-16],
+        [self.trashButton.centerYAnchor constraintEqualToAnchor:self.customNavigationView.centerYAnchor],
+        [self.trashButton.widthAnchor constraintEqualToConstant:30],
+        [self.trashButton.heightAnchor constraintEqualToConstant:30],
+        
+        // 回复按钮
+        [self.replyButton.trailingAnchor constraintEqualToAnchor:self.trashButton.leadingAnchor constant:-16],
+        [self.replyButton.centerYAnchor constraintEqualToAnchor:self.customNavigationView.centerYAnchor],
+        [self.replyButton.widthAnchor constraintEqualToConstant:30],
+        [self.replyButton.heightAnchor constraintEqualToConstant:30],
+    ]];
+    
+    // 调整滚动视图的顶部约束，使其位于自定义导航栏下方
+    for (NSLayoutConstraint *constraint in self.view.constraints) {
+        if (constraint.firstItem == self.scrollView && constraint.firstAttribute == NSLayoutAttributeTop) {
+            [constraint setActive:NO];
+            break;
+        }
+    }
+    
+    [NSLayoutConstraint activateConstraints:@[
+        [self.scrollView.topAnchor constraintEqualToAnchor:self.customNavigationView.bottomAnchor]
+    ]];
+}
 
 - (void)setupUI {
     self.view.backgroundColor = [LarkColorConfigUI backgroundColor];
@@ -90,8 +186,9 @@
     self.senderInfoView = [[UIView alloc] init];
     self.senderInfoView.translatesAutoresizingMaskIntoConstraints = NO;
     
+    // 增大发件人字体
     self.senderLabel = [[UILabel alloc] init];
-    self.senderLabel.font = [UIFont systemFontOfSize:16 weight:UIFontWeightMedium];
+    self.senderLabel.font = [UIFont systemFontOfSize:22 weight:UIFontWeightSemibold];
     self.senderLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.dateLabel = [[UILabel alloc] init];
@@ -115,7 +212,7 @@
     
     // 设置约束
     [NSLayoutConstraint activateConstraints:@[
-        // 滚动视图
+        // 滚动视图 - 稍后会在setupCustomNavigation中调整顶部约束
         [self.scrollView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
         [self.scrollView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
         [self.scrollView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
@@ -149,8 +246,8 @@
         [self.senderLabel.leadingAnchor constraintEqualToAnchor:self.senderInfoView.leadingAnchor],
         [self.senderLabel.trailingAnchor constraintEqualToAnchor:self.senderInfoView.trailingAnchor],
         
-        // 日期
-        [self.dateLabel.topAnchor constraintEqualToAnchor:self.senderLabel.bottomAnchor constant:4],
+        // 日期 - 增加与发件人的间距
+        [self.dateLabel.topAnchor constraintEqualToAnchor:self.senderLabel.bottomAnchor constant:8], // 从4改为8
         [self.dateLabel.leadingAnchor constraintEqualToAnchor:self.senderInfoView.leadingAnchor],
         [self.dateLabel.bottomAnchor constraintEqualToAnchor:self.senderInfoView.bottomAnchor],
         
@@ -160,28 +257,6 @@
         [self.bodyLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-16],
         [self.bodyLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-16]
     ]];
-    
-    // 添加返回按钮
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                            initWithImage:[UIImage systemImageNamed:@"chevron.left"]
-                                            style:UIBarButtonItemStylePlain
-                                            target:self
-                                            action:@selector(backButtonTapped)];
-    
-    // 添加邮件操作按钮
-    UIBarButtonItem *replyButton = [[UIBarButtonItem alloc]
-                                  initWithImage:[UIImage systemImageNamed:@"arrowshape.turn.up.left"]
-                                  style:UIBarButtonItemStylePlain
-                                  target:self
-                                  action:@selector(replyButtonTapped)];
-    
-    UIBarButtonItem *trashButton = [[UIBarButtonItem alloc]
-                                  initWithImage:[UIImage systemImageNamed:@"trash"]
-                                  style:UIBarButtonItemStylePlain
-                                  target:self
-                                  action:@selector(trashButtonTapped)];
-    
-    self.navigationItem.rightBarButtonItems = @[trashButton, replyButton];
 }
 
 - (void)configureWithEmail {
@@ -215,10 +290,22 @@
 }
 
 - (void)trashButtonTapped {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"删除"
-                                                                   message:@"删除功能正在开发中"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"删除邮件"
+                                                                   message:@"确定要删除这封邮件吗？"
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    
+    __weak typeof(self) weakSelf = self; // 使用 weakSelf 避免循环引用
+    [alert addAction:[UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        // 调用回调通知邮箱控制器删除邮件
+        if (weakSelf.onDeleteEmail) {
+            weakSelf.onDeleteEmail(weakSelf.email.id);
+        }
+        // 返回邮箱列表界面
+        [weakSelf.navigationController popViewControllerAnimated:YES];
+    }]];
+    
     [self presentViewController:alert animated:YES completion:nil];
 }
 

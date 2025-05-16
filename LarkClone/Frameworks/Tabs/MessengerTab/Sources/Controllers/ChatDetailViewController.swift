@@ -16,6 +16,7 @@ class ChatDetailViewController: UIViewController {
     private let inputField = UITextField()
     private let sendButton = UIButton(type: .system)
     private let inputContainer = UIView()
+    private let loadingIndicator = UIActivityIndicatorView(style: .medium)
     
     // MARK: - 数据
     private let contact: Contact
@@ -23,11 +24,15 @@ class ChatDetailViewController: UIViewController {
     private var inputContainerBottomConstraint: NSLayoutConstraint!
     private var isViewAppeared = false
     private var registrationToken: NSObjectProtocol?
+    private var isDataLoaded = false
     
     // MARK: - 初始化
     init(contact: Contact) {
         self.contact = contact
         super.init(nibName: nil, bundle: nil)
+        
+        // 性能优化：在初始化时就开始异步预加载消息数据
+        preloadMessages()
     }
     
     required init?(coder: NSCoder) {
@@ -37,6 +42,16 @@ class ChatDetailViewController: UIViewController {
     deinit {
         if let token = registrationToken {
             NotificationCenter.default.removeObserver(token)
+        }
+    }
+    
+    // 预加载消息数据
+    private func preloadMessages() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            // 预加载消息数据但不更新UI
+            self.messages = Message.getMockMessages(contact: self.contact)
+            self.isDataLoaded = true
         }
     }
     
@@ -67,20 +82,25 @@ class ChatDetailViewController: UIViewController {
             titleLabel.textColor = LarkColorStyle.Text.primary
             navigationItem.titleView = titleLabel
         }
+        
+        // 如果数据已加载但UI尚未更新，立即更新UI
+        if isDataLoaded && messages.count > 0 && tableView.numberOfRows(inSection: 0) == 0 {
+            updateUIWithLoadedMessages()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        // 视图完全展示后才加载消息和布局
-        if !isViewAppeared {
-            isViewAppeared = true
-            loadMessages()
-        }
+        isViewAppeared = true
         
-        // 确保表格视图有内容时滚动到底部
-        DispatchQueue.main.async {
-            self.scrollToBottom(animated: false)
+        // 如果预加载已完成，显示消息
+        if isDataLoaded {
+            updateUIWithLoadedMessages()
+        } else {
+            // 如果预加载未完成，显示加载指示器
+            loadingIndicator.startAnimating()
+            loadMessages()
         }
     }
     
@@ -90,10 +110,13 @@ class ChatDetailViewController: UIViewController {
         // 移除键盘监听
         removeKeyboardObservers()
         
-        // 确保退出时不会污染导航栏状态
+        // 确保退出时正确恢复导航栏状态
         if isMovingFromParent {
-            navigationController?.navigationBar.prefersLargeTitles = false
-            navigationItem.largeTitleDisplayMode = .never
+            // 使用扩展中的方法恢复大标题
+            navigationController?.navigationBar.prefersLargeTitles = true
+            if let previousVC = navigationController?.viewControllers.last {
+                previousVC.navigationItem.largeTitleDisplayMode = .automatic
+            }
         }
     }
     
@@ -113,6 +136,21 @@ class ChatDetailViewController: UIViewController {
         
         // 3. 设置约束
         setupConstraints()
+        
+        // 4. 设置加载指示器
+        setupLoadingIndicator()
+    }
+    
+    private func setupLoadingIndicator() {
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.color = LarkColorStyle.Text.secondary
+        view.addSubview(loadingIndicator)
+        
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50)
+        ])
     }
     
     private func registerForAppearanceChanges() {
@@ -277,12 +315,39 @@ class ChatDetailViewController: UIViewController {
     
     // MARK: - 数据加载
     private func loadMessages() {
-        // 从Message类获取测试数据
-        messages = Message.getMockMessages(contact: contact)
+        // 如果数据已经加载，直接更新UI
+        if isDataLoaded {
+            updateUIWithLoadedMessages()
+            return
+        }
         
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-            self.scrollToBottom(animated: false)
+        // 否则异步加载
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            
+            // 从Message类获取测试数据
+            self.messages = Message.getMockMessages(contact: self.contact)
+            self.isDataLoaded = true
+            
+            // 在主线程更新UI
+            DispatchQueue.main.async {
+                self.updateUIWithLoadedMessages()
+            }
+        }
+    }
+    
+    // 更新UI显示已加载的消息
+    private func updateUIWithLoadedMessages() {
+        loadingIndicator.stopAnimating()
+        
+        // 使用无动画更新视图
+        UIView.performWithoutAnimation {
+            tableView.reloadData()
+        }
+        
+        // 滚动到底部
+        if messages.count > 0 {
+            scrollToBottom(animated: false)
         }
     }
     
@@ -350,5 +415,26 @@ extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+}
+
+// MARK: - 性能优化：预取数据
+extension ChatDetailViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        // 预加载头像图像
+        for indexPath in indexPaths {
+            if indexPath.row < messages.count {
+                let message = messages[indexPath.row]
+                
+                // 在后台线程预加载头像
+                DispatchQueue.global(qos: .background).async {
+                    _ = message.sender.avatar
+                }
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        // 可以取消正在进行的加载操作
     }
 }

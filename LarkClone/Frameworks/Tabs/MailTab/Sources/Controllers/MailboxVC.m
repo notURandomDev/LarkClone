@@ -15,13 +15,27 @@
 
 @interface MailboxVC () <UITableViewDelegate, UITableViewDataSource>
 
+// UI相关属性
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) SearchBarView *searchBarView;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) UIActivityIndicatorView *loadingIndicator;
 
+// 数据相关属性
 @property (nonatomic, strong) NSArray<MailItem *> *allEmails;
 @property (nonatomic, strong) NSMutableArray<MailItem *> *filteredEmails;
+
+// 状态相关属性
 @property (nonatomic, assign) BOOL isSearching;
+@property (nonatomic, strong) NSString *currentSearchText;
+@property (nonatomic, strong) NSString *currentFilterType;
+
+// 分页加载相关属性
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) BOOL isLoading;
+@property (nonatomic, assign) BOOL hasMoreData;
+@property (nonatomic, assign) NSInteger pageSize;
+@property (nonatomic, assign) NSInteger totalEmailCount;
 
 @end
 
@@ -36,10 +50,17 @@
     // 使用本地化的标题
     self.title = NSLocalizedStringFromTable(@"mailbox_title", @"MailTab", @"Mailbox title");
     
+    // 初始化属性
+    self.currentPage = 0;
+    self.isLoading = NO;
+    self.hasMoreData = YES;
+    self.pageSize = 15;
+    self.filteredEmails = [NSMutableArray array];
+    self.currentFilterType = nil;
+    self.currentSearchText = nil;
+    
     [self setupUI];
     [self loadEmails];
-    
-    // 配置导航栏右侧按钮
     [self setupNavigationBarButtons];
 }
 
@@ -51,15 +72,6 @@
     
     // 更新TabBar标题
     [self updateTabBarTitle];
-}
-
-// 更新TabBar标题
-- (void)updateTabBarTitle {
-    if (self.tabBarController && self.tabBarController.tabBar.items.count > 1) {
-        // 邮箱标签
-        UITabBarItem *tabBarItem = self.tabBarController.tabBar.items[1];
-        tabBarItem.title = NSLocalizedStringFromTable(@"mailbox_tabbar_title", @"MailTab", @"Mailbox");
-    }
 }
 
 #pragma mark - UI Setup
@@ -89,6 +101,12 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshData) forControlEvents:UIControlEventValueChanged];
     self.tableView.refreshControl = self.refreshControl;
+    
+    // 设置加载指示器
+    self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
+    self.loadingIndicator.hidesWhenStopped = YES;
+    self.loadingIndicator.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    self.tableView.tableFooterView = self.loadingIndicator;
     
     // 添加视图
     [self.view addSubview:self.searchBarView];
@@ -126,49 +144,168 @@
     self.navigationItem.rightBarButtonItems = @[composeButton, filterButton];
 }
 
+- (void)updateTabBarTitle {
+    if (self.tabBarController && self.tabBarController.tabBar.items.count > 1) {
+        // 邮箱标签
+        UITabBarItem *tabBarItem = self.tabBarController.tabBar.items[1];
+        tabBarItem.title = NSLocalizedStringFromTable(@"mailbox_tabbar_title", @"MailTab", @"Mailbox");
+    }
+}
+
 #pragma mark - Data Loading
 
-//- (void)loadEmails {
-//    // 加载示例邮件数据
-//    self.allEmails = [MailItem loadFromPlist];
-//    self.filteredEmails = [self.allEmails mutableCopy];
-//    [self.tableView reloadData];
-//}
-
-// 使用RustSDK加载邮件
 - (void)loadEmails {
-    [MailItem loadFromRustBridgeWithCompletion:^(NSArray<MailItem *> *items) {
-        self.allEmails = items;
-        self.filteredEmails = [items mutableCopy];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
+    if (self.isLoading || !self.hasMoreData) {
+        return;
+    }
+    
+    self.isLoading = YES;
+    [self.loadingIndicator startAnimating];
+    
+    __weak typeof(self) weakSelf = self;
+    
+    // 使用统一的方法处理搜索和筛选
+    [MailItem loadCombinedResultsWithPage:self.currentPage
+                                pageSize:self.pageSize
+                             searchText:self.currentSearchText ?: @""
+                             filterType:self.currentFilterType ?: @""
+                             completion:^(NSArray<MailItem *> *items, BOOL hasMoreData, NSInteger totalItems) {
+        [weakSelf handleLoadedEmails:items hasMoreData:hasMoreData totalItems:totalItems];
     }];
 }
 
-- (void)filterEmailsWithText:(NSString *)searchText {
-    if (searchText.length == 0) {
-        self.isSearching = NO;
-        self.filteredEmails = [self.allEmails mutableCopy];
-    } else {
-        self.isSearching = YES;
-        
-        NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in self.allEmails) {
-            if ([email.sender.lowercaseString containsString:searchText.lowercaseString] ||
-                [email.subject.lowercaseString containsString:searchText.lowercaseString] ||
-                [email.preview.lowercaseString containsString:searchText.lowercaseString]) {
-                [filtered addObject:email];
-            }
+- (void)handleLoadedEmails:(NSArray<MailItem *> *)items hasMoreData:(BOOL)hasMoreData totalItems:(NSInteger)totalItems {
+    // 保存全局信息
+    self.hasMoreData = hasMoreData;
+    self.totalEmailCount = totalItems;
+    
+    if (self.currentPage == 0) {
+        // 第一页，只有在非筛选模式下保存所有邮件
+        if (!self.currentFilterType && !self.currentSearchText) {
+            self.allEmails = items;
         }
         
-        self.filteredEmails = filtered;
+        // 清空并添加新数据
+        [self.filteredEmails removeAllObjects];
+        [self.filteredEmails addObjectsFromArray:items];
+        
+        // 重新加载整个表格
+        [self.tableView reloadData];
+    } else {
+        // 记录当前数据数量，用于创建indexPaths
+        NSInteger currentCount = self.filteredEmails.count;
+        
+        // 添加新数据
+        [self.filteredEmails addObjectsFromArray:items];
+        
+        // 创建indexPaths用于插入新行
+        NSMutableArray *indexPaths = [NSMutableArray array];
+        for (NSInteger i = 0; i < items.count; i++) {
+            [indexPaths addObject:[NSIndexPath indexPathForRow:currentCount + i inSection:0]];
+        }
+        
+        // 使用动画插入新行
+        if (indexPaths.count > 0) {
+            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+        }
     }
     
-    [self.tableView reloadData];
+    self.isLoading = NO;
+    [self.loadingIndicator stopAnimating];
 }
 
-// 标记邮件为已读
+- (void)loadMoreData {
+    if (self.isLoading || !self.hasMoreData) {
+        return;
+    }
+    
+    self.currentPage++;
+    [self loadEmails];
+}
+
+#pragma mark - User Actions
+
+- (void)filterEmailsWithText:(NSString *)searchText {
+    // 更新搜索文本
+    self.currentSearchText = searchText.length > 0 ? searchText : nil;
+    
+    // 重置分页
+    self.currentPage = 0;
+    self.hasMoreData = YES;
+    self.isSearching = searchText.length > 0 || self.currentFilterType.length > 0;
+    
+    // 重新加载
+    [self loadEmails];
+}
+
+- (void)refreshData {
+    // 重置到第一页
+    self.currentPage = 0;
+    self.hasMoreData = YES;
+    
+    [self.refreshControl endRefreshing];
+    
+    // 重新加载，保持所有条件
+    [self loadEmails];
+}
+
+- (void)filterButtonTapped {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTable(@"filter_options", @"MailTab", @"Filter Options")
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    __weak typeof(self) weakSelf = self;
+    
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"unread", @"MailTab", @"Unread")
+                                             style:UIAlertActionStyleDefault
+                                           handler:^(UIAlertAction * _Nonnull action) {
+        weakSelf.isSearching = YES;
+        weakSelf.currentFilterType = @"unread";
+        weakSelf.currentPage = 0;
+        weakSelf.hasMoreData = YES;
+        [weakSelf loadEmails];
+    }]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"with_attachments", @"MailTab", @"With Attachments")
+                                             style:UIAlertActionStyleDefault
+                                           handler:^(UIAlertAction * _Nonnull action) {
+        weakSelf.isSearching = YES;
+        weakSelf.currentFilterType = @"attachment";
+        weakSelf.currentPage = 0;
+        weakSelf.hasMoreData = YES;
+        [weakSelf loadEmails];
+    }]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"all_emails", @"MailTab", @"All Emails")
+                                             style:UIAlertActionStyleDefault
+                                           handler:^(UIAlertAction * _Nonnull action) {
+        // 清除筛选条件，但保留搜索条件
+        weakSelf.currentFilterType = nil;
+        weakSelf.isSearching = weakSelf.currentSearchText.length > 0;
+        weakSelf.currentPage = 0;
+        weakSelf.hasMoreData = YES;
+        [weakSelf loadEmails];
+    }]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"cancel", @"MailTab", @"Cancel")
+                                             style:UIAlertActionStyleCancel
+                                           handler:nil]];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)composeButtonTapped {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTable(@"compose_email", @"MailTab", @"Compose Email")
+                                                                   message:NSLocalizedStringFromTable(@"feature_under_development", @"MailTab", @"This feature is under development")
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"ok", @"MailTab", @"OK")
+                                             style:UIAlertActionStyleDefault
+                                           handler:nil]];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (void)markEmailAsRead:(NSString *)emailId {
     // 更新allEmails中的邮件状态
     for (NSUInteger i = 0; i < self.allEmails.count; i++) {
@@ -191,87 +328,37 @@
             break;
         }
     }
+    
+    // 持久化保存已读状态到plist文件
+    [MailItem updateReadStatus:emailId isRead:YES];
 }
 
-#pragma mark - Actions
-
-- (void)refreshData {
-    // 模拟网络请求延迟
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        // 刷新邮件数据
-        [self loadEmails];
-        [self.refreshControl endRefreshing];
-        
-        // 确保TabBar外观在刷新后保持一致
-        if (self.tabBarController) {
-            SEL setupSelector = NSSelectorFromString(@"setupTabBarAppearance");
-            if ([self.tabBarController respondsToSelector:setupSelector]) {
-                #pragma clang diagnostic push
-                #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                [self.tabBarController performSelector:setupSelector];
-                #pragma clang diagnostic pop
-            }
+- (void)deleteEmail:(NSString *)emailId {
+    // 从内存中的数组删除邮件
+    NSMutableArray *allEmailsCopy = [self.allEmails mutableCopy];
+    for (NSInteger i = 0; i < allEmailsCopy.count; i++) {
+        MailItem *email = allEmailsCopy[i];
+        if ([email.id isEqualToString:emailId]) {
+            [allEmailsCopy removeObjectAtIndex:i];
+            break;
         }
-    });
-}
-
-- (void)filterButtonTapped {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTable(@"filter_options", @"MailTab", @"Filter Options")
-                                                                   message:nil
-                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    }
+    self.allEmails = allEmailsCopy;
     
-    __weak typeof(self) weakSelf = self;
-    
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"all_emails", @"MailTab", @"All Emails")
-                                             style:UIAlertActionStyleDefault
-                                           handler:^(UIAlertAction * _Nonnull action) {
-        weakSelf.filteredEmails = [weakSelf.allEmails mutableCopy];
-        [weakSelf.tableView reloadData];
-    }]];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"unread", @"MailTab", @"Unread")
-                                             style:UIAlertActionStyleDefault
-                                           handler:^(UIAlertAction * _Nonnull action) {
-        NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in weakSelf.allEmails) {
-            if (!email.isRead) {
-                [filtered addObject:email];
-            }
+    // 从过滤后的数组删除邮件
+    for (NSInteger i = 0; i < self.filteredEmails.count; i++) {
+        MailItem *email = self.filteredEmails[i];
+        if ([email.id isEqualToString:emailId]) {
+            [self.filteredEmails removeObjectAtIndex:i];
+            break;
         }
-        weakSelf.filteredEmails = filtered;
-        [weakSelf.tableView reloadData];
-    }]];
+    }
     
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"with_attachments", @"MailTab", @"With Attachments")
-                                             style:UIAlertActionStyleDefault
-                                           handler:^(UIAlertAction * _Nonnull action) {
-        NSMutableArray *filtered = [NSMutableArray array];
-        for (MailItem *email in weakSelf.allEmails) {
-            if (email.hasAttachment) {
-                [filtered addObject:email];
-            }
-        }
-        weakSelf.filteredEmails = filtered;
-        [weakSelf.tableView reloadData];
-    }]];
+    // 刷新表格视图
+    [self.tableView reloadData];
     
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"cancel", @"MailTab", @"Cancel")
-                                             style:UIAlertActionStyleCancel
-                                           handler:nil]];
-    
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-- (void)composeButtonTapped {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedStringFromTable(@"compose_email", @"MailTab", @"Compose Email")
-                                                                   message:NSLocalizedStringFromTable(@"feature_under_development", @"MailTab", @"This feature is under development")
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedStringFromTable(@"ok", @"MailTab", @"OK")
-                                             style:UIAlertActionStyleDefault
-                                           handler:nil]];
-    
-    [self presentViewController:alert animated:YES completion:nil];
+    // 持久化删除到plist文件
+    [MailItem deleteEmail:emailId];
 }
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
@@ -292,6 +379,11 @@
     MailItem *email = self.filteredEmails[indexPath.row];
     [cell configureWithEmail:email];
     
+    // 触发加载更多数据的逻辑
+    if (indexPath.row >= self.filteredEmails.count - 5 && !self.isLoading && self.hasMoreData) {
+        [self loadMoreData];
+    }
+    
     return cell;
 }
 
@@ -300,13 +392,31 @@
     
     MailItem *selectedEmail = self.filteredEmails[indexPath.row];
     
-    // 创建详情页面并传递标记已读的回调
+    // 创建详情页面并传递标记已读和删除的回调
     __weak typeof(self) weakSelf = self;
-    EmailDetailVC *detailVC = [[EmailDetailVC alloc] initWithEmail:selectedEmail onMarkAsRead:^(NSString *emailId) {
+    EmailDetailVC *detailVC = [[EmailDetailVC alloc] initWithEmail:selectedEmail
+                                                      onMarkAsRead:^(NSString *emailId) {
         [weakSelf markEmailAsRead:emailId];
+    }
+                                                     onDeleteEmail:^(NSString *emailId) {
+        [weakSelf deleteEmail:emailId];
     }];
     
+    // 设置隐藏标签栏
+    detailVC.hidesBottomBarWhenPushed = YES;
+    
     [self.navigationController pushViewController:detailVC animated:YES];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // 计算距离底部的位置
+    CGFloat offsetY = scrollView.contentOffset.y;
+    CGFloat contentHeight = scrollView.contentSize.height;
+    CGFloat screenHeight = scrollView.frame.size.height;
+    
+    if (offsetY > contentHeight - screenHeight - 100 && !self.isLoading && self.hasMoreData) {
+        [self loadMoreData];
+    }
 }
 
 #pragma mark - Empty State
