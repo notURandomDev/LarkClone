@@ -13,5 +13,7 @@
 #import "EmailCell.h"
 #import "SearchBarView.h"
 #import "RelativeDateFormatter.h"
+#import "MailboxVC+Testing.h"
+#import "MailItem+Testing.h"
 
 #endif /* LarkClone_Bridging_Header_h */

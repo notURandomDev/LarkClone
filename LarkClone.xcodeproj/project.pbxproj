@@ -37,6 +37,14 @@
 		10CAECB12DD1A8C0003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
 		10CAEF552DD1DE6C003F9242 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 10CAEF542DD1DE6C003F9242 /* SwiftProtobuf */; };
 		10CAEF582DD1DEA4003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
+		E08D1E9A2DD701E000555419 /* MockObjcMailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E8D2DD701E000555419 /* MockObjcMailItem.swift */; };
+		E08D1E9B2DD701E000555419 /* MockRustBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E8E2DD701E000555419 /* MockRustBridge.swift */; };
+		E08D1E9C2DD701E000555419 /* MailItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E912DD701E000555419 /* MailItemTests.swift */; };
+		E08D1E9D2DD701E000555419 /* EmailDataGeneratorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E902DD701E000555419 /* EmailDataGeneratorModel.swift */; };
+		E08D1E9E2DD701E000555419 /* FileSystemMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E8C2DD701E000555419 /* FileSystemMocks.swift */; };
+		E08D1E9F2DD701E000555419 /* LarkCloneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E982DD701E000555419 /* LarkCloneTests.swift */; };
+		E08D1EA02DD701E000555419 /* MailboxVCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E932DD701E000555419 /* MailboxVCTests.swift */; };
+		E08D1EA12DD701E000555419 /* GenerateMailsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E8A2DD701E000555419 /* GenerateMailsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -152,6 +160,13 @@
 			remoteGlobalIDString = 10CAEC902DD1A778003F9242;
 			remoteInfo = LarkSDKPB;
 		};
+		E0BA14632DD6D01F0032591D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 100E63BD2DCCC22C0011B0F1;
+			remoteInfo = LarkClone;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -190,6 +205,18 @@
 		10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkLaunchScreen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10CAE47C2DD1902C003F9242 /* LarkSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDKPB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E08D1E872DD701E000555419 /* MailboxVC+Testing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MailboxVC+Testing.h"; sourceTree = "<group>"; };
+		E08D1E882DD701E000555419 /* MailItem+Testing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MailItem+Testing.h"; sourceTree = "<group>"; };
+		E08D1E8A2DD701E000555419 /* GenerateMailsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateMailsTests.swift; sourceTree = "<group>"; };
+		E08D1E8C2DD701E000555419 /* FileSystemMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSystemMocks.swift; sourceTree = "<group>"; };
+		E08D1E8D2DD701E000555419 /* MockObjcMailItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockObjcMailItem.swift; sourceTree = "<group>"; };
+		E08D1E8E2DD701E000555419 /* MockRustBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRustBridge.swift; sourceTree = "<group>"; };
+		E08D1E902DD701E000555419 /* EmailDataGeneratorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailDataGeneratorModel.swift; sourceTree = "<group>"; };
+		E08D1E912DD701E000555419 /* MailItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailItemTests.swift; sourceTree = "<group>"; };
+		E08D1E932DD701E000555419 /* MailboxVCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailboxVCTests.swift; sourceTree = "<group>"; };
+		E08D1E952DD701E000555419 /* LarkCloneTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LarkCloneTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		E08D1E982DD701E000555419 /* LarkCloneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LarkCloneTests.swift; sourceTree = "<group>"; };
+		E0BA145F2DD6D01F0032591D /* LarkCloneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LarkCloneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -391,6 +418,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E0BA145C2DD6D01F0032591D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -399,6 +433,7 @@
 			children = (
 				101624422DD39B3200C1E888 /* scripts */,
 				100E63E62DCCC7590011B0F1 /* README.md */,
+				E08D1E992DD701E000555419 /* LarkCloneTests */,
 				100E66D32DCCC7590011B0F1 /* RustSDK */,
 				100E63C02DCCC22C0011B0F1 /* LarkClone */,
 				100E63BF2DCCC22C0011B0F1 /* Products */,
@@ -420,6 +455,7 @@
 				10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */,
 				107F830F2DD24F2300F385D3 /* MailTab.framework */,
 				107F860C2DD2D8A900F385D3 /* LarkBridgeModels.framework */,
+				E0BA145F2DD6D01F0032591D /* LarkCloneTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -430,6 +466,80 @@
 				107F76A02DD1E4B200F385D3 /* librust_sdk.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E08D1E892DD701E000555419 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E08D1E872DD701E000555419 /* MailboxVC+Testing.h */,
+				E08D1E882DD701E000555419 /* MailItem+Testing.h */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E08D1E8B2DD701E000555419 /* GeneratorTests */ = {
+			isa = PBXGroup;
+			children = (
+				E08D1E902DD701E000555419 /* EmailDataGeneratorModel.swift */,
+				E08D1E8A2DD701E000555419 /* GenerateMailsTests.swift */,
+			);
+			path = GeneratorTests;
+			sourceTree = "<group>";
+		};
+		E08D1E8F2DD701E000555419 /* MockObjects */ = {
+			isa = PBXGroup;
+			children = (
+				E08D1E8C2DD701E000555419 /* FileSystemMocks.swift */,
+				E08D1E8D2DD701E000555419 /* MockObjcMailItem.swift */,
+				E08D1E8E2DD701E000555419 /* MockRustBridge.swift */,
+			);
+			path = MockObjects;
+			sourceTree = "<group>";
+		};
+		E08D1E922DD701E000555419 /* ModelTests */ = {
+			isa = PBXGroup;
+			children = (
+				E08D1E912DD701E000555419 /* MailItemTests.swift */,
+			);
+			path = ModelTests;
+			sourceTree = "<group>";
+		};
+		E08D1E942DD701E000555419 /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				E08D1E932DD701E000555419 /* MailboxVCTests.swift */,
+			);
+			path = UITests;
+			sourceTree = "<group>";
+		};
+		E08D1E962DD701E000555419 /* MailTabTest */ = {
+			isa = PBXGroup;
+			children = (
+				E08D1E892DD701E000555419 /* Extensions */,
+				E08D1E8B2DD701E000555419 /* GeneratorTests */,
+				E08D1E8F2DD701E000555419 /* MockObjects */,
+				E08D1E922DD701E000555419 /* ModelTests */,
+				E08D1E942DD701E000555419 /* UITests */,
+				E08D1E952DD701E000555419 /* LarkCloneTests-Bridging-Header.h */,
+			);
+			path = MailTabTest;
+			sourceTree = "<group>";
+		};
+		E08D1E972DD701E000555419 /* MessengerTabTest */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MessengerTabTest;
+			sourceTree = "<group>";
+		};
+		E08D1E992DD701E000555419 /* LarkCloneTests */ = {
+			isa = PBXGroup;
+			children = (
+				E08D1E962DD701E000555419 /* MailTabTest */,
+				E08D1E972DD701E000555419 /* MessengerTabTest */,
+				E08D1E982DD701E000555419 /* LarkCloneTests.swift */,
+			);
+			path = LarkCloneTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -731,6 +841,26 @@
 			productReference = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		E0BA145E2DD6D01F0032591D /* LarkCloneTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E0BA14652DD6D01F0032591D /* Build configuration list for PBXNativeTarget "LarkCloneTests" */;
+			buildPhases = (
+				E0BA145B2DD6D01F0032591D /* Sources */,
+				E0BA145C2DD6D01F0032591D /* Frameworks */,
+				E0BA145D2DD6D01F0032591D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E0BA14642DD6D01F0032591D /* PBXTargetDependency */,
+			);
+			name = LarkCloneTests;
+			packageProductDependencies = (
+			);
+			productName = LarkCloneTests;
+			productReference = E0BA145F2DD6D01F0032591D /* LarkCloneTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -774,6 +904,10 @@
 						CreatedOnToolsVersion = 16.3;
 						LastSwiftMigration = 1630;
 					};
+					E0BA145E2DD6D01F0032591D = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 100E63BD2DCCC22C0011B0F1;
+					};
 				};
 			};
 			buildConfigurationList = 100E63B92DCCC22C0011B0F1 /* Build configuration list for PBXProject "LarkClone" */;
@@ -804,6 +938,7 @@
 				10CAEC902DD1A778003F9242 /* LarkSDKPB */,
 				107F830E2DD24F2300F385D3 /* MailTab */,
 				107F860B2DD2D8A900F385D3 /* LarkBridgeModels */,
+				E0BA145E2DD6D01F0032591D /* LarkCloneTests */,
 			);
 		};
 /* End PBXProject section */
@@ -873,6 +1008,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		10CAEC8F2DD1A778003F9242 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E0BA145D2DD6D01F0032591D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1017,6 +1159,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E0BA145B2DD6D01F0032591D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E08D1E9A2DD701E000555419 /* MockObjcMailItem.swift in Sources */,
+				E08D1E9B2DD701E000555419 /* MockRustBridge.swift in Sources */,
+				E08D1E9C2DD701E000555419 /* MailItemTests.swift in Sources */,
+				E08D1E9D2DD701E000555419 /* EmailDataGeneratorModel.swift in Sources */,
+				E08D1E9E2DD701E000555419 /* FileSystemMocks.swift in Sources */,
+				E08D1E9F2DD701E000555419 /* LarkCloneTests.swift in Sources */,
+				E08D1EA02DD701E000555419 /* MailboxVCTests.swift in Sources */,
+				E08D1EA12DD701E000555419 /* GenerateMailsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1115,6 +1272,11 @@
 			isa = PBXTargetDependency;
 			target = 10CAEC902DD1A778003F9242 /* LarkSDKPB */;
 			targetProxy = 10CAEF562DD1DE9F003F9242 /* PBXContainerItemProxy */;
+		};
+		E0BA14642DD6D01F0032591D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
+			targetProxy = E0BA14632DD6D01F0032591D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1983,6 +2145,44 @@
 			};
 			name = Release;
 		};
+		E0BA14662DD6D01F0032591D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = John.LarkCloneTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/LarkCloneTests/MailTabTest/LarkCloneTests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LarkClone.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LarkClone";
+			};
+			name = Debug;
+		};
+		E0BA14672DD6D01F0032591D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = John.LarkCloneTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/LarkCloneTests/MailTabTest/LarkCloneTests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LarkClone.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LarkClone";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -2081,6 +2281,15 @@
 			buildConfigurations = (
 				10CAEC992DD1A778003F9242 /* Debug */,
 				10CAEC9A2DD1A778003F9242 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E0BA14652DD6D01F0032591D /* Build configuration list for PBXNativeTarget "LarkCloneTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0BA14662DD6D01F0032591D /* Debug */,
+				E0BA14672DD6D01F0032591D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
