@@ -4,7 +4,7 @@ set -e
 # ============ 检查 bazel ============
 if command -v bazel >/dev/null; then
   echo "✅ bazel 找到了，版本：$(bazel version)"
-  exit 1
+  exit 0
 fi
 
 # ============ 安装 bazel ============

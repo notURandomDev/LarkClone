@@ -27,9 +27,9 @@ clean_build() {
 
 setupenv(){
     echo "Setting up rust development environment..."
-    ./script/setup_rust.sh
+    ./scripts/setup_rust.sh
     echo "Setting up bazel development environment..."
-    ./script/setup_bazel.sh
+    ./scripts/setup_bazel.sh
 }
 
 generate(){
