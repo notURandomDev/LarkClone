@@ -56,7 +56,7 @@ objc_library(
 # 使用 cc_import 来引用预构建的 Rust 静态库
 cc_import(
     name = "rust_sdk",
-    hdrs = ["rust_sdk.h"],
+    hdrs = ["include/rust_sdk.h"],
     static_library = ":rust_sdk_lib",
     target_compatible_with = ["@platforms//os:ios", "@platforms//cpu:aarch64"],
 )

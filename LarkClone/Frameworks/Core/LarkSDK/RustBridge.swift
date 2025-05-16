@@ -8,7 +8,9 @@
 import Foundation
 import LarkSDKPB
 import LarkBridgeModels
+#if canImport(LarkBridge)
 import LarkBridge
+#endif
 
 
 // 用于保存 Swift 侧回调

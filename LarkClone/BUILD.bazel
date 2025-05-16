@@ -42,7 +42,7 @@ objc_library(
     name = "LarkSDK-Bridge-Header",
     hdrs = glob(["Frameworks/Core/LarkSDK/*.h"]),
     includes = ["Frameworks/Core/LarkSDK"],
-    module_map = "Frameworks/Core/LarkSDK/module.modulemap",
+    module_map = "Frameworks/Core/LarkSDK/module1.modulemap",
     visibility = ["//visibility:public"],
 )
 
@@ -223,7 +223,6 @@ swift_library(
         ":LarkAvatar",
         ":LarkSDKPB", 
         ":LarkSDK", 
-        # ":LarkChatBubble",
     ],
     tags = ["swift"],
     target_compatible_with = ["@platforms//os:ios", "@platforms//cpu:aarch64"],
@@ -280,7 +279,7 @@ swift_library(
         "-import-objc-header", 
         "$(execpath Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone-Bridging-Header.h)",
     ],
-
+    # generates_header = True,
     swiftc_inputs = ["Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone-Bridging-Header.h"],
     tags = ["swift"],
 )
