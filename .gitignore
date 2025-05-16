@@ -61,8 +61,8 @@ Cargo.lock
 
 # bazel相关
 *.bazel.lock
-bazel-bin/
-bazel-out/
-bazel-testlogs/
-bazel-LarkClone/
-bazel-*/
+bazel-bin
+bazel-out
+bazel-testlogs
+bazel-LarkClone
+bazel-*
