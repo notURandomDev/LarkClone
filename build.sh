@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/zsh
 
 # Set variables
-
+source ~/.zshrc
 # Function to show help
 show_help() {
     echo "Usage: ./build.sh [OPTION]"
@@ -26,10 +26,10 @@ clean_build() {
 }
 
 setupenv(){
-    echo "Setting up rust development environment..."
-    ./scripts/setup_rust.sh
     echo "Setting up bazel development environment..."
-    ./scripts/setup_bazel.sh
+    zsh ./scripts/setup_bazel.sh
+    echo "Setting up rust development environment..."
+    zsh ./scripts/setup_rust.sh
 }
 
 generate(){
@@ -44,6 +44,7 @@ build_app() {
     echo "Building the app..."
     setupenv
     generate
+    source ~/.zshrc
     bazel build //LarkClone:LarkCloneApp --platforms=//platforms:aarch64_apple_ios
 }
 

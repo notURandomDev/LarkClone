@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 # ============ 检查 bazel ============
 if command -v bazel >/dev/null; then
@@ -14,10 +13,9 @@ curl -fLO "https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/
 
 chmod +x "bazel-$BAZEL_VERSION-installer-darwin-arm64.sh"
 ./bazel-$BAZEL_VERSION-installer-darwin-arm64.sh --user
-
 echo "export PATH=\"$HOME/.bazel/bin:$PATH\"" >> ~/.zshrc
-source ~/.zshrc  # 重新加载 zsh 配置
-
+rm -rf ./bazel-$BAZEL_VERSION-installer-darwin-arm64.sh
+source ~/.zshrc
 # # ============ 检查 bazel ============
 if ! command -v bazel >/dev/null; then
   echo "❌ bazel 未找到，请检查安装是否成功"
