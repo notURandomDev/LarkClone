@@ -11,6 +11,8 @@ show_help() {
     echo "  1, --clean     Clean build directory"
     echo "  2, --build     Build the application"
     echo "  3, --debug     Run the app in debug mode"
+    echo "  4, --setupenv  Set up rust development environment"
+    echo "  5, --generate  Generate mock data"
     echo "  --help         Show this help message and exit"
     echo
     echo "Without arguments, the script will use the numeric option passed as the first parameter."
@@ -23,9 +25,23 @@ clean_build() {
     bazel clean --expunge
 }
 
+setupenv(){
+    echo "Setting up rust development environment..."
+    ./script/setup_rust.sh
+}
+
+generate(){
+    echo "Generating mock data..."
+    cd LarkClone
+    ../scripts/run_generate_contacts.sh
+    ../scripts/run_generate_mails.sh
+    cd ..
+}
 # Function to build the app
 build_app() {
     echo "Building the app..."
+    setupenv
+    generate
     bazel build //LarkClone:LarkCloneApp --platforms=//platforms:aarch64_apple_ios
 }
 
@@ -37,6 +53,7 @@ debug_app() {
     xcrun simctl launch --console-pty booted teamNH.LarkClone
 }
 
+
 # Main menu
 choice=$1
 
@@ -44,6 +61,8 @@ case $choice in
     1|--clean) clean_build ;;
     2|--build) build_app ;;
     3|--debug) debug_app ;;
+    4|--setupenv) setupenv ;;
+    5|--generate) generate ;;
     --help|-h) show_help ;;
     *) 
         echo "Invalid choice!"

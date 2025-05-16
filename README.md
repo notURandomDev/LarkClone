@@ -259,7 +259,6 @@ Tab 框架（framework）的目录下主要有三个子目录：
 ```text
 \
 ├── LarkClone
-│   ├── main
 │   └── BUILD.bazel  //构建app
 ├── RustSDK
 │   └── BUILD.bazel  //构建Rust静态库
@@ -269,13 +268,64 @@ Tab 框架（framework）的目录下主要有三个子目录：
 ├── MODULE.bazel     //定义项目的依赖关系、版本和工具链
 └── build.sh         //构建脚本
 ```
+
 `build.sh`包含功能
 - `--clean`清除构建目录
 - `--build`构建app
 - `--debug`安装调试app
+- `--setupenv`设置Rust环境变量
+- `--generate`生成mock数据
 - `--help`显示帮助
 
-`bazel仓库`：`https://registry.bazel.build/` 
+自定义构建目标
+```
+xcode项目:
+//:xcodeproj
+
+App模块:
+//LarkClone:LarkClone
+//LarkClone:LarkCloneResources
+//LarkClone:LarkCloneApp
+
+Core模块:
+//LarkClone:LarkBridgeModels
+//LarkClone:LarkBridgeModelsHeaders
+//LarkClone:LarkFoundation
+//LarkClone:LarkSDK
+//LarkClone:LarkSDK-Bridge-Header
+//LarkClone:LarkSDKPB
+
+UI模块:
+//LarkClone:ComponentsObjc
+//LarkClone:LarkAvatar
+//LarkClone:LarkChatBubble
+//LarkClone:LarkColor
+//LarkClone:LarkColorObjc
+//LarkClone:LarkLaunchScreen
+//LarkClone:LarkLaunchScreenResources
+//LarkClone:LarkSearchBarObjc
+
+Tab模块:
+//LarkClone:MailTabHeaders
+//LarkClone:MailTabObjc
+//LarkClone:MailTabResources
+//LarkClone:MessengerTab
+//LarkClone:MessengerTabResources
+
+RustSDK模块:
+//RustSDK:RustSDKHeaders
+//RustSDK:proto_swift
+//RustSDK:protos
+//RustSDK:rust_sdk
+//RustSDK:rust_sdk_lib
+
+目标平台模块:
+//platforms:aarch64_apple_ios
+```
+
+### 参考资料
+- `Bazel官方文档`
+- `bazel仓库`：`https://registry.bazel.build/` 
 
 
 

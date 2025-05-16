@@ -5,8 +5,16 @@
 //  Created by 张纪龙 on 2025/5/10.
 
 #import "MailItem.h"
-#import <LarkSDK/LarkSDK-Swift.h>
-#import <LarkBridgeModels/ObjCMailItemList.h>
+#if __has_include(<LarkSDK/LarkSDK-Swift.h>)
+    // 使用 RustBridge 的代码
+    #import <LarkSDK/LarkSDK-Swift.h>
+    #import <LarkBridgeModels/ObjCMailItemList.h>
+#else
+    #import "LarkClone/LarkSDK-Swift.h"
+    #import "ObjCMailItemList.h"
+#endif
+
+
 
 @interface MailItem ()
 @property (nonatomic, strong) NSString *id;

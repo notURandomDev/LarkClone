@@ -2,6 +2,18 @@ package(default_visibility = ["//visibility:public"])
 
 load("@rules_rust//rust:defs.bzl", "rust_static_library")
 load("@rules_cc//cc:defs.bzl", "cc_import", "cc_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_swift//proto:swift_proto_library.bzl", "swift_proto_library")
+load("@rules_cc//cc:objc_library.bzl", "objc_library")
+
+proto_library(
+    name = "protos",
+    srcs = glob(["src/lark_sdk_pb/*.proto"]),
+)
+swift_proto_library(
+    name = "proto_swift",
+    protos = [":protos"],
+)
 
 rust_static_library(
     name = "rust_sdk_lib",
@@ -12,36 +24,39 @@ rust_static_library(
         "@crates//:plist",
         "@crates//:libc",
     ],
-    features = [
-        "cbindgen",
-    ],
     target_compatible_with = ["@platforms//os:ios", "@platforms//cpu:aarch64"],
 )
 
-# Generate the Rust SDK header using cbindgen with a direct bash command
-genrule(
-    name = "rust_sdk_header",
-    srcs = [
-        "cbindgen.toml",
-        "src/lib.rs",
-    ],
-    outs = ["rust_sdk.h"],
-    cmd = """
-    # Run cbindgen with direct embedded options
-    cbindgen --config $(location cbindgen.toml) --output $(location rust_sdk.h) $(location src/lib.rs) || \
-    echo "Error running cbindgen. Make sure it's installed via 'cargo install cbindgen'"
-    """,
+# Generate the Rust SDK header using cbindgen
+# genrule(
+#     name = "rust_sdk_header",
+#     srcs = [
+#         "cbindgen.toml",
+#         "src/lib.rs",
+#         ":rust_sdk_lib",
+#     ],
+#     outs = ["rust_sdk.h"],
+#     cmd = """
+#     if ! command -v cbindgen &> /dev/null; then
+#         echo "Error: cbindgen not found. Installing with cargo..." 
+#         cargo install --quiet cbindgen || exit 1
+#     fi
+    
+#     # 直接生成头文件，不做任何额外处理
+#     cbindgen --config $(location cbindgen.toml) --output $(location rust_sdk.h) $(location src/lib.rs) --lang c
+#     """,
+# )
+objc_library(
+    name = "RustSDKHeaders",
+    hdrs = glob(["**/*.h"]),
+    # deps = ["//RustSDK:rust_sdk"],
+    includes = ["include","."],
+    visibility = ["//visibility:public"],
 )
-
 # 使用 cc_import 来引用预构建的 Rust 静态库
 cc_import(
     name = "rust_sdk",
-    hdrs = [":rust_sdk_header"],  # 使用生成的头文件
+    hdrs = ["rust_sdk.h"],
     static_library = ":rust_sdk_lib",
     target_compatible_with = ["@platforms//os:ios", "@platforms//cpu:aarch64"],
 )
-
-
-
-
-

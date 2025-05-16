@@ -1,97 +1,287 @@
+package(default_visibility = ["//visibility:public"])
+
+load("@rules_swift//swift:swift.bzl", "swift_library")
+load("@rules_cc//cc:objc_library.bzl", "objc_library")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+swift_library(
+    name = "LarkSDKPB",
+    module_name = "LarkSDKPB",
+    srcs = glob(["Frameworks/Core/LarkSDKPB/**/*.swift"]),
+    deps = [
+        "//RustSDK:proto_swift"
+    ],
+    tags = ["swift"],
+    visibility = ["//visibility:public"],
+)
+
+# 添加ObjC头文件库
+objc_library(
+    name = "LarkBridgeModelsHeaders",
+    hdrs = glob(["Frameworks/Core/LarkBridgeModels/*.h"]),
+    module_name = "LarkBridgeModelsHeaders",
+    includes = ["Frameworks/Core/LarkBridgeModels"],
+    visibility = ["//visibility:public"],
+)
+
+# 然后定义其他依赖这些目标的库
+swift_library(
+    name = "LarkBridgeModels",
+    module_name = "LarkBridgeModels",
+    srcs = glob(["Frameworks/Core/LarkBridgeModels/*.swift"]),
+    deps = [
+        ":LarkSDKPB",
+        ":LarkBridgeModelsHeaders",
+    ],
+    tags = ["swift"],
+    visibility = ["//visibility:public"],
+)
+# bazel build --platforms=//platforms:aarch64_apple_ios //LarkClone/Frameworks/Core:LarkBridgeModels
+
+objc_library(
+    name = "LarkSDK-Bridge-Header",
+    hdrs = glob(["Frameworks/Core/LarkSDK/*.h"]),
+    includes = ["Frameworks/Core/LarkSDK"],
+    module_map = "Frameworks/Core/LarkSDK/module.modulemap",
+    visibility = ["//visibility:public"],
+)
+
+swift_library(
+    name = "LarkSDK",
+    module_name = "LarkSDK",
+    srcs = glob(["Frameworks/Core/LarkSDK/**/*.swift"]),
+    deps = [
+        ":LarkSDKPB",
+        ":LarkBridgeModels",
+        "//RustSDK:RustSDKHeaders",
+        ":LarkSDK-Bridge-Header",
+    ],
+    generates_header = True,
+    tags = ["swift"],
+    visibility = ["//visibility:public"],
+)
+
+# 添加 LarkFoundation 模块
+swift_library(
+    name = "LarkFoundation",
+    module_name = "LarkFoundation",
+    srcs = glob(["Frameworks/Core/LarkFoundation/**/*.swift"]),
+    deps = [
+        ":LarkColor",
+        ":MessengerTab",
+        ":MailTabObjc",
+        ":MailTabHeaders",
+        # ":LarkChatBubble",
+    ],
+    tags = ["swift"],
+    visibility = ["//visibility:public"],
+)
+
+
+
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# UI
+
 load("@rules_swift//swift:swift.bzl", "swift_library")
 load("@rules_apple//apple:ios.bzl", "ios_application")
 load("@rules_apple//apple:resources.bzl", "apple_resource_group") # 用于处理资源
-load("@rules_xcodeproj//xcodeproj:defs.bzl","xcodeproj",)
 load("@rules_cc//cc:objc_library.bzl", "objc_library")
 
-# 0. 定义 Xcode 项目
-xcodeproj(
-    name = "xcodeproj",
-    project_name = "LarkClone",
-    tags = ["manual"],
-    top_level_targets = [
-        ":LarkClone",
-    ],
-)
-
-# 1. 定义应用资源 (例如 Assets.xcassets)
-apple_resource_group(
-    name = "LarkCloneResources",
-    resources = glob([
-        "Assets.xcassets/**",
-        "Frameworks/Tabs/MessengerTab/Resources/**",
-        "Frameworks/Tabs/MailTab/Resources/**",
-    ]),
-)
-
-# 2. 新增：定义 Objective-C 库
 objc_library(
-    name = "LarkCloneObjcLib",
-    srcs = glob(["**/*.m"]),
-    hdrs = glob(["**/*.h"]),
-    includes = [
-        "Frameworks/Tabs/MailTab/Sources/Models",
-        "Frameworks/Tabs/MailTab/Sources/Views",
-        "Frameworks/Tabs/MailTab/Sources/Controllers",
-        "Frameworks/UI/Components",
-        "Frameworks/UI/LarkColor",
-        "Frameworks/UI/LarkSearchBar",
-    ],
-    module_name = "LarkCloneObjc",
+    name = "ComponentsObjc",
+    srcs = glob(["Frameworks/UI/Components/**/*.m"]),
+    hdrs = glob(["Frameworks/UI/Components/**/*.h"]),
+    includes = ["Frameworks/UI/Components"],
+    module_name = "ComponentsObjc",
 )
 
 swift_library(
-    name = "LarkColor",
-    module_name = "LarkColor",
-    srcs = ["Frameworks/UI/LarkColor/LarkColor.swift"],
-    deps = [
-        ":LarkCloneObjcLib", # Assuming LarkColor.swift might use ObjC parts from LarkCloneObjcLib
-    ],
-    tags = ["swift"],
-)
-# NEW: Define LarkAvatar Swift library
-swift_library(
-    name = "LarkAvatarLib",
+    name = "LarkAvatar",
     module_name = "LarkAvatar",
     srcs = glob(["Frameworks/UI/LarkAvatar/**/*.swift"]),
     tags = ["swift"],
 )
 
-# NEW: Define LarkLaunchScreen Swift library
 swift_library(
-    name = "LarkLaunchScreenLib",
+    name = "LarkChatBubble",
+    module_name = "LarkChatBubble",
+    srcs = glob(["Frameworks/UI/LarkChatBubble/**/*.swift"]),
+    deps = [
+        ":LarkColor", # Assuming LarkChatBubble.swift might use ObjC parts from ComponentsLib
+    ],
+    tags = ["swift"],
+)
+
+swift_library(
+    name = "LarkColor",
+    module_name = "LarkColor",
+    srcs = glob(["Frameworks/UI/LarkColor/**/*.swift"]),
+    tags = ["swift"],
+)
+objc_library(
+    name = "LarkColorObjc",
+    srcs = glob(["Frameworks/UI/LarkColor/**/*.m"]),
+    hdrs = glob(["Frameworks/UI/LarkColor/**/*.h"]),
+    includes = ["Frameworks/UI/LarkColor"],
+    module_name = "LarkColorObjc",
+)
+apple_resource_group(
+    name = "LarkLaunchScreenResources",
+    resources = glob([
+        "Frameworks/UI/LarkLaunchScreen/Assets.xcassets/**",
+    ]),
+)
+swift_library(
+    name = "LarkLaunchScreen",
     module_name = "LarkLaunchScreen",
     srcs = glob(["Frameworks/UI/LarkLaunchScreen/**/*.swift"]),
     tags = ["swift"],
 )
 
-# 3. 定义 Swift 库 (包含您应用的所有 Swift 代码)
+objc_library(
+    name = "LarkSearchBarObjc",
+    srcs = glob(["Frameworks/UI/LarkSearchBar/**/*.m"]),
+    hdrs = glob(["Frameworks/UI/LarkSearchBar/**/*.h"]),
+    includes = ["Frameworks/UI/LarkSearchBar"],
+    module_name = "LarkSearchBarObjc",
+)
+
+
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# Tabs
+
+load("@rules_apple//apple:resources.bzl", "apple_resource_group") # 用于处理资源
+load("@rules_cc//cc:objc_library.bzl", "objc_library")
+
+
+apple_resource_group(
+    name = "MailTabResources",
+    resources = glob([
+        "Frameworks/Tabs/MailTab/Resources/**",
+    ]),
+)
+
+objc_library(
+    name = "MailTabHeaders",
+    hdrs = glob(["Frameworks/Tabs/MailTab/Sources/**/*.h"]),
+    includes = ["Frameworks/Tabs/MailTab/Sources"],
+    module_name = "MailTabHeaders",
+)
+
+objc_library(
+    name = "MailTabObjc",
+    srcs = glob(["Frameworks/Tabs/MailTab/Sources/**/*.m"]),
+    # hdrs = glob(["Frameworks/Tabs/MailTab/Sources/**/*.h"]),
+    includes = [
+        "Frameworks/Tabs/MailTab/Sources/Models",
+        "Frameworks/Tabs/MailTab/Sources/Views",
+        "Frameworks/Tabs/MailTab/Sources/Controllers",
+    ],
+    deps = [
+        ":MailTabHeaders",
+        ":LarkBridgeModels",
+        ":LarkSDK",
+        ":LarkBridgeModelsHeaders",
+        ":LarkColorObjc",
+        ":ComponentsObjc",
+        ":LarkSearchBarObjc",
+        "//RustSDK:rust_sdk",
+    ],
+    module_name = "MailTabObjc",
+)
+
+
+load("@rules_swift//swift:swift.bzl", "swift_library")
+load("@rules_apple//apple:resources.bzl", "apple_resource_group") # 用于处理资源
+load("@rules_cc//cc:objc_library.bzl", "objc_library")
+
+
+apple_resource_group(
+    name = "MessengerTabResources",
+    resources = glob([
+        "Frameworks/Tabs/MessengerTab/Resources/**",
+    ]),
+)
+
 swift_library(
-    name = "LarkCloneLib",
+    name = "MessengerTab",
+    srcs = glob(
+        ["Frameworks/Tabs/MessengerTab/Sources/**/*.swift"]+["Frameworks/UI/LarkChatBubble/**/*.swift"],
+        exclude = [
+            "Frameworks/Tabs/MessengerTab/Sources/Scripts/**/*.swift", # 排除自动生成的文件
+        ],
+    ),
+    module_name = "MessengerTab", # 您 Swift 代码的模块名
+    deps = [
+        ":LarkColor", 
+        ":LarkAvatar",
+        ":LarkSDKPB", 
+        ":LarkSDK", 
+        # ":LarkChatBubble",
+    ],
+    tags = ["swift"],
+    target_compatible_with = ["@platforms//os:ios", "@platforms//cpu:aarch64"],
+)
+
+
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# Apps
+
+
+apple_resource_group(
+    name = "LarkCloneResources",
+    resources = glob([
+        "Assets.xcassets/**",
+    ])+[":MailTabResources",
+        ":MessengerTabResources",
+        ":LarkLaunchScreenResources",],
+
+)
+
+swift_library(
+    name = "LarkClone",
     srcs = glob(
         ["**/*.swift"],
         exclude = [
-            "Frameworks/UI/LarkColor/LarkColor.swift",              # Exclude file now in LarkColor module
-            "Frameworks/UI/LarkAvatar/**/*.swift",                 # Exclude files now in LarkAvatarLib module
-            "Frameworks/UI/LarkLaunchScreen/**/*.swift",           # Exclude files now in LarkLaunchScreenLib module
             "Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift",         # Exclude script with top-level code
             "Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift", # Exclude script with top-level code
+            "Frameworks/UI/LarkColor/**/*.swift",              # Exclude file now in LarkColor module
+            "Frameworks/UI/LarkAvatar/**/*.swift",                 # Exclude files now in LarkAvatarLib module
+            "Frameworks/UI/LarkLaunchScreen/**/*.swift",         
+            "Frameworks/Core/LarkBridgeModels/**/*.swift",
+            "Frameworks/Core/LarkSDK/**/*.swift",
+            "Frameworks/Core/LarkSDKPB/**/*.swift",
         ],
     ),
     module_name = "LarkClone", # 您 Swift 代码的模块名
     
-    swiftc_inputs = ["Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone_Bridging_Header.h"],
-    copts = [
-        "-import-objc-header",
-        "$(location :Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone_Bridging_Header.h)",
-    ],
     deps = [
-        "//RustSDK:rust_sdk",      # 依赖于您在 RustSDK/BUILD.bazel 中定义的 Rust 库
-        ":LarkCloneObjcLib", 
-        ":LarkColor",              # Add dependency on the new LarkColor module
-        ":LarkAvatarLib",          # Add dependency on the new LarkAvatarLib module
-        ":LarkLaunchScreenLib", 
+        ":MailTabHeaders",
+        ":MailTabObjc",
+        ":LarkLaunchScreen", # Assuming ComponentsLib is a Swift library
+        ":LarkColor", # Assuming LarkColor is a Swift library
+        ":LarkAvatar", # Assuming LarkAvatar is a Swift library
+        ":LarkSDK",
+        ":LarkSDKPB",
+        ":LarkBridgeModels",
+        ":LarkBridgeModelsHeaders",
+        "//RustSDK:RustSDKHeaders",
     ],
+    copts = [
+        "-import-objc-header", 
+        "$(execpath Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone-Bridging-Header.h)",
+    ],
+
+    swiftc_inputs = ["Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone-Bridging-Header.h"],
     tags = ["swift"],
 )
 
@@ -106,7 +296,7 @@ ios_application(
     infoplists = [":Info.bazel.plist"],
     minimum_os_version = "18.0",
     deps = [
-        ":LarkCloneLib",
+        ":LarkClone",
     ],
     resources = [
         ":LarkCloneResources",
