@@ -16,7 +16,7 @@ enum BubbleType {
 class ChatBubbleView: UIView {
     
     // MARK: - UI组件
-    let messageLabel = UILabel()
+    internal let messageLabel = UILabel()
     private var registrationToken: NSObjectProtocol?
     
     // MARK: - 初始化
@@ -98,6 +98,19 @@ class ChatBubbleView: UIView {
             configure(text: text, type: isSent ? .sent : .received)
         }
     }
+    
+    // MARK: - 测试辅助方法
+    #if DEBUG
+    // 提供一个安全的方法来获取消息文本，用于测试
+    func testHelper_getText() -> String? {
+        return messageLabel.text
+    }
+    
+    // 提供一个方法来判断气泡类型
+    func testHelper_getBubbleType() -> BubbleType {
+        return backgroundColor == LarkColorStyle.ChatBubble.Sent.backgroundColor ? .sent : .received
+    }
+    #endif
 }
 
 // 辅助扩展：检测颜色是否为浅色

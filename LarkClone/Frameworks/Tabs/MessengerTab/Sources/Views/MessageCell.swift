@@ -136,10 +136,13 @@ class MessageCell: UITableViewCell {
         } else {
             configureReceivedMessage(message)
         }
+        
+        // 确保所有约束应用后重新布局
+        self.contentView.layoutIfNeeded()
     }
     
     private func configureSentMessage(_ message: Message) {
-        // 隐藏发送者名称
+        // 明确隐藏发送者名称
         senderNameLabel.isHidden = true
         avatarImageView.isHidden = false
         
@@ -181,12 +184,12 @@ class MessageCell: UITableViewCell {
     }
     
     private func configureReceivedMessage(_ message: Message) {
-        // 显示发送者名称和头像
+        // 明确显示发送者名称和头像
         senderNameLabel.isHidden = false
         senderNameLabel.text = message.sender.name
         avatarImageView.isHidden = false
         
-        // 隐藏已读状态
+        // 明确隐藏已读状态
         readStatusView.isHidden = true
         
         // 左侧约束 - 头像在左边
@@ -287,7 +290,60 @@ class MessageCell: UITableViewCell {
         senderNameLabel.text = nil
         timeLabel.text = nil
         readStatusView.image = nil
+        // 重置所有视图的可见性状态
         readStatusView.isHidden = true
         senderNameLabel.isHidden = false
+        avatarImageView.isHidden = false
+        // 清除气泡视图内容
+        bubbleView.configure(text: "", type: .received)
     }
 }
+
+//辅助测试的方法
+#if DEBUG
+extension MessageCell {
+    // 安全配置测试消息的方法
+    func testHelper_configureSafely(content: String, type: MessageType, isRead: Bool = true) {
+        // 创建一个安全的测试用 Contact 对象
+        let safeContact = Contact(
+            avatar: UIImage(systemName: "person.circle") ?? UIImage(), // 使用系统图标，避免 nil
+            name: "测试发送者",
+            latestMsg: "",
+            datetime: "",
+            type: .user
+        )
+        
+        // 使用安全的对象创建 Message
+        let safeMessage = Message(
+            content: content,
+            sender: safeContact,
+            type: type,
+            isRead: isRead
+        )
+        
+        // 调用实际的配置方法
+        self.configure(with: safeMessage)
+    }
+    
+    // 为测试暴露内部视图
+    var testHelper_bubbleView: ChatBubbleView {
+        return bubbleView
+    }
+    
+    var testHelper_readStatusView: UIImageView {
+        return readStatusView
+    }
+    
+    var testHelper_senderNameLabel: UILabel {
+        return senderNameLabel
+    }
+    
+    var testHelper_timeLabel: UILabel {
+        return timeLabel
+    }
+    
+    var testHelper_avatarImageView: UIImageView {
+        return avatarImageView
+    }
+}
+#endif

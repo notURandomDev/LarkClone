@@ -1,13 +1,13 @@
 //
-//  GenerateMails.swift
-//  LarkClone
-//
-//  Created by 张纪龙 on 2025/5/10.
+//  EmailDataGeneratorModel.swift
+//  LarkCloneTests
+//  没办法修改GenerateMails的权限
+//  Created by 张纪龙 on 2025/5/16.
 //
 
 import Foundation
 
-class EmailDataGenerator {
+public class EmailDataGenerator {
     private let regularSenders = [
         "张纪龙", "黄子烨", "苏鹏", "蒋元",
         "严文华", "王恂", "肖凯琴", "张文智",
@@ -172,16 +172,8 @@ class EmailDataGenerator {
         let hasAttachment = Bool.random()
         let isRead = Double.random(in: 0...1) < 0.7
         
-        // 修改时间格式，确保与MailItem解析格式完全匹配
         let dateFormatter = DateFormatter()
-        
-        // 设置一致的locale和时区
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-        
-        // 使用标准格式，不添加毫秒（与MailItem默认解析格式一致）
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
         let dateString = dateFormatter.string(from: timestamp)
         
         var email: [String: Any] = [
@@ -326,6 +318,3 @@ func main() {
         exit(1)
     }
 }
-
-// 调用主函数
-main()
