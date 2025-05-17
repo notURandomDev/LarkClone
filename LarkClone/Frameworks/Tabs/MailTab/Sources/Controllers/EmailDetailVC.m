@@ -35,6 +35,7 @@
 
 @implementation EmailDetailVC
 
+
 #pragma mark - Initialization
 
 // 只保留一个初始化方法
@@ -277,27 +278,38 @@
 
 #pragma mark - Actions
 
+// 添加便捷宏来调用本地化
+#define LocalizedString(key) NSLocalizedStringFromTable(key, @"MailTab", nil)
+
 - (void)backButtonTapped {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)replyButtonTapped {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"回复"
-                                                                   message:@"回复功能正在开发中"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:LocalizedString(@"reply")
+                                                                   message:LocalizedString(@"reply_developing")
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:nil]];
+    
+    [alert addAction:[UIAlertAction actionWithTitle:LocalizedString(@"ok")
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    
     [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)trashButtonTapped {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"删除邮件"
-                                                                   message:@"确定要删除这封邮件吗？"
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:LocalizedString(@"delete_email")
+                                                                   message:LocalizedString(@"delete_confirmation")
                                                             preferredStyle:UIAlertControllerStyleAlert];
     
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:LocalizedString(@"cancel")
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
     
     __weak typeof(self) weakSelf = self; // 使用 weakSelf 避免循环引用
-    [alert addAction:[UIAlertAction actionWithTitle:@"删除" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+    [alert addAction:[UIAlertAction actionWithTitle:LocalizedString(@"delete")
+                                              style:UIAlertActionStyleDestructive
+                                            handler:^(UIAlertAction * _Nonnull action) {
         // 调用回调通知邮箱控制器删除邮件
         if (weakSelf.onDeleteEmail) {
             weakSelf.onDeleteEmail(weakSelf.email.id);

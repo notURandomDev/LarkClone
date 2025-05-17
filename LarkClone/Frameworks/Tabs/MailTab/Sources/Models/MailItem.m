@@ -53,10 +53,46 @@
         _isOfficial = isOfficial;
         _emailCount = emailCount;
         
-        // 解析日期字符串
+        // 改进日期解析：添加固定的locale和时区设置以提高解析成功率
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-        _date = [dateFormatter dateFromString:dateString] ?: [NSDate date];
+        
+        // 确保NSDateFormatter的行为一致
+        dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        dateFormatter.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        
+        // 尝试解析日期
+        NSDate *parsedDate = [dateFormatter dateFromString:dateString];
+        
+        // 如果解析失败，检查是否有毫秒格式
+        if (!parsedDate && [dateString containsString:@"."]) {
+            // 尝试带毫秒的格式
+            dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss.SSS";
+            parsedDate = [dateFormatter dateFromString:dateString];
+        }
+        
+        // 仍然失败，尝试几种常见格式
+        if (!parsedDate) {
+            NSArray *formats = @[
+                @"yyyy-MM-dd",
+                @"yyyy/MM/dd HH:mm:ss",
+                @"yyyy/MM/dd"
+            ];
+            
+            for (NSString *format in formats) {
+                dateFormatter.dateFormat = format;
+                parsedDate = [dateFormatter dateFromString:dateString];
+                if (parsedDate) break;
+            }
+        }
+        
+        // 所有解析方法都失败时才使用当前时间，并记录警告
+        if (!parsedDate) {
+            NSLog(@"⚠️ 警告: 无法解析日期字符串 '%@'，使用当前时间作为替代", dateString);
+            parsedDate = [NSDate date];
+        }
+        
+        _date = parsedDate;
     }
     return self;
 }

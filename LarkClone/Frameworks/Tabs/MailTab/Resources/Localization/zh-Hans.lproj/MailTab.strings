@@ -20,3 +20,8 @@
 "no_emails" = "没有邮件";
 "no_search_results" = "没有找到结果";
 "yesterday" = "昨天";
+"reply" = "回复";
+"reply_developing" = "回复功能正在开发中";
+"delete_email" = "删除邮件";
+"delete_confirmation" = "确定要删除这封邮件吗？";
+"delete" = "删除";
