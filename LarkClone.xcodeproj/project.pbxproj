@@ -245,6 +245,8 @@
 				Frameworks/Core/LarkSDKPB/MailList.pb.swift,
 				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
+				Frameworks/UI/LarkAvatar/AvatarUtility.swift,
+				Frameworks/UI/LarkAvatar/AvatarView.swift,
 				Frameworks/UI/LarkLaunchScreen/LaunchViewController.swift,
 				Info.plist,
 			);
