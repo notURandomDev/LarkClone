@@ -7,6 +7,7 @@
 
 import UIKit
 import LarkColor
+import LarkChatBubble
 
 class MessageCell: UITableViewCell {
     
