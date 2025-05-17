@@ -37,6 +37,14 @@
 		10CAECB12DD1A8C0003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
 		10CAEF552DD1DE6C003F9242 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 10CAEF542DD1DE6C003F9242 /* SwiftProtobuf */; };
 		10CAEF582DD1DEA4003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
+		E07FDFAB2DD7102A0094A9E5 /* MessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFAA2DD7102A0094A9E5 /* MessageTests.swift */; };
+		E07FDFAD2DD710470094A9E5 /* MessageCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFAC2DD710470094A9E5 /* MessageCellTests.swift */; };
+		E07FDFAF2DD710660094A9E5 /* ChatDetailViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFAE2DD710660094A9E5 /* ChatDetailViewControllerTests.swift */; };
+		E07FDFB12DD7107F0094A9E5 /* MockMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFB02DD7107F0094A9E5 /* MockMessage.swift */; };
+		E07FDFB32DD710970094A9E5 /* MockContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFB22DD710970094A9E5 /* MockContact.swift */; };
+		E07FDFBA2DD717F60094A9E5 /* PrivateAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFB92DD717F60094A9E5 /* PrivateAccessor.swift */; };
+		E07FDFBC2DD722960094A9E5 /* MessageCellTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFBB2DD722960094A9E5 /* MessageCellTester.swift */; };
+		E07FDFBE2DD722BD0094A9E5 /* ChatDetailViewControllerTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFBD2DD722BD0094A9E5 /* ChatDetailViewControllerTester.swift */; };
 		E08D1E9A2DD701E000555419 /* MockObjcMailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E8D2DD701E000555419 /* MockObjcMailItem.swift */; };
 		E08D1E9B2DD701E000555419 /* MockRustBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E8E2DD701E000555419 /* MockRustBridge.swift */; };
 		E08D1E9C2DD701E000555419 /* MailItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E912DD701E000555419 /* MailItemTests.swift */; };
@@ -205,6 +213,14 @@
 		10900F832DD04E5900BC010A /* LarkLaunchScreen.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkLaunchScreen.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10CAE47C2DD1902C003F9242 /* LarkSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LarkSDKPB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E07FDFAA2DD7102A0094A9E5 /* MessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTests.swift; sourceTree = "<group>"; };
+		E07FDFAC2DD710470094A9E5 /* MessageCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellTests.swift; sourceTree = "<group>"; };
+		E07FDFAE2DD710660094A9E5 /* ChatDetailViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailViewControllerTests.swift; sourceTree = "<group>"; };
+		E07FDFB02DD7107F0094A9E5 /* MockMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMessage.swift; sourceTree = "<group>"; };
+		E07FDFB22DD710970094A9E5 /* MockContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContact.swift; sourceTree = "<group>"; };
+		E07FDFB92DD717F60094A9E5 /* PrivateAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateAccessor.swift; sourceTree = "<group>"; };
+		E07FDFBB2DD722960094A9E5 /* MessageCellTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCellTester.swift; sourceTree = "<group>"; };
+		E07FDFBD2DD722BD0094A9E5 /* ChatDetailViewControllerTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatDetailViewControllerTester.swift; sourceTree = "<group>"; };
 		E08D1E872DD701E000555419 /* MailboxVC+Testing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MailboxVC+Testing.h"; sourceTree = "<group>"; };
 		E08D1E882DD701E000555419 /* MailItem+Testing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MailItem+Testing.h"; sourceTree = "<group>"; };
 		E08D1E8A2DD701E000555419 /* GenerateMailsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateMailsTests.swift; sourceTree = "<group>"; };
@@ -468,6 +484,49 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		E07FDFA62DD708AE0094A9E5 /* ControllerTests */ = {
+			isa = PBXGroup;
+			children = (
+				E07FDFAE2DD710660094A9E5 /* ChatDetailViewControllerTests.swift */,
+				E07FDFBD2DD722BD0094A9E5 /* ChatDetailViewControllerTester.swift */,
+			);
+			path = ControllerTests;
+			sourceTree = "<group>";
+		};
+		E07FDFA72DD708CF0094A9E5 /* ModelTest */ = {
+			isa = PBXGroup;
+			children = (
+				E07FDFAA2DD7102A0094A9E5 /* MessageTests.swift */,
+			);
+			path = ModelTest;
+			sourceTree = "<group>";
+		};
+		E07FDFA82DD7098D0094A9E5 /* ViewTests */ = {
+			isa = PBXGroup;
+			children = (
+				E07FDFAC2DD710470094A9E5 /* MessageCellTests.swift */,
+				E07FDFBB2DD722960094A9E5 /* MessageCellTester.swift */,
+			);
+			path = ViewTests;
+			sourceTree = "<group>";
+		};
+		E07FDFA92DD7099B0094A9E5 /* MockObjectsTests */ = {
+			isa = PBXGroup;
+			children = (
+				E07FDFB02DD7107F0094A9E5 /* MockMessage.swift */,
+				E07FDFB22DD710970094A9E5 /* MockContact.swift */,
+			);
+			path = MockObjectsTests;
+			sourceTree = "<group>";
+		};
+		E07FDFB82DD717D50094A9E5 /* TestUtilities */ = {
+			isa = PBXGroup;
+			children = (
+				E07FDFB92DD717F60094A9E5 /* PrivateAccessor.swift */,
+			);
+			path = TestUtilities;
+			sourceTree = "<group>";
+		};
 		E08D1E892DD701E000555419 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -528,6 +587,11 @@
 		E08D1E972DD701E000555419 /* MessengerTabTest */ = {
 			isa = PBXGroup;
 			children = (
+				E07FDFB82DD717D50094A9E5 /* TestUtilities */,
+				E07FDFA92DD7099B0094A9E5 /* MockObjectsTests */,
+				E07FDFA82DD7098D0094A9E5 /* ViewTests */,
+				E07FDFA72DD708CF0094A9E5 /* ModelTest */,
+				E07FDFA62DD708AE0094A9E5 /* ControllerTests */,
 			);
 			path = MessengerTabTest;
 			sourceTree = "<group>";
@@ -1164,12 +1228,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				E08D1E9A2DD701E000555419 /* MockObjcMailItem.swift in Sources */,
+				E07FDFAF2DD710660094A9E5 /* ChatDetailViewControllerTests.swift in Sources */,
 				E08D1E9B2DD701E000555419 /* MockRustBridge.swift in Sources */,
+				E07FDFB12DD7107F0094A9E5 /* MockMessage.swift in Sources */,
 				E08D1E9C2DD701E000555419 /* MailItemTests.swift in Sources */,
+				E07FDFB32DD710970094A9E5 /* MockContact.swift in Sources */,
 				E08D1E9D2DD701E000555419 /* EmailDataGeneratorModel.swift in Sources */,
+				E07FDFAB2DD7102A0094A9E5 /* MessageTests.swift in Sources */,
 				E08D1E9E2DD701E000555419 /* FileSystemMocks.swift in Sources */,
 				E08D1E9F2DD701E000555419 /* LarkCloneTests.swift in Sources */,
+				E07FDFAD2DD710470094A9E5 /* MessageCellTests.swift in Sources */,
 				E08D1EA02DD701E000555419 /* MailboxVCTests.swift in Sources */,
+				E07FDFBE2DD722BD0094A9E5 /* ChatDetailViewControllerTester.swift in Sources */,
+				E07FDFBA2DD717F60094A9E5 /* PrivateAccessor.swift in Sources */,
+				E07FDFBC2DD722960094A9E5 /* MessageCellTester.swift in Sources */,
 				E08D1EA12DD701E000555419 /* GenerateMailsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

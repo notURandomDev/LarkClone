@@ -172,8 +172,16 @@ class EmailDataGenerator {
         let hasAttachment = Bool.random()
         let isRead = Double.random(in: 0...1) < 0.7
         
+        // 修改时间格式，确保与MailItem解析格式完全匹配
         let dateFormatter = DateFormatter()
+        
+        // 设置一致的locale和时区
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        
+        // 使用标准格式，不添加毫秒（与MailItem默认解析格式一致）
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        
         let dateString = dateFormatter.string(from: timestamp)
         
         var email: [String: Any] = [

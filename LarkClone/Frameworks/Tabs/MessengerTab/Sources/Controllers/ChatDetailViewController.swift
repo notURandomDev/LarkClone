@@ -19,7 +19,7 @@ class ChatDetailViewController: UIViewController {
     private let loadingIndicator = UIActivityIndicatorView(style: .medium)
     
     // MARK: - 数据
-    private let contact: Contact
+    private var contact: Contact
     private var messages: [Message] = []
     private var inputContainerBottomConstraint: NSLayoutConstraint!
     private var isViewAppeared = false
@@ -438,3 +438,65 @@ extension ChatDetailViewController: UITableViewDataSourcePrefetching {
         // 可以取消正在进行的加载操作
     }
 }
+
+// MARK: - Testing Helpers
+#if DEBUG
+extension ChatDetailViewController {
+    // 暴露关键属性供测试使用
+    func testHelper_getContact() -> Contact {
+        return self.contact
+    }
+    
+    func testHelper_getMessages() -> [Message] {
+        return self.messages
+    }
+    
+    func testHelper_setMessages(_ messages: [Message]) {
+        self.messages = messages
+    }
+    
+    func testHelper_isDataLoaded() -> Bool {
+        return self.isDataLoaded
+    }
+    
+    func testHelper_setDataLoaded(_ loaded: Bool) {
+        self.isDataLoaded = loaded
+    }
+    
+    func testHelper_getTableView() -> UITableView {
+        return self.tableView
+    }
+    
+    func testHelper_getInputField() -> UITextField {
+        return self.inputField
+    }
+    
+    // 模拟加载消息的便捷方法
+    func testHelper_loadTestMessages() {
+        let testMessages = [
+            Message(content: "测试消息1",
+                    sender: self.contact,
+                    type: .received,
+                    isRead: true),
+            Message(content: "测试消息2",
+                    sender: Contact(
+                        avatar: UIImage(systemName: "person.circle")!,
+                        name: "我",
+                        latestMsg: "",
+                        datetime: "",
+                        type: .user
+                    ),
+                    type: .sent,
+                    isRead: true),
+            Message(content: "测试消息3",
+                    sender: self.contact,
+                    type: .received,
+                    isRead: false)
+        ]
+        
+        self.messages = testMessages
+        self.isDataLoaded = true
+        self.tableView.reloadData()
+    }
+}
+#endif

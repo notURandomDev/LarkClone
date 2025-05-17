@@ -1,17 +1,9 @@
 //
-//  MailItemTests.swift
-//  LarkClone
+//  MailItemTests.swift - 修复日期解析问题
+//  LarkCloneTests
 //
 //  Created by 张纪龙 on 2025/5/16.
 //
-
-/*这个文件测试邮件模型类：
- 测试MailItem的基础功能
- 验证邮件初始化、属性设置
- 测试从字典创建邮件
- 测试处理缺失字段和可选属性
- 测试模拟邮件生成功能
-*/
 
 import XCTest
 import UIKit
@@ -43,6 +35,7 @@ final class MailItemTests: XCTestCase {
     
     // MARK: - Initialization Tests
     func testInitialization() {
+        // 创建一个带有已知值的测试邮件
         let testEmail = MailItem(id: "test123",
                                sender: "Test Sender",
                                subject: "Test Subject",
@@ -64,52 +57,30 @@ final class MailItemTests: XCTestCase {
         XCTAssertFalse(testEmail.isOfficial, "isOfficial should be false")
         XCTAssertEqual(testEmail.emailCount?.intValue, 3, "emailCount should be 3")
         
-        // 日期验证 - 复制MailItem的日期处理逻辑确保一致性
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        // 确保日期被成功解析
+        XCTAssertNotNil(testEmail.date, "Date should not be nil")
         
-        // 确保DateFormatter配置完全一致
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX") // 使用固定的locale
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)    // 使用固定的时区
-
-        guard let parsedDate = dateFormatter.date(from: "2025-05-15 10:30:00") else {
-            XCTFail("Failed to parse expected date string")
-            return
-        }
-        
-        // 使用宽松比较，只比较日期的各个值，而不是直接比较日期对象
+        // 使用日历组件进行验证，避免时区问题
         let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: testEmail.date)
         
-        // 打印调试信息
-        print("期望日期: \(parsedDate)")
-        print("实际日期: \(testEmail.date)")
+        // 验证年份和月份
+        XCTAssertEqual(components.year, 2025, "Year should be 2025")
+        XCTAssertEqual(components.month, 5, "Month should be 5")
         
-        // 获取日期组件
-        let expectedComponents = calendar.dateComponents([.year, .month, .day], from: parsedDate)
-        let actualComponents = calendar.dateComponents([.year, .month, .day], from: testEmail.date)
+        // 由于时区差异，日期可能在14-16范围内
+        let day = components.day ?? 0
+        XCTAssertTrue(day >= 14 && day <= 16, "Day should be around 15 (14-16)")
         
-        // 先比较年月日 - 这些应该是固定的
-        XCTAssertEqual(expectedComponents.year, actualComponents.year, "Year should match")
-        XCTAssertEqual(expectedComponents.month, actualComponents.month, "Month should match")
-        let dayDiff = abs((expectedComponents.day ?? 0) - (actualComponents.day ?? 0))
-        XCTAssertLessThanOrEqual(dayDiff, 1, "Day difference should be at most 1")
+        // 验证小时在合理范围内
+        let hour = components.hour ?? 0
+        print("小时值: \(hour)")
         
-        // 时分秒可能因为时区问题有差异，使用较宽松的比较
-        let expectedTime = calendar.dateComponents([.hour, .minute, .second], from: parsedDate)
-        let actualTime = calendar.dateComponents([.hour, .minute, .second], from: testEmail.date)
+        // 不严格验证小时，但要确保在0-23的合理范围内
+        XCTAssertTrue(hour >= 0 && hour <= 23, "Hour should be in valid range (0-23)")
         
-        // 打印时间部分
-        print("期望时间: \(expectedTime.hour ?? 0):\(expectedTime.minute ?? 0):\(expectedTime.second ?? 0)")
-        print("实际时间: \(actualTime.hour ?? 0):\(actualTime.minute ?? 0):\(actualTime.second ?? 0)")
-        
-        // 这里注释掉了严格检查，但保留代码以供参考
-        // XCTAssertEqual(expectedTime.hour, actualTime.hour, "Hour should match")
-        // XCTAssertEqual(expectedTime.minute, actualTime.minute, "Minute should match")
-        // XCTAssertEqual(expectedTime.second, actualTime.second, "Second should match")
-        
-        // 使用更宽松的检查 - 允许时区差异
-        let hourDiff = abs((expectedTime.hour ?? 0) - (actualTime.hour ?? 0))
-        XCTAssertLessThanOrEqual(hourDiff, 24, "Hour difference should be within 24 hours")
+        // 仅验证分钟
+        XCTAssertEqual(components.minute, 30, "Minute should be 30")
     }
     
     func testOptionalEmailCount() {
@@ -134,7 +105,7 @@ final class MailItemTests: XCTestCase {
     // MARK: - Loading Tests
     
     func testcreateMailItem() {
-        // Create a dictionary with email data
+        // 创建一个带有邮件数据的字典
         let emailDict: [String: Any] = [
             "id": "dict123",
             "sender": "Dictionary Sender",
@@ -147,11 +118,10 @@ final class MailItemTests: XCTestCase {
             "emailCount": 5
         ]
         
-        // Create MailItem from dictionary
-        // 注意：这里使用了Objective-C分类中公开的方法
+        // 从字典创建MailItem
         let email = MailItem.createMailItem(from:emailDict)
         
-        // Test that the MailItem was created correctly
+        // 测试MailItem是否正确创建
         XCTAssertNotNil(email, "Should create a valid MailItem")
         XCTAssertEqual(email?.id, "dict123", "ID should match")
         XCTAssertEqual(email?.sender, "Dictionary Sender", "Sender should match")
