@@ -279,7 +279,6 @@ swift_library(
         "-import-objc-header", 
         "$(execpath Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone-Bridging-Header.h)",
     ],
-    # generates_header = True,
     swiftc_inputs = ["Frameworks/Tabs/MailTab/Sources/Controllers/LarkClone-Bridging-Header.h"],
     tags = ["swift"],
 )

@@ -8,7 +8,7 @@ fi
 
 # ============ 安装 bazel ============
 
-export BAZEL_VERSION=8.2.1
+export BAZEL_VERSION=7.6.1
 curl -fLO "https://github.com/bazelbuild/bazel/releases/download/$BAZEL_VERSION/bazel-$BAZEL_VERSION-installer-darwin-arm64.sh"
 
 chmod +x "bazel-$BAZEL_VERSION-installer-darwin-arm64.sh"

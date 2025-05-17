@@ -1,4 +1,4 @@
-load("@rules_ios//rules:framework.bzl", "apple_framework")
+load("@build_bazel_rules_ios//rules:framework.bzl", "apple_framework")
 
 apple_framework(
     name = "LarkColor",
@@ -7,7 +7,7 @@ apple_framework(
         "*.swift",
         "*.m",
     ]),
-    objc_headers = ["LarkColorObjC.h"],
+    # objc_headers = ["LarkColorObjC.h"],
     deps = [],  # 可能依赖其他模块
     visibility = ["//visibility:public"],
 )
