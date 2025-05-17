@@ -250,6 +250,85 @@ Tab 框架（framework）的目录下主要有三个子目录：
 
 最后，`src/` 根目录下的 lib.rs 文件将 Rust 代码封装成高层次的接口进行暴露，供 Swift 侧通过静态库调用。
 
+## Bazel构建系统
+
+### 工程描述
+构建系统迁移，从Xcodebuild构建系统切换到Bazel构建系统。Bazel 是一个高效、可扩展的构建工具，支持多语言和跨平台开发，通过增量构建、并行化及精准依赖管理，显著提升大型项目的构建速度与可靠性。
+
+### 项目结构
+```text
+\
+├── LarkClone
+│   └── BUILD.bazel  //构建app
+├── RustSDK
+│   └── BUILD.bazel  //构建Rust静态库
+├── platforms
+│   └── BUILD.bazel  //定义Bazel构建系统构建目标
+├── BUILD.bazel      //构建xcodeproj
+├── MODULE.bazel     //定义项目的依赖关系、版本和工具链
+└── build.sh         //构建脚本
+```
+
+`build.sh`包含功能
+- `--clean`清除构建目录
+- `--build`构建app
+- `--debug`安装调试app
+- `--setupenv`设置Rust环境变量
+- `--generate`生成mock数据
+- `--help`显示帮助
+
+自定义构建目标
+```
+xcode项目:
+//:xcodeproj
+
+App模块:
+//LarkClone:LarkClone
+//LarkClone:LarkCloneResources
+//LarkClone:LarkCloneApp
+
+Core模块:
+//LarkClone:LarkBridgeModels
+//LarkClone:LarkBridgeModelsHeaders
+//LarkClone:LarkFoundation
+//LarkClone:LarkSDK
+//LarkClone:LarkSDK-Bridge-Header
+//LarkClone:LarkSDKPB
+
+UI模块:
+//LarkClone:ComponentsObjc
+//LarkClone:LarkAvatar
+//LarkClone:LarkChatBubble
+//LarkClone:LarkColor
+//LarkClone:LarkColorObjc
+//LarkClone:LarkLaunchScreen
+//LarkClone:LarkLaunchScreenResources
+//LarkClone:LarkSearchBarObjc
+
+Tab模块:
+//LarkClone:MailTabHeaders
+//LarkClone:MailTabObjc
+//LarkClone:MailTabResources
+//LarkClone:MessengerTab
+//LarkClone:MessengerTabResources
+
+RustSDK模块:
+//RustSDK:RustSDKHeaders
+//RustSDK:proto_swift
+//RustSDK:protos
+//RustSDK:rust_sdk
+//RustSDK:rust_sdk_lib
+
+目标平台模块:
+//platforms:aarch64_apple_ios
+```
+
+### 参考资料
+- `Bazel官方文档`
+- `bazel仓库`：`https://registry.bazel.build/` 
+
+
+
 ## 相关链接
 
 ### notURandomDev

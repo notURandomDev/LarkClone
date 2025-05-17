@@ -1,0 +1,11 @@
+load("@rules_xcodeproj//xcodeproj:defs.bzl","xcodeproj",)
+
+# 0. 定义 Xcode 项目
+xcodeproj(
+    name = "xcodeproj",
+    project_name = "LarkClone",
+    tags = ["manual"],
+    top_level_targets = [
+        ":LarkCloneApp",
+    ],
+)
