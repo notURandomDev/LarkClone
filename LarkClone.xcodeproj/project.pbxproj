@@ -247,6 +247,8 @@
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
 				Frameworks/UI/LarkAvatar/AvatarUtility.swift,
 				Frameworks/UI/LarkAvatar/AvatarView.swift,
+				Frameworks/UI/LarkColor/LarkColor.swift,
+				Frameworks/UI/LarkColor/LarkColorObjC.m,
 				Frameworks/UI/LarkLaunchScreen/LaunchViewController.swift,
 				Info.plist,
 			);
@@ -284,6 +286,11 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Frameworks/UI/LarkColor/LarkColor.swift,
+				Frameworks/UI/LarkColor/LarkColorObjC.h,
+				Frameworks/UI/LarkColor/LarkColorObjC.m,
+			);
+			publicHeaders = (
+				Frameworks/UI/LarkColor/LarkColorObjC.h,
 			);
 			target = 100E66EE2DCCC8460011B0F1 /* LarkColor */;
 		};
