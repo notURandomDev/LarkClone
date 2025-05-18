@@ -279,6 +279,7 @@
 			membershipExceptions = (
 				Frameworks/Core/LarkBridgeModels/BUILD,
 				Frameworks/Core/LarkBridgeModels/ObjCMailItemList.swift,
+				Frameworks/Core/LarkSDK/BUILD,
 				Frameworks/Core/LarkSDK/RustBridge.swift,
 				Frameworks/Core/LarkSDK/RustBridgeSymbolRetainer.swift,
 				Frameworks/Core/LarkSDKPB/BUILD,
