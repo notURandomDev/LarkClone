@@ -24,8 +24,8 @@ apple_framework(
     # module_map = "Sources/Controllers/module.modulemap",  # optional, default to "module.modulemap"
     # private sources
     srcs = glob([
-        "Sources/**/*.m",
-        "Sources/**/*.h",
+        "Frameworks/Tabs/MailTab/Sources/**/*.m",
+        "Frameworks/Tabs/MailTab/Sources/**/*.h",
     ]),
 
     # any compatible provider: CCProvider, SwiftInfo, etc
@@ -66,10 +66,10 @@ apple_framework(
 
     # private sources
     srcs = glob([
-        "Sources/Controllers/*.swift",
-        "Sources/Extensions/*.swift",
-        "Sources/Models/*.swift",
-        "Sources/Views/*.swift",
+        "Frameworks/Tabs/MessengerTab/Sources/Controllers/*.swift",
+        "Frameworks/Tabs/MessengerTab/Sources/Extensions/*.swift",
+        "Frameworks/Tabs/MessengerTab/Sources/Models/*.swift",
+        "Frameworks/Tabs/MessengerTab/Sources/Views/*.swift",
     ]),
 
     # any compatible provider: CCProvider, SwiftInfo, etc
