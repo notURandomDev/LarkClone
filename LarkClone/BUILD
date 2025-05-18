@@ -12,7 +12,7 @@ load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
 apple_resource_group(
     name = "MailTabResources",
     resources = glob([
-        "Resources/**",
+        "Frameworks/Tabs/MailTab/Resources/**",
     ]),
     visibility = ["//visibility:public"],
 )
@@ -56,7 +56,7 @@ apple_framework(
 apple_resource_group(
     name = "MessengerTabResources",
     resources = glob([
-        "Resources/**",
+        "Frameworks/Tabs/MessengerTab/Resources/**",
     ]),
 )
 
