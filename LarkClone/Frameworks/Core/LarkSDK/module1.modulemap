@@ -1,5 +1,0 @@
-// LarkSDK/module.modulemap
-module LarkBridge [system] {
-    header "LarkSDK-Bridging-Header.h"
-    export *
-}

@@ -8,6 +8,88 @@ load("@build_bazel_rules_apple//apple:ios.bzl", "ios_application")
 # ///////////////////////////////////////////////////////////////////////////////////
 # ///////////////////////////////////////////////////////////////////////////////////
 # ///////////////////////////////////////////////////////////////////////////////////
+# MailTab
+apple_resource_group(
+    name = "MailTabResources",
+    resources = glob([
+        "Resources/**",
+    ]),
+    visibility = ["//visibility:public"],
+)
+
+
+apple_framework(
+    name = "MailTab",
+    module_name = "MailTab",  # optional, default to name
+    # module_map = "Sources/Controllers/module.modulemap",  # optional, default to "module.modulemap"
+    # private sources
+    srcs = glob([
+        "Sources/**/*.m",
+        "Sources/**/*.h",
+    ]),
+
+    # any compatible provider: CCProvider, SwiftInfo, etc
+    deps = [
+        "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB",
+        "//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModels",
+        "//LarkClone/Frameworks/Core/LarkSDK:LarkSDK",
+        "//LarkClone/Frameworks/UI/LarkColor:LarkColorObjc",
+        "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBar",
+        "//LarkClone/Frameworks/UI/Components:Components",
+        "//LarkClone/Frameworks/UI/Components:ComponentsHeaders",
+        "//LarkClone/Frameworks/UI/LarkColor:LarkColorHeaders",
+        "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBarHeaders",
+        "//RustSDK:rust_sdk",
+        ":MailTabHeaders"
+    ],
+    platforms = {"ios": "18.0"},  
+    visibility = ["//visibility:public"],
+)
+
+
+
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# MessengerTab
+apple_resource_group(
+    name = "MessengerTabResources",
+    resources = glob([
+        "Resources/**",
+    ]),
+)
+
+apple_framework(
+    name = "MessengerTab",
+    module_name = "MessengerTab",  # optional, default to name
+
+    # private sources
+    srcs = glob([
+        "Sources/Controllers/*.swift",
+        "Sources/Extensions/*.swift",
+        "Sources/Models/*.swift",
+        "Sources/Views/*.swift",
+    ]),
+
+    # any compatible provider: CCProvider, SwiftInfo, etc
+    deps = [
+        "//LarkClone/Frameworks/Core/LarkSDK:LarkSDK",
+        "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB",
+        "//LarkClone/Frameworks/UI/LarkColor:LarkColor",
+        "//LarkClone/Frameworks/UI/LarkAvatar:LarkAvatar",
+        "//LarkClone/Frameworks/UI/LarkChatBubble:LarkChatBubble",
+    ],
+    platforms = {"ios": "18.0"},  
+    visibility = ["//visibility:public"],
+)
+
+
+
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
+# ///////////////////////////////////////////////////////////////////////////////////
 # Apps
 
 
@@ -16,13 +98,15 @@ apple_resource_group(
     resources = glob([
         "Assets.xcassets/**",
         "Frameworks/Tabs/MessengerTab/Resources/**",
-        # "Frameworks/Tabs/MailTab/Resources/**",
+        "Frameworks/Tabs/MailTab/Resources/**",
     ])+[
-        "//LarkClone/Frameworks/Tabs/MailTab:MailTabResources",
-        # "//LarkClone/Frameworks/Tabs/MessengerTab:MessengerTabResources",
+        # ":MailTabResources",
+        # ":MessengerTabResources",
         "//LarkClone/Frameworks/UI/LarkLaunchScreen:LarkLaunchScreenResources",],
     visibility = ["//visibility:public"],
 )
+
+
 apple_framework(
     name = "LarkClone",
     srcs = glob([
@@ -32,22 +116,26 @@ apple_framework(
     ], exclude=["**/Scripts/**"]),
     deps = [
         "//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModels",
+        # "//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModelsHeaders",
         "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB",
         "//LarkClone/Frameworks/Core/LarkSDK:LarkSDK",
         # "//LarkClone/Frameworks/Tabs/MessengerTab/Sources/Scripts",
-        "//LarkClone/Frameworks/Tabs/MailTab:MailTab",
-        "//LarkClone/Frameworks/Tabs/MailTab:MailTabHeaders",
+        # "//LarkClone/Frameworks/Tabs/MailTab:MailTab",
+        # "//LarkClone/Frameworks/Tabs/MailTab:MailTabHeaders",
         "//LarkClone/Frameworks/UI/LarkLaunchScreen:LarkLaunchScreen", # Assuming ComponentsLib is a Swift library
         "//LarkClone/Frameworks/UI/LarkColor:LarkColor", # Assuming LarkColor is a Swift library
         "//LarkClone/Frameworks/UI/LarkAvatar:LarkAvatar", # Assuming LarkAvatar is a Swift library
         
         "//LarkClone/Frameworks/UI/LarkColor:LarkColorObjc",
         "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBar",
+        "//LarkClone/Frameworks/UI/LarkChatBubble:LarkChatBubble",
         "//LarkClone/Frameworks/UI/Components:Components",
         "//LarkClone/Frameworks/UI/Components:ComponentsHeaders",
         "//LarkClone/Frameworks/UI/LarkColor:LarkColorHeaders",
         "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBarHeaders",
         "//RustSDK:rust_sdk",
+
+        "//LarkCloneTests/MailTabTest:MailTabTestHeaders"
     ],
     platforms = {"ios": "18.0"},  
     visibility = ["//visibility:public"],

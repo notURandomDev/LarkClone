@@ -258,12 +258,21 @@ Tab 框架（framework）的目录下主要有三个子目录：
 ### 项目结构
 ```text
 \
-├── LarkClone
-│   └── BUILD.bazel  //构建app
-├── RustSDK
-│   └── BUILD.bazel  //构建Rust静态库
-├── platforms
-│   └── BUILD.bazel  //定义Bazel构建系统构建目标
+├── LarkClone //LarkClone模块、App、Tab模块
+│   └── Frameworks
+│       ├── Core  
+│       │   ├── LarkBridgeModels  //LarkBridgeModels模块
+│       │   ├── LarkSDK //LarkSDK模块
+│       │   └── LarkSDKPB //LarkSDKPB模块
+│       └── UI  
+│           ├── Components //Components模块
+│           ├── LarkAvatar //LarkAvatar模块
+│           ├── LarkChatBubble //LarkChatBubble模块
+│           ├── LarkColor //LarkColor模块
+│           ├── LarkLaunchScreen //LarkLaunchScreen模块
+│           └── LarkSearchBar //LarkSearchBar模块
+├── RustSDK //构建Rust静态库
+├── platforms //定义Bazel构建系统构建目标
 ├── BUILD.bazel      //构建xcodeproj
 ├── MODULE.bazel     //定义项目的依赖关系、版本和工具链
 └── build.sh         //构建脚本
@@ -288,26 +297,21 @@ App模块:
 //LarkClone:LarkCloneApp
 
 Core模块:
-//LarkClone:LarkBridgeModels
-//LarkClone:LarkBridgeModelsHeaders
-//LarkClone:LarkFoundation
-//LarkClone:LarkSDK
-//LarkClone:LarkSDK-Bridge-Header
-//LarkClone:LarkSDKPB
+//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModels
+//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModelsHeaders
+//LarkClone/Frameworks/Core/LarkSDK:LarkSDK
+//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB
 
 UI模块:
-//LarkClone:ComponentsObjc
-//LarkClone:LarkAvatar
-//LarkClone:LarkChatBubble
-//LarkClone:LarkColor
-//LarkClone:LarkColorObjc
-//LarkClone:LarkLaunchScreen
-//LarkClone:LarkLaunchScreenResources
-//LarkClone:LarkSearchBarObjc
+//LarkClone/Frameworks/UI/Components:Components
+//LarkClone/Frameworks/UI/LarkAvatar:LarkAvatar
+//LarkClone/Frameworks/UI/LarkChatBubble:LarkChatBubble
+//LarkClone/Frameworks/UI/LarkColor:LarkColor
+//LarkClone/Frameworks/UI/LarkLaunchScreen:LarkLaunchScreen
+//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBar
 
 Tab模块:
-//LarkClone:MailTabHeaders
-//LarkClone:MailTabObjc
+//LarkClone:MailTab
 //LarkClone:MailTabResources
 //LarkClone:MessengerTab
 //LarkClone:MessengerTabResources
