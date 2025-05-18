@@ -379,6 +379,13 @@
 			);
 			target = 10CAEC902DD1A778003F9242 /* LarkSDKPB */;
 		};
+		10F64F262DD978F50044440F /* Exceptions for "LarkClone" folder in "LarkCloneTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Frameworks/UI/LarkSearchBar/SearchBarView.m,
+			);
+			target = E0BA145E2DD6D01F0032591D /* LarkCloneTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -393,6 +400,7 @@
 				10CAE48A2DD1903A003F9242 /* Exceptions for "LarkClone" folder in "LarkSDK" target */,
 				10CAEF472DD1DC78003F9242 /* Exceptions for "LarkClone" folder in "LarkSDKPB" target */,
 				10161E942DD3520B00C1E888 /* Exceptions for "LarkClone" folder in "LarkBridgeModels" target */,
+				10F64F262DD978F50044440F /* Exceptions for "LarkClone" folder in "LarkCloneTests" target */,
 				10165A672DD8DFAF0002E4FD /* Exceptions for "LarkClone" folder in "LarkChatBubble" target */,
 				10165A852DD8E2680002E4FD /* Exceptions for "LarkClone" folder in "LarkSearchBar" target */,
 			);
