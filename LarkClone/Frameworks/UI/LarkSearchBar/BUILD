@@ -15,7 +15,7 @@ apple_framework(
         # "*.h",
     ]),
     deps = [":LarkSearchBarHeaders"],  # 可能依赖其他模块
-    platforms = {"ios": "18.0"},  
+    platforms = {"ios": "18.4"},  
     
     visibility = ["//visibility:public"],
 )

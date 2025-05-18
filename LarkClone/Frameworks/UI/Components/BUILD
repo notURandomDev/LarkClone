@@ -17,7 +17,7 @@ apple_framework(
     ]),
     # includes = ["."],  # 包含当前目录下的所有文件
     # deps = [":ComponentsHeaders"],  # 可能依赖其他模块
-    platforms = {"ios": "18.0"},  
+    platforms = {"ios": "18.4"},  
     
     visibility = ["//visibility:public"],
 )
