@@ -8,7 +8,12 @@
 #if __has_include(<LarkSDK/LarkSDK-Swift.h>)
     // 使用 RustBridge 的代码
     #import <LarkSDK/LarkSDK-Swift.h>
-    #import <LarkBridgeModels/LarkBridgeModels-Swift.h>
+    #ifdef IS_XCODE_BUILD
+        #import <LarkBridgeModels/ObjCMailItemList.h>
+    #else
+        #import <LarkBridgeModels/LarkBridgeModels-Swift.h>
+    #endif
+
 #endif
 
 
