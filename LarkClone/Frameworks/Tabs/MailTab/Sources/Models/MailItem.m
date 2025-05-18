@@ -9,9 +9,6 @@
     // 使用 RustBridge 的代码
     #import <LarkSDK/LarkSDK-Swift.h>
     #import <LarkBridgeModels/LarkBridgeModels-Swift.h>
-#else
-    #import "LarkClone/LarkSDK-Swift.h"
-    #import "ObjCMailItemList.h"
 #endif
 
 

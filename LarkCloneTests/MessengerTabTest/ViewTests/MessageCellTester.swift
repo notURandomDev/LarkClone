@@ -1,6 +1,6 @@
 import UIKit
 @testable import LarkClone
-
+@testable import LarkChatBubble
 class MessageCellTester {
     let cell: MessageCell
     
