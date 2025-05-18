@@ -1,9 +1,9 @@
 load("@build_bazel_rules_ios//rules:framework.bzl", "apple_framework")
 
 apple_framework(
-    name = "LarkBridgeModels",
-    module_name = "LarkBridgeModels",  # optional, default to name
-
+    name = "LarkSDK",
+    module_name = "LarkSDK",  # optional, default to name
+    module_map = "module.modulemap",
     # private sources
     srcs = glob([
         "*.h",
@@ -11,7 +11,9 @@ apple_framework(
     ]),
     # any compatible provider: CCProvider, SwiftInfo, etc
     deps = [
-        "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB"
+        "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB",
+        "//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModels",
+        "//RustSDK:RustSDKHeaders",
     ],
     visibility = ["//visibility:public"],
 )

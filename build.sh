@@ -45,7 +45,7 @@ build_app() {
     setupenv
     generate
     source ~/.zshrc
-    bazel build //LarkClone:LarkCloneApp --platforms=//platforms:aarch64_apple_ios
+    bazel build --platforms=//platforms:aarch64_apple_ios //LarkClone:LarkCloneApp 
 }
 
 # Function to run the app in debug mode
