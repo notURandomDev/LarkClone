@@ -15,5 +15,6 @@ apple_framework(
         "//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModels",
         "//RustSDK:RustSDKHeaders",
     ],
+    platforms = {"ios": "18.0"}, 
     visibility = ["//visibility:public"],
 )

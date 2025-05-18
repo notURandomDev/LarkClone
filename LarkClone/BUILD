@@ -42,7 +42,7 @@ apple_framework(
         "//RustSDK:rust_sdk",
         ":MailTabHeaders"
     ],
-    platforms = {"ios": "18.4"},  
+    platforms = {"ios": "18.0"},  
     visibility = ["//visibility:public"],
 )
 
@@ -80,7 +80,7 @@ apple_framework(
         "//LarkClone/Frameworks/UI/LarkAvatar:LarkAvatar",
         "//LarkClone/Frameworks/UI/LarkChatBubble:LarkChatBubble",
     ],
-    platforms = {"ios": "18.4"},  
+    platforms = {"ios": "18.0"},  
     visibility = ["//visibility:public"],
 )
 
@@ -137,7 +137,7 @@ apple_framework(
 
         "//LarkCloneTests/MailTabTest:MailTabTestHeaders"
     ],
-    platforms = {"ios": "18.4"},  
+    platforms = {"ios": "18.0"},  
     visibility = ["//visibility:public"],
 )
 # 3. 定义 iOS 应用目标
@@ -149,7 +149,7 @@ ios_application(
         "ipad",
     ],
     infoplists = ["Info.bazel.plist"],
-    minimum_os_version = "18.4",
+    minimum_os_version = "18.0",
     deps = [
         ":LarkClone",
     ],

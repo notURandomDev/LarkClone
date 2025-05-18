@@ -13,5 +13,6 @@ apple_framework(
     deps = [
         "//RustSDK:proto_swift"
     ],
+    platforms = {"ios": "18.0"}, 
     visibility = ["//visibility:public"],
 )

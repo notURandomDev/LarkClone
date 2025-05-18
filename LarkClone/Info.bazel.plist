@@ -61,11 +61,11 @@
 	<key>DTPlatformName</key>
 	<string>iphonesimulator</string>
 	<key>DTPlatformVersion</key>
-	<string>18.4</string>
+	<string>18.0</string>
 	<key>DTSDKBuild</key>
 	<string>22E235</string>
 	<key>DTSDKName</key>
-	<string>iphonesimulator18.4</string>
+	<string>iphonesimulator18.0</string>
 	<key>DTXcode</key>
 	<string>1630</string>
 	<key>DTXcodeBuild</key>
@@ -73,7 +73,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
-	<string>18.4</string>
+	<string>18.0</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

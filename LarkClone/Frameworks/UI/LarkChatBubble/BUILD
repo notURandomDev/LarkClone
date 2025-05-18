@@ -9,7 +9,7 @@ apple_framework(
     deps = [
         "//LarkClone/Frameworks/UI/LarkColor:LarkColor",
     ],
-    platforms = {"ios": "18.4"},  
+    platforms = {"ios": "18.0"},  
     
     visibility = ["//visibility:public"],
 )

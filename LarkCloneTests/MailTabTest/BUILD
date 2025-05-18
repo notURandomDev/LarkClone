@@ -14,30 +14,30 @@ objc_library(
     visibility = ["//visibility:public"],
 )
 
-apple_framework(
-    name = "MailTabTest",
-    module_name = "MailTabTest",  # optional, default to name
-    # module_map = "Sources/Controllers/module.modulemap",  # optional, default to "module.modulemap"
-    # private sources
-    srcs = glob([
-        "Sources/**/*.swift",
-        "Sources/**/*.h",
-    ]),
+# apple_framework(
+#     name = "MailTabTest",
+#     module_name = "MailTabTest",  # optional, default to name
+#     # module_map = "Sources/Controllers/module.modulemap",  # optional, default to "module.modulemap"
+#     # private sources
+#     srcs = glob([
+#         "Sources/**/*.swift",
+#         "Sources/**/*.h",
+#     ]),
 
-    # any compatible provider: CCProvider, SwiftInfo, etc
-    deps = [
-        "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB",
-        "//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModels",
-        "//LarkClone/Frameworks/Core/LarkSDK:LarkSDK",
-        "//LarkClone/Frameworks/UI/LarkColor:LarkColorObjc",
-        "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBar",
-        "//LarkClone/Frameworks/UI/Components:Components",
-        # "//LarkClone/Frameworks/UI/Components:ComponentsHeaders",
-        "//LarkClone/Frameworks/UI/LarkColor:LarkColorHeaders",
-        "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBarHeaders",
-        "//RustSDK:rust_sdk",
-        ":MailTabHeaders"
-    ],
-    platforms = {"ios": "18.4"},  
-    visibility = ["//visibility:public"],
-)
+#     # any compatible provider: CCProvider, SwiftInfo, etc
+#     deps = [
+#         "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB",
+#         "//LarkClone/Frameworks/Core/LarkBridgeModels:LarkBridgeModels",
+#         "//LarkClone/Frameworks/Core/LarkSDK:LarkSDK",
+#         "//LarkClone/Frameworks/UI/LarkColor:LarkColorObjc",
+#         "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBar",
+#         "//LarkClone/Frameworks/UI/Components:Components",
+#         # "//LarkClone/Frameworks/UI/Components:ComponentsHeaders",
+#         "//LarkClone/Frameworks/UI/LarkColor:LarkColorHeaders",
+#         "//LarkClone/Frameworks/UI/LarkSearchBar:LarkSearchBarHeaders",
+#         "//RustSDK:rust_sdk",
+#         ":MailTabHeaders"
+#     ],
+#     platforms = {"ios": "18.0"},  
+#     visibility = ["//visibility:public"],
+# )

@@ -19,5 +19,6 @@ apple_framework(
     deps = [
         "//LarkClone/Frameworks/Core/LarkSDKPB:LarkSDKPB"
     ],
+    platforms = {"ios": "18.0"}, 
     visibility = ["//visibility:public"],
 )
