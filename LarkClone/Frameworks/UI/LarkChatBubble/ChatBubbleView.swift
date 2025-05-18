@@ -8,15 +8,15 @@
 import UIKit
 import LarkColor
 
-enum BubbleType {
+public enum BubbleType {
     case sent
     case received
 }
 
-class ChatBubbleView: UIView {
+public class ChatBubbleView: UIView {
     
     // MARK: - UI组件
-    internal let messageLabel = UILabel()
+    public let messageLabel = UILabel()
     private var registrationToken: NSObjectProtocol?
     
     // MARK: - 初始化
@@ -60,7 +60,7 @@ class ChatBubbleView: UIView {
     }
     
     // MARK: - 配置
-    func configure(text: String, type: BubbleType) {
+    public func configure(text: String, type: BubbleType) {
         messageLabel.text = text
         
         switch type {
