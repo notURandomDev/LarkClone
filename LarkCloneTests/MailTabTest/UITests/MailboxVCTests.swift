@@ -14,6 +14,7 @@
 import XCTest
 import UIKit
 @testable import LarkClone
+//@testable import LarkSearchBar
 
 final class MailboxVCTests: XCTestCase {
     
@@ -46,8 +47,13 @@ final class MailboxVCTests: XCTestCase {
         XCTAssertNotNil(tableView, "TableView should be initialized")
         
         // Find searchBarView
-        let searchBarView = mailboxVC.value(forKey: "searchBarView") as? SearchBarView
-        XCTAssertNotNil(searchBarView, "SearchBarView should be initialized")
+//        let searchBarView = mailboxVC.value(forKey: "searchBarView") as? SearchBarView
+//        XCTAssertNotNil(searchBarView, "SearchBarView should be initialized")
+        let hasSearchView = mailboxVC.view.subviews.contains { subview in
+            // 使用类名字符串检查而非直接类型检查
+            return NSStringFromClass(type(of: subview)).contains("SearchBarView")
+        }
+        XCTAssertTrue(hasSearchView, "View should contain a search bar component")
         
         // Find refreshControl
         let refreshControl = mailboxVC.value(forKey: "refreshControl") as? UIRefreshControl

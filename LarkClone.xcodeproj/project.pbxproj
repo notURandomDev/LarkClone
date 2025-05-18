@@ -43,6 +43,7 @@
 		10CAECB12DD1A8C0003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
 		10CAEF552DD1DE6C003F9242 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = 10CAEF542DD1DE6C003F9242 /* SwiftProtobuf */; };
 		10CAEF582DD1DEA4003F9242 /* LarkSDKPB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10CAEC912DD1A778003F9242 /* LarkSDKPB.framework */; };
+		E03070892DD9A33D00756E5A /* LarkSearchBar.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = 10165A732DD8E23D0002E4FD /* LarkSearchBar.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E07FDFAB2DD7102A0094A9E5 /* MessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFAA2DD7102A0094A9E5 /* MessageTests.swift */; };
 		E07FDFAD2DD710470094A9E5 /* MessageCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFAC2DD710470094A9E5 /* MessageCellTests.swift */; };
 		E07FDFAF2DD710660094A9E5 /* ChatDetailViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E07FDFAE2DD710660094A9E5 /* ChatDetailViewControllerTests.swift */; };
@@ -59,6 +60,7 @@
 		E08D1E9F2DD701E000555419 /* LarkCloneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E982DD701E000555419 /* LarkCloneTests.swift */; };
 		E08D1EA02DD701E000555419 /* MailboxVCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E932DD701E000555419 /* MailboxVCTests.swift */; };
 		E08D1EA12DD701E000555419 /* GenerateMailsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D1E8A2DD701E000555419 /* GenerateMailsTests.swift */; };
+		E0C9245D2DD9A12F00FA5ACF /* LarkSearchBar.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10165A732DD8E23D0002E4FD /* LarkSearchBar.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -209,6 +211,13 @@
 			remoteGlobalIDString = 100E63BD2DCCC22C0011B0F1;
 			remoteInfo = LarkClone;
 		};
+		E0C9245B2DD9A10100FA5ACF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100E63B62DCCC22C0011B0F1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 10165A722DD8E23D0002E4FD;
+			remoteInfo = LarkSearchBar;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -231,6 +240,17 @@
 				107F83162DD24F2300F385D3 /* MailTab.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E03070882DD9A32000756E5A /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E03070892DD9A33D00756E5A /* LarkSearchBar.framework in Copy Files */,
+			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -533,6 +553,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0C9245D2DD9A12F00FA5ACF /* LarkSearchBar.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1067,10 +1088,12 @@
 				E0BA145B2DD6D01F0032591D /* Sources */,
 				E0BA145C2DD6D01F0032591D /* Frameworks */,
 				E0BA145D2DD6D01F0032591D /* Resources */,
+				E03070882DD9A32000756E5A /* Copy Files */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E0C9245C2DD9A10100FA5ACF /* PBXTargetDependency */,
 				E0BA14642DD6D01F0032591D /* PBXTargetDependency */,
 			);
 			name = LarkCloneTests;
@@ -1561,6 +1584,11 @@
 			target = 100E63BD2DCCC22C0011B0F1 /* LarkClone */;
 			targetProxy = E0BA14632DD6D01F0032591D /* PBXContainerItemProxy */;
 		};
+		E0C9245C2DD9A10100FA5ACF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 10165A722DD8E23D0002E4FD /* LarkSearchBar */;
+			targetProxy = E0C9245B2DD9A10100FA5ACF /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -2044,6 +2072,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2058,6 +2087,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MODULEMAP_FILE = "";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = teamNH.LarkSearchBar;
@@ -2079,6 +2109,7 @@
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2093,6 +2124,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MODULEMAP_FILE = "";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
 				PRODUCT_BUNDLE_IDENTIFIER = teamNH.LarkSearchBar;
@@ -2575,6 +2607,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = John.LarkCloneTests;
@@ -2594,6 +2627,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(BUILT_PRODUCTS_DIR)";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = John.LarkCloneTests;
