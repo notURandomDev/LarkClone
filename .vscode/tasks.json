@@ -4,6 +4,17 @@
   "version": "2.0.0",
   "tasks": [
     {
+        "label": "Open and Run feishu",
+        "type": "shell",
+        "command": "osascript",
+        "args": [
+         "${workspaceFolder}/.vscode/runXcodeInVScode.scpt",
+         "${workspaceFolder}/LarkClone.xcodeproj"
+         ],
+         "group": "none",
+         "problemMatcher": []
+    },
+    {
       "label": "[xcodebuild] 构建 LarkClone",
       "type": "shell",
       "command": "bash ./scripts/xcodebuild/build.sh"
