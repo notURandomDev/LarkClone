@@ -277,18 +277,28 @@
 		100E63D02DCCC22D0011B0F1 /* Exceptions for "LarkClone" folder in "LarkClone" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Frameworks/Core/LarkBridgeModels/BUILD,
 				Frameworks/Core/LarkBridgeModels/ObjCMailItemList.swift,
+				Frameworks/Core/LarkSDK/BUILD,
 				Frameworks/Core/LarkSDK/RustBridge.swift,
+				Frameworks/Core/LarkSDK/RustBridgeSymbolRetainer.swift,
+				Frameworks/Core/LarkSDKPB/BUILD,
 				Frameworks/Core/LarkSDKPB/ContactList.pb.swift,
 				Frameworks/Core/LarkSDKPB/MailList.pb.swift,
 				Frameworks/Tabs/MailTab/Sources/Scripts/GenerateMails.swift,
 				Frameworks/Tabs/MessengerTab/Sources/Scripts/GenerateContacts.swift,
+				Frameworks/UI/Components/BUILD,
 				Frameworks/UI/LarkAvatar/AvatarUtility.swift,
 				Frameworks/UI/LarkAvatar/AvatarView.swift,
+				Frameworks/UI/LarkAvatar/BUILD,
+				Frameworks/UI/LarkChatBubble/BUILD,
 				Frameworks/UI/LarkChatBubble/ChatBubbleView.swift,
+				Frameworks/UI/LarkColor/BUILD.bazel,
 				Frameworks/UI/LarkColor/LarkColor.swift,
 				Frameworks/UI/LarkColor/LarkColorObjC.m,
+				Frameworks/UI/LarkLaunchScreen/BUILD,
 				Frameworks/UI/LarkLaunchScreen/LaunchViewController.swift,
+				Frameworks/UI/LarkSearchBar/BUILD,
 				Frameworks/UI/LarkSearchBar/SearchBarView.m,
 				Info.plist,
 			);
@@ -365,6 +375,7 @@
 			membershipExceptions = (
 				"Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h",
 				Frameworks/Core/LarkSDK/RustBridge.swift,
+				Frameworks/Core/LarkSDK/RustBridgeSymbolRetainer.swift,
 			);
 			publicHeaders = (
 				"Frameworks/Core/LarkSDK/LarkSDK-Bridging-Header.h",
@@ -1570,6 +1581,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/LarkClone/Frameworks/Core",
 				);
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "IS_XCODE_BUILD=1";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LarkClone/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -1606,6 +1618,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/LarkClone/Frameworks/Core",
 				);
+				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "IS_XCODE_BUILD=1";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LarkClone/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

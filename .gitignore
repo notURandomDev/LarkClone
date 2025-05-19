@@ -58,3 +58,13 @@ Cargo.lock
 ## 手动添加的忽略文件（如果有）
 # 示例：忽略特定的 plist 文件（如果不希望版本控制）
 # Contacts.plist
+
+# bazel相关
+*.bazel.lock
+bazel-bin
+bazel-out
+bazel-testlogs
+bazel-LarkClone
+bazel-*
+
+*.bazel.bak
