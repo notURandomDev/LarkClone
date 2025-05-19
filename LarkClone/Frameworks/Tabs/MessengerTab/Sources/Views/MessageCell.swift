@@ -1,10 +1,3 @@
-////
-////  MessageCell.swift
-////  LarkClone
-////
-////  Created by 张纪龙 on 2025/5/11.
-////
-//
 //import UIKit
 //import LarkColor
 //import LarkChatBubble
@@ -19,6 +12,8 @@
 //    private let senderNameLabel = UILabel()
 //    private let screenWidth = UIScreen.main.bounds.width
 //    private var registrationToken: NSObjectProtocol?
+//    private var replyView: UIView? = nil
+//    private var replyCountView: UIView? = nil
 //    
 //    // 常量
 //    private struct Constants {
@@ -106,7 +101,7 @@
 //            readStatusView.heightAnchor.constraint(equalToConstant: 12),
 //            
 //            // 底部约束
-//            contentView.bottomAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 8)
+//            contentView.bottomAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 24)
 //        ])
 //    }
 //    
@@ -298,6 +293,68 @@
 //        // 清除气泡视图内容
 //        bubbleView.configure(text: "", type: .received)
 //    }
+//    
+//    func showReplyIfNeeded(_ replyTo: Message?) {
+//        replyView?.removeFromSuperview()
+//        guard let reply = replyTo else { return }
+//        let replyBar = UIView()
+//        replyBar.backgroundColor = UIColor.clear
+//        replyBar.translatesAutoresizingMaskIntoConstraints = false
+//        let label = UILabel()
+//        label.text = "| \(reply.sender.name)：\(reply.content)"
+//        label.font = UIFont.systemFont(ofSize: 13)
+//        label.textColor = UIColor.darkGray
+//        label.numberOfLines = 1
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        replyBar.addSubview(label)
+//        contentView.addSubview(replyBar)
+//        NSLayoutConstraint.activate([
+//            replyBar.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor),
+//            replyBar.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor),
+//            replyBar.bottomAnchor.constraint(equalTo: bubbleView.topAnchor, constant: -2),
+//            label.leadingAnchor.constraint(equalTo: replyBar.leadingAnchor, constant: 4),
+//            label.trailingAnchor.constraint(equalTo: replyBar.trailingAnchor, constant: -4),
+//            label.topAnchor.constraint(equalTo: replyBar.topAnchor, constant: 2),
+//            label.bottomAnchor.constraint(equalTo: replyBar.bottomAnchor, constant: -2)
+//        ])
+//        replyView = replyBar
+//    }
+//    
+//    func showReplyCount(_ count: Int) {
+//        replyCountView?.removeFromSuperview()
+//        guard count > 0 else { return }
+//        let view = UIView()
+//        view.translatesAutoresizingMaskIntoConstraints = false
+//        let icon = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
+//        icon.tintColor = UIColor.systemBlue
+//        icon.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(icon)
+//        let label = UILabel()
+//        label.text = "\(count) 条回复"
+//        label.font = UIFont.systemFont(ofSize: 14)
+//        label.textColor = UIColor.systemBlue
+//        label.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(label)
+//        contentView.addSubview(view)
+//        NSLayoutConstraint.activate([
+//            view.topAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: 2),
+//            view.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor),
+//            icon.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+//            icon.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+//            icon.widthAnchor.constraint(equalToConstant: 18),
+//            icon.heightAnchor.constraint(equalToConstant: 18),
+//            label.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 2),
+//            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+//            label.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+//            view.heightAnchor.constraint(equalToConstant: 20)
+//        ])
+//        replyCountView = view
+//    }
+//    
+//    func hideReplyCount() {
+//        replyCountView?.removeFromSuperview()
+//        replyCountView = nil
+//    }
 //}
 //
 ////辅助测试的方法
@@ -348,6 +405,7 @@
 //    }
 //}
 //#endif
+//
 
 //
 //  MessageCell.swift
