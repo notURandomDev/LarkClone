@@ -18,6 +18,9 @@ class ContactCell: UITableViewCell {
     var infoSV = UIStackView()
     var leftView = UIView()
     var firstLineView = UIView()
+    private var flagView = UIImageView()
+    private var unreadDot = UIView()
+    private var muteIcon = UIImageView()
 
     
     struct Styles {
@@ -53,6 +56,39 @@ class ContactCell: UITableViewCell {
         setMsgLabelConstaints()
         setInfoSVConstraints()
         
+        flagView.image = UIImage(systemName: "flag.fill")
+        flagView.tintColor = .systemRed
+        flagView.isHidden = true
+        addSubview(flagView)
+        flagView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            flagView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            flagView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
+            flagView.widthAnchor.constraint(equalToConstant: 18),
+            flagView.heightAnchor.constraint(equalToConstant: 18)
+        ])
+        unreadDot.backgroundColor = .systemRed
+        unreadDot.layer.cornerRadius = 5
+        unreadDot.isHidden = true
+        addSubview(unreadDot)
+        unreadDot.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            unreadDot.topAnchor.constraint(equalTo: topAnchor, constant: 12),
+            unreadDot.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            unreadDot.widthAnchor.constraint(equalToConstant: 10),
+            unreadDot.heightAnchor.constraint(equalToConstant: 10)
+        ])
+        muteIcon.image = UIImage(systemName: "bell.slash.fill")
+        muteIcon.tintColor = .systemGray
+        muteIcon.isHidden = true
+        addSubview(muteIcon)
+        muteIcon.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            muteIcon.centerYAnchor.constraint(equalTo: centerYAnchor),
+            muteIcon.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -48),
+            muteIcon.widthAnchor.constraint(equalToConstant: 18),
+            muteIcon.heightAnchor.constraint(equalToConstant: 18)
+        ])
     }
 
     required init?(coder: NSCoder) {
@@ -99,6 +135,14 @@ class ContactCell: UITableViewCell {
             case .user:
                 tagLabel.isHidden = true
         }
+        // 置顶高亮
+        backgroundColor = contact.isPinned ? UIColor.systemGray5 : UIColor.clear
+        // 红旗
+        flagView.isHidden = !contact.isMarked
+        // 未读红点
+        unreadDot.isHidden = !contact.isUnread
+        // 免打扰
+        muteIcon.isHidden = !contact.isMuted
     }
 
     func configureNameLabel() {
