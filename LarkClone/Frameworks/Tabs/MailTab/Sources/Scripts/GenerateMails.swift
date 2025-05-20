@@ -203,7 +203,7 @@ class EmailDataGenerator {
         return email
     }
     
-    // 生成更真实的日期（考虑工作时间、过去时间等因素）
+    // 修改后的生成真实日期函数，确保不生成未来时间
     private func generateRealisticDate(relativeTo currentDate: Date) -> Date {
         let calendar = Calendar.current
         
@@ -211,46 +211,64 @@ class EmailDataGenerator {
         let randomDays = Int.random(in: -90...0)
         
         // 获取目标日期（不包含时分秒）
-        let targetDay = calendar.date(byAdding: .day, value: randomDays, to: currentDate)!
+        var targetDay = calendar.date(byAdding: .day, value: randomDays, to: currentDate)!
         
+        // 获取当前日期的年月日部分
+//        let currentDateYMD = calendar.dateComponents([.year, .month, .day], from: currentDate)
+//        let currentDateYMDOnly = calendar.date(from: currentDateYMD)!
+        
+        // 判断目标日期是否是今天
+        let isToday = calendar.isDate(targetDay, inSameDayAs: currentDate)
+        
+        // 获取目标日期是星期几
         let weekday = calendar.component(.weekday, from: targetDay)
         let isWeekend = (weekday == 1 || weekday == 7) // 1是周日，7是周六
         
-        // 获取当前时间的小时和分钟
+        // 获取当前时间的时分秒
         let currentHour = calendar.component(.hour, from: currentDate)
-        let currentMinute = calendar.component(.minute, from: currentDate)
+//        let currentMinute = calendar.component(.minute, from: currentDate)
+//        let currentSecond = calendar.component(.second, from: currentDate)
         
         // 生成随机时间
         var randomHour: Int
         var randomMinute: Int
         var randomSecond: Int
         
-        // 根据周末或工作日生成初始小时
-        if isWeekend {
-            randomHour = Int.random(in: 10...17) // 周末时间
+        if isToday {
+            // 如果是今天，确保时间早于当前时间
+            
+            // 当前时间减去1-3小时
+            let hoursAgo = Int.random(in: 1...3)
+            randomHour = currentHour - hoursAgo
+            randomMinute = Int.random(in: 0...59)
+            randomSecond = Int.random(in: 0...59)
+            
+            // 如果小时变成负数，需要调整到前一天
+            if randomHour < 0 {
+                // 修改目标日期为前一天
+                targetDay = calendar.date(byAdding: .day, value: -1, to: targetDay)!
+                randomHour += 24  // 将负小时值转换为前一天的等效小时
+            }
         } else {
-            // 工作日有80%的概率在工作时间（8:00-19:00）
-            if Double.random(in: 0...1) < 0.8 {
-                randomHour = Int.random(in: 8...19) // 工作时间
+            // 不是今天，可以生成全天范围内的随机时间
+            
+            // 根据周末或工作日生成小时
+            if isWeekend {
+                // 周末时间，主要集中在10-17点
+                randomHour = Int.random(in: 10...17)
             } else {
-                // 20%的概率在非工作时间
-                randomHour = Int.random(in: 0...23)
+                // 工作日有80%的概率在工作时间（8:00-19:00）
+                if Double.random(in: 0...1) < 0.8 {
+                    randomHour = Int.random(in: 8...19) // 工作时间
+                } else {
+                    // 20%的概率在非工作时间
+                    randomHour = Int.random(in: 0...23)
+                }
             }
-        }
-        
-        // 随机分钟和秒数
-        randomMinute = Int.random(in: 0...59)
-        randomSecond = Int.random(in: 0...59)
-        
-        // 如果是今天，确保时间早于当前时间
-        if randomDays == 0 {
-            // 检查生成的时间是否晚于当前时间
-            if randomHour > currentHour || (randomHour == currentHour && randomMinute >= currentMinute) {
-                // 如果随机生成的时间晚于或等于当前时间，则将时间设为1-3小时前
-                let hoursAgo = Int.random(in: 1...3)
-                randomHour = max(8, currentHour - hoursAgo)
-                randomMinute = Int.random(in: 0...59)
-            }
+            
+            // 随机分钟和秒数
+            randomMinute = Int.random(in: 0...59)
+            randomSecond = Int.random(in: 0...59)
         }
         
         // 组合日期和时间
@@ -259,7 +277,15 @@ class EmailDataGenerator {
         dateComponents.minute = randomMinute
         dateComponents.second = randomSecond
         
-        return calendar.date(from: dateComponents) ?? currentDate
+        let result = calendar.date(from: dateComponents) ?? currentDate
+        
+        // 最终安全检查 - 确保生成的时间不晚于当前时间
+        if result > currentDate {
+            // 如果不慎生成了未来时间，则返回当前时间前1小时
+            return calendar.date(byAdding: .hour, value: -1, to: currentDate)!
+        }
+        
+        return result
     }
 }
 
