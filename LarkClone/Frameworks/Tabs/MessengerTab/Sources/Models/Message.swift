@@ -24,6 +24,7 @@ class Message {
     var recallEditExpireAt: Date?
     var replyTo: Message?
     var recallReplyTo: Message?
+    var isRecalled: Bool
     
     init(id: String = UUID().uuidString,
          content: String,
@@ -34,7 +35,8 @@ class Message {
          recallContent: String? = nil,
          recallEditExpireAt: Date? = nil,
          replyTo: Message? = nil,
-         recallReplyTo: Message? = nil) {
+         recallReplyTo: Message? = nil,
+         isRecalled: Bool = false) {
         self.id = id
         self.content = content
         self.sender = sender
@@ -45,6 +47,7 @@ class Message {
         self.recallEditExpireAt = recallEditExpireAt
         self.replyTo = replyTo
         self.recallReplyTo = recallReplyTo
+        self.isRecalled = isRecalled
     }
     
     // 格式化时间为聊天界面显示格式

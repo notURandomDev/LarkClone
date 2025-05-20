@@ -308,7 +308,12 @@ class MessageCell: UITableViewCell {
         replyBar.backgroundColor = UIColor.clear
         replyBar.translatesAutoresizingMaskIntoConstraints = false
         let label = UILabel()
-        label.text = "| \(reply.sender.name)：\(reply.content)"
+        // Check if the replied message is recalled
+        if reply.isRecalled {
+            label.text = "| 此消息已撤回"
+        } else {
+            label.text = "| \(reply.sender.name)：\(reply.content)"
+        }
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = UIColor.darkGray
         label.numberOfLines = 1

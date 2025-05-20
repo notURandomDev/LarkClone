@@ -490,6 +490,8 @@ class ChatDetailViewController: UIViewController {
     private func recallMessage(at index: Int) {
         let recalled = messages[index]
         let replyToId = recalled.replyTo?.id
+        // Mark the recalled message as isRecalled
+        recalled.isRecalled = true
         let recallTip = Message(
             content: "你撤回了一条消息",
             sender: recalled.sender,
@@ -501,10 +503,13 @@ class ChatDetailViewController: UIViewController {
             recallReplyTo: recalled.replyTo
         )
         messages.remove(at: index)
-        // 插入 recallTip
+        // Insert recallTip
         messages.insert(recallTip, at: index)
         updateReplyCountDict()
         tableView.reloadData()
+        // Refresh the recalled message cell to update its appearance (e.g., show "此消息已撤回")
+        let recalledIndexPath = IndexPath(row: index, section: 0)
+        tableView.reloadRows(at: [recalledIndexPath], with: .none)
         // 新增：刷新被引用消息cell
         if let replyId = replyToId, let replyIndex = messages.firstIndex(where: { $0.id == replyId }) {
             let replyIndexPath = IndexPath(row: replyIndex, section: 0)
@@ -683,7 +688,12 @@ extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
         // 新增：如果 recallTip 有 recallReplyTo，则设置引用条
         if let replyTo = messages[idx].recallReplyTo {
             replyTargetMessage = replyTo
-            replyReferenceLabel?.text = "回复 \(replyTo.sender.name)：\(replyTo.content)"
+            // 检查被引用的消息是否已被撤回
+            if replyTo.isRecalled {
+                replyReferenceLabel?.text = "回复 \(replyTo.sender.name)：此消息已撤回"
+            } else {
+                replyReferenceLabel?.text = "回复 \(replyTo.sender.name)：\(replyTo.content)"
+            }
             replyReferenceView?.isHidden = false
         }
         // 续时1分钟（只对当前激活的 recallTip 有效）
