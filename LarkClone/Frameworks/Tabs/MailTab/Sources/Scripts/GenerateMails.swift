@@ -214,7 +214,7 @@ class EmailDataGenerator {
         var targetDay = calendar.date(byAdding: .day, value: randomDays, to: currentDate)!
         
         // 获取当前日期的年月日部分
-        let currentDateYMD = calendar.dateComponents([.year, .month, .day], from: currentDate)
+//        let currentDateYMD = calendar.dateComponents([.year, .month, .day], from: currentDate)
 //        let currentDateYMDOnly = calendar.date(from: currentDateYMD)!
         
         // 判断目标日期是否是今天
