@@ -12,15 +12,15 @@ import LarkChatBubble
 class MessageCell: UITableViewCell {
     
     // MARK: - Properties
-    private let bubbleView = ChatBubbleView()
-    private let timeLabel = UILabel()
-    private let readStatusView = UIImageView()
-    private let avatarImageView = UIImageView()
-    private let senderNameLabel = UILabel()
+    internal let bubbleView = ChatBubbleView()
+    internal let timeLabel = UILabel()
+    internal let readStatusView = UIImageView()
+    internal let avatarImageView = UIImageView()
+    internal let senderNameLabel = UILabel()
     private let screenWidth = UIScreen.main.bounds.width
     private var registrationToken: NSObjectProtocol?
-    private var replyView: UIView? = nil
-    private var replyCountView: UIView? = nil
+    internal var replyView: UIView? = nil
+    internal var replyCountView: UIView? = nil
     
     // 常量
     private struct Constants {

@@ -12,26 +12,26 @@ import LarkColor
 class ChatDetailViewController: UIViewController {
     
     // MARK: - UI组件
-    private let tableView = UITableView()
-    private let inputField = UITextField()
+    internal let tableView = UITableView()
+    internal let inputField = UITextField()
     private let sendButton = UIButton(type: .system)
     private let inputContainer = UIView()
     private let loadingIndicator = UIActivityIndicatorView(style: .medium)
     
     // MARK: - 数据
-    private var contact: Contact
-    private var messages: [Message] = []
+    internal var contact: Contact
+    internal var messages: [Message] = []
     private var inputContainerBottomConstraint: NSLayoutConstraint!
     private var isViewAppeared = false
     private var registrationToken: NSObjectProtocol?
-    private var isDataLoaded = false
+    internal var isDataLoaded = false
     private var recalledMessageContent: String?
     private var recallExpireTimer: Timer?
-    private var replyReferenceView: UIView?
-    private var replyReferenceLabel: UILabel?
-    private var replyReferenceCloseBtn: UIButton?
-    private var replyTargetMessage: Message?
-    private var replyCountDict: [String: Int] = [:]
+    internal var replyReferenceView: UIView?
+    internal var replyReferenceLabel: UILabel?
+    internal var replyReferenceCloseBtn: UIButton?
+    internal var replyTargetMessage: Message?
+    internal var replyCountDict: [String: Int] = [:]
     
     // MARK: - 初始化
     init(contact: Contact) {
@@ -415,7 +415,7 @@ class ChatDetailViewController: UIViewController {
     }
     
     // MARK: - 操作方法
-    @objc private func sendMessage() {
+    @objc internal func sendMessage() {
         guard let text = inputField.text, !text.isEmpty else { return }
         // 创建当前用户
         let currentUser = Contact(
@@ -462,7 +462,7 @@ class ChatDetailViewController: UIViewController {
         }
     }
     
-    @objc private func handleMessageLongPress(_ gesture: UILongPressGestureRecognizer) {
+    @objc internal func handleMessageLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard gesture.state == .began,
               let cell = gesture.view,
               cell.tag < messages.count else { return }
@@ -487,7 +487,7 @@ class ChatDetailViewController: UIViewController {
     }
     
     // 撤回消息，插入 recallTip 类型
-    private func recallMessage(at index: Int) {
+    internal func recallMessage(at index: Int) {
         let recalled = messages[index]
         let replyToId = recalled.replyTo?.id
         // Mark the recalled message as isRecalled
@@ -517,7 +517,7 @@ class ChatDetailViewController: UIViewController {
         }
     }
     
-    private func activateFirstRecallTipTimer() {
+    internal func activateFirstRecallTipTimer() {
         let now = Date()
         var found = false
         for msg in messages where msg.type == .recallTip {
@@ -571,10 +571,15 @@ class ChatDetailViewController: UIViewController {
         replyReferenceView?.isHidden = false
     }
 
-    @objc private func hideReplyReference() {
+    @objc internal func hideReplyReference() {
         replyTargetMessage = nil
         replyReferenceView?.isHidden = true
     }
+    
+    // 模拟回复消息的便捷方法
+   func testHelper_replyMessage(at index: Int) {
+       replyMessage(at: index)
+   }
     
     private func updateReplyCountDict() {
         replyCountDict = [:]
@@ -679,7 +684,7 @@ extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     // 点击"重新编辑"按钮
-    @objc private func reEditMessageFromTip(_ sender: UIButton) {
+    @objc internal func reEditMessageFromTip(_ sender: UIButton) {
         let idx = sender.tag
         guard idx < messages.count, messages[idx].type == .recallTip, let content = messages[idx].recallContent else { return }
         inputField.text = content
