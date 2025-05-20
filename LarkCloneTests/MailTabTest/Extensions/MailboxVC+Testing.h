@@ -6,7 +6,7 @@
 //
 
 #import "MailboxVC.h"
-
+#import "SearchBarView.h"
 @interface MailboxVC (Testing)
 
 @property (nonatomic, readonly) UITableView *tableView;

@@ -1,0 +1,43 @@
+on: push
+name: generate app CI
+jobs:
+  checks:
+    name: run
+    runs-on: macos-15  # Use macOS Sonoma (14), which should be more compatible with newer Xcode/Swift tools
+    steps:
+    - name: checkout
+      uses: actions/checkout@master
+
+    - name: "Select Xcode version"
+      uses: BoundfoxStudios/action-xcode-select@v1
+      with:
+        version: "16.0"  # Use a more specific version that's known to be available on macOS-14
+    
+    - name: setup bazel
+      uses: bazel-contrib/setup-bazel@0.14.0
+      with:
+        bazelisk-cache: true
+        disk-cache: ${{ github.workflow }}
+        repository-cache: true
+        version: 7.1.0
+
+    - name: Debug environment
+      run: |
+        xcodebuild -version
+        xcrun --sdk iphoneos --show-sdk-version
+        xcrun --sdk iphoneos --show-sdk-path
+        bazel version
+    
+    - name: build
+      run: |
+        bazel build //LarkClone:LarkCloneApp --platforms=//platforms:aarch64_apple_ios
+      
+    - name: Upload .ipa artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-ipa-package
+        path: bazel-bin/LarkClone/LarkCloneApp.ipa
+        if-no-files-found: warn
+
+
+

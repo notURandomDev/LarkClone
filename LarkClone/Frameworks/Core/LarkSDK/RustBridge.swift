@@ -9,6 +9,7 @@ import Foundation
 import LarkSDKPB
 import LarkBridgeModels
 
+
 // 用于保存 Swift 侧回调
 final class RustCallbackStore {
     static let shared = RustCallbackStore()
@@ -34,7 +35,7 @@ func swift_contacts_callback(ptr: UnsafeMutablePointer<UInt8>?, len: UInt) {
     rust_sdk_free_data(ptr)
 
     do {
-        let contactList = try Lark_ContactList(serializedBytes: data)
+        let contactList = try Lark_ContactList(serializedData: data)
         RustCallbackStore.shared.contactsCallback?(.success(contactList.contacts))
     } catch {
         RustCallbackStore.shared.contactsCallback?(.failure(error))
@@ -55,7 +56,7 @@ func swift_mails_callback(ptr: UnsafeMutablePointer<UInt8>?, len: UInt) {
     print("Swift: 创建 Data, 长度: \(data.count)")
     
     do {
-        let mailList = try Lark_MailItemList(serializedBytes: data)
+        let mailList = try Lark_MailItemList(serializedData: data)
         print("Swift: 反序列化 \(mailList.items.count) 封邮件")
         RustCallbackStore.shared.mailsCallback?(.success(mailList.items))
     } catch {
