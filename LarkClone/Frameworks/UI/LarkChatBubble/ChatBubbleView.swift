@@ -102,12 +102,12 @@ public class ChatBubbleView: UIView {
     // MARK: - 测试辅助方法
     #if DEBUG
     // 提供一个安全的方法来获取消息文本，用于测试
-    func testHelper_getText() -> String? {
+    public func testHelper_getText() -> String? {
         return messageLabel.text
     }
     
     // 提供一个方法来判断气泡类型
-    func testHelper_getBubbleType() -> BubbleType {
+    public func testHelper_getBubbleType() -> BubbleType {
         return backgroundColor == LarkColorStyle.ChatBubble.Sent.backgroundColor ? .sent : .received
     }
     #endif
