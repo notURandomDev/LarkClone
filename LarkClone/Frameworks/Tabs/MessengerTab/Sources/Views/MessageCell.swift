@@ -227,6 +227,7 @@ class MessageCell: UITableViewCell {
     }
     
     // MARK: - 暗色模式支持
+    // MARK: - 暗色模式支持
     private func registerForTraitChanges() {
         if #available(iOS 17.0, *) {
             registrationToken = registerForTraitChanges([UITraitUserInterfaceStyle.self]) { [weak self] (cell: UITableViewCell, previousTraitCollection: UITraitCollection) in
@@ -238,6 +239,13 @@ class MessageCell: UITableViewCell {
             }
         }
     }
+
+    // 处理外观变化的方法
+    @objc private func handleAppearanceChanged() {
+        if let message = getMessageFromCurrentState() {
+            configure(with: message)
+        }
+    }
     
     // 从当前UI状态尝试重建消息对象
     private func getMessageFromCurrentState() -> Message? {
@@ -246,8 +254,11 @@ class MessageCell: UITableViewCell {
             return nil
         }
         
-        // 判断消息类型
-        let messageType: MessageType = readStatusView.isHidden ? .received : .sent
+        // 判断消息类型 - 使用更可靠的方式
+        let messageType: MessageType
+
+        let bubbleType = bubbleView.testHelper_getBubbleType()
+        messageType = bubbleType == .sent ? .sent : .received
         
         // 获取头像
         let avatar: UIImage
@@ -296,7 +307,7 @@ class MessageCell: UITableViewCell {
         senderNameLabel.isHidden = false
         avatarImageView.isHidden = false
         // 清除气泡视图内容
-        bubbleView.configure(text: "", type: .received)
+        bubbleView.messageLabel.text = ""
     }
 }
 

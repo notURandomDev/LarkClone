@@ -18,6 +18,8 @@ public class ChatBubbleView: UIView {
     // MARK: - UI组件
     public let messageLabel = UILabel()
     private var registrationToken: NSObjectProtocol?
+    // 存储当前气泡类型
+    private var currentBubbleType: BubbleType = .received
     
     // MARK: - 初始化
     override init(frame: CGRect) {
@@ -62,15 +64,18 @@ public class ChatBubbleView: UIView {
     // MARK: - 配置
     public func configure(text: String, type: BubbleType) {
         messageLabel.text = text
+        currentBubbleType = type
         
-        switch type {
+        applyBubbleStyle()
+    }
+    
+    // 应用气泡样式
+    private func applyBubbleStyle() {
+        switch currentBubbleType {
         case .sent:
-            // 使用 LarkColorStyle 中定义的发送消息气泡颜色
             backgroundColor = LarkColorStyle.ChatBubble.Sent.backgroundColor
             messageLabel.textColor = LarkColorStyle.ChatBubble.Sent.textColor
-            
         case .received:
-            // 使用 LarkColorStyle 中定义的接收消息气泡颜色
             backgroundColor = LarkColorStyle.ChatBubble.Received.backgroundColor
             messageLabel.textColor = LarkColorStyle.ChatBubble.Received.textColor
         }
@@ -81,10 +86,8 @@ public class ChatBubbleView: UIView {
         if #available(iOS 17.0, *) {
             registrationToken = registerForTraitChanges([UITraitUserInterfaceStyle.self]) { [weak self] (view: UIView, previousTraitCollection: UITraitCollection) in
                 if previousTraitCollection.userInterfaceStyle != self?.traitCollection.userInterfaceStyle {
-                    if let text = self?.messageLabel.text {
-                        let isSent = self?.backgroundColor == LarkColorStyle.ChatBubble.Sent.backgroundColor
-                        self?.configure(text: text, type: isSent ? .sent : .received)
-                    }
+                    // 仅应用当前保存的气泡类型样式，而不再尝试判断类型
+                    self?.applyBubbleStyle()
                 }
             }
         }
@@ -92,10 +95,9 @@ public class ChatBubbleView: UIView {
     
     // 统一处理特性变化的方法
     private func handleTraitChange(_ previousTraitCollection: UITraitCollection?) {
-        // 当外观模式改变时，重新应用配置
-        if let text = messageLabel.text, previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
-            let isSent = backgroundColor == LarkColorStyle.ChatBubble.Sent.backgroundColor
-            configure(text: text, type: isSent ? .sent : .received)
+        // 当外观模式改变时，直接应用当前气泡类型的样式
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            applyBubbleStyle()
         }
     }
     
@@ -108,7 +110,7 @@ public class ChatBubbleView: UIView {
     
     // 提供一个方法来判断气泡类型
     public func testHelper_getBubbleType() -> BubbleType {
-        return backgroundColor == LarkColorStyle.ChatBubble.Sent.backgroundColor ? .sent : .received
+        return currentBubbleType
     }
     #endif
 }
