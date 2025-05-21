@@ -12,13 +12,15 @@ import LarkChatBubble
 class MessageCell: UITableViewCell {
     
     // MARK: - Properties
-    private let bubbleView = ChatBubbleView()
-    private let timeLabel = UILabel()
-    private let readStatusView = UIImageView()
-    private let avatarImageView = UIImageView()
-    private let senderNameLabel = UILabel()
+    internal let bubbleView = ChatBubbleView()
+    internal let timeLabel = UILabel()
+    internal let readStatusView = UIImageView()
+    internal let avatarImageView = UIImageView()
+    internal let senderNameLabel = UILabel()
     private let screenWidth = UIScreen.main.bounds.width
     private var registrationToken: NSObjectProtocol?
+    internal var replyView: UIView? = nil
+    internal var replyCountView: UIView? = nil
     
     // 常量
     private struct Constants {
@@ -106,7 +108,7 @@ class MessageCell: UITableViewCell {
             readStatusView.heightAnchor.constraint(equalToConstant: 12),
             
             // 底部约束
-            contentView.bottomAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 8)
+            contentView.bottomAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 24)
         ])
     }
     
@@ -169,18 +171,23 @@ class MessageCell: UITableViewCell {
         let bubbleTopConstraint = bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8)
         bubbleTopConstraint.identifier = "dynamicConstraint"
         
-        let timeRightConstraint = timeLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor)
+        // Constraints for time and read status (sent message)
+        let timeLeadingConstraint = timeLabel.leadingAnchor.constraint(equalTo: readStatusView.trailingAnchor, constant: 4) // Space between read status and time
+        timeLeadingConstraint.identifier = "dynamicConstraint"
+        
+        let timeRightConstraint = timeLabel.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor) // Time aligns to bubble trailing
         timeRightConstraint.identifier = "dynamicConstraint"
         
-        let readStatusRightConstraint = readStatusView.trailingAnchor.constraint(equalTo: timeLabel.leadingAnchor, constant: -4)
-        readStatusRightConstraint.identifier = "dynamicConstraint"
+        let readStatusLeadingConstraint = readStatusView.leadingAnchor.constraint(equalTo: timeLabel.leadingAnchor, constant: -16) // Adjust constant as needed
+        readStatusLeadingConstraint.identifier = "dynamicConstraint"
         
         NSLayoutConstraint.activate([
             avatarRightConstraint,
             bubbleRightConstraint,
             bubbleTopConstraint,
+            timeLeadingConstraint, // Use the new leading constraint for timeLabel
             timeRightConstraint,
-            readStatusRightConstraint
+            readStatusLeadingConstraint // Use the new leading constraint for readStatusView
         ])
     }
     
@@ -309,6 +316,90 @@ class MessageCell: UITableViewCell {
         // 清除气泡视图内容
         bubbleView.messageLabel.text = ""
     }
+    
+    func showReplyIfNeeded(_ replyTo: Message?) {
+        replyView?.removeFromSuperview()
+        guard let reply = replyTo else { return }
+        let replyBar = UIView()
+        replyBar.backgroundColor = UIColor.clear
+        replyBar.translatesAutoresizingMaskIntoConstraints = false
+        let label = UILabel()
+        // Check if the replied message is recalled
+        if reply.isRecalled {
+            label.text = "| " + NSLocalizedString("recalled_message_tip", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "此消息已撤回", comment: "") // Localize recalled message tip
+        } else {
+            label.text = "| \(reply.sender.name)：\(reply.content)"
+        }
+        label.font = UIFont.systemFont(ofSize: 13)
+        label.textColor = UIColor.darkGray
+        label.numberOfLines = 1
+        label.translatesAutoresizingMaskIntoConstraints = false
+        replyBar.addSubview(label)
+        contentView.addSubview(replyBar)
+        NSLayoutConstraint.activate([
+            replyBar.leadingAnchor.constraint(equalTo: bubbleView.leadingAnchor),
+            replyBar.trailingAnchor.constraint(equalTo: bubbleView.trailingAnchor),
+            replyBar.bottomAnchor.constraint(equalTo: bubbleView.topAnchor, constant: -2),
+            label.leadingAnchor.constraint(equalTo: replyBar.leadingAnchor, constant: 4),
+            label.trailingAnchor.constraint(equalTo: replyBar.trailingAnchor, constant: -4),
+            label.topAnchor.constraint(equalTo: replyBar.topAnchor, constant: 2),
+            label.bottomAnchor.constraint(equalTo: replyBar.bottomAnchor, constant: -2)
+        ])
+        replyView = replyBar
+    }
+    
+    func showReplyCount(_ count: Int, messageType: MessageType) {
+        replyCountView?.removeFromSuperview()
+        guard count > 0 else { return }
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        let icon = UIImageView(image: UIImage(systemName: "bubble.left.and.bubble.right.fill"))
+        icon.tintColor = UIColor.systemBlue
+        icon.contentMode = .scaleAspectFit
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(icon)
+        let label = UILabel()
+        if count == 1 {
+            label.text = NSLocalizedString("reply_count_singular", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "1 条回复", comment: "")
+        } else {
+            label.text = String(format: NSLocalizedString("reply_count_plural_format", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "%@ 条回复", comment: ""), arguments: ["\(count)"])
+        }
+        label.font = UIFont.systemFont(ofSize: 12)
+        label.textColor = UIColor.systemBlue
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+        contentView.addSubview(view)
+        // 根据消息类型调整水平对齐
+        var constraints: [NSLayoutConstraint] = [
+            view.topAnchor.constraint(equalTo: bubbleView.bottomAnchor, constant: 2),
+            icon.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            icon.widthAnchor.constraint(equalToConstant: 12),
+            icon.heightAnchor.constraint(equalToConstant: 12),
+            label.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 2),
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            view.heightAnchor.constraint(equalToConstant: 20)
+        ]
+        if messageType == .sent {
+            // Sent message: Align to the left of the read status and time label
+            constraints.append(view.trailingAnchor.constraint(equalTo: readStatusView.leadingAnchor, constant: -4))
+            // Internal constraints for icon and label within replyCountView (sent message)
+            constraints.append(icon.leadingAnchor.constraint(equalTo: view.leadingAnchor))
+            constraints.append(label.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 2))
+            constraints.append(label.trailingAnchor.constraint(equalTo: view.trailingAnchor))
+        } else {
+            // Received message: Align to the right of the time label
+            constraints.append(view.leadingAnchor.constraint(equalTo: timeLabel.trailingAnchor, constant: 4))
+            // Ensure it doesn't go beyond the bubble's trailing edge (optional, based on desired overflow behavior)
+            constraints.append(view.trailingAnchor.constraint(lessThanOrEqualTo: bubbleView.trailingAnchor, constant: 0))
+        }
+        NSLayoutConstraint.activate(constraints)
+        replyCountView = view
+    }
+    
+    func hideReplyCount() {
+        replyCountView?.removeFromSuperview()
+        replyCountView = nil
+    }
 }
 
 //辅助测试的方法
@@ -359,3 +450,4 @@ extension MessageCell {
     }
 }
 #endif
+

@@ -12,19 +12,26 @@ import LarkColor
 class ChatDetailViewController: UIViewController {
     
     // MARK: - UI组件
-    private let tableView = UITableView()
-    private let inputField = UITextField()
+    internal let tableView = UITableView()
+    internal let inputField = UITextField()
     private let sendButton = UIButton(type: .system)
     private let inputContainer = UIView()
     private let loadingIndicator = UIActivityIndicatorView(style: .medium)
     
     // MARK: - 数据
-    private var contact: Contact
-    private var messages: [Message] = []
+    internal var contact: Contact
+    internal var messages: [Message] = []
     private var inputContainerBottomConstraint: NSLayoutConstraint!
     private var isViewAppeared = false
     private var registrationToken: NSObjectProtocol?
-    private var isDataLoaded = false
+    internal var isDataLoaded = false
+    private var recalledMessageContent: String?
+    private var recallExpireTimer: Timer?
+    internal var replyReferenceView: UIView?
+    internal var replyReferenceLabel: UILabel?
+    internal var replyReferenceCloseBtn: UIButton?
+    internal var replyTargetMessage: Message?
+    internal var replyCountDict: [String: Int] = [:]
     
     // MARK: - 初始化
     init(contact: Contact) {
@@ -43,6 +50,7 @@ class ChatDetailViewController: UIViewController {
         if let token = registrationToken {
             NotificationCenter.default.removeObserver(token)
         }
+        recallExpireTimer?.invalidate()
     }
     
     // 预加载消息数据
@@ -61,6 +69,7 @@ class ChatDetailViewController: UIViewController {
         
         setupUI()
         registerForAppearanceChanges()
+        startRecallExpireTimer()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,6 +77,7 @@ class ChatDetailViewController: UIViewController {
         
         // 添加键盘监听
         addKeyboardObservers()
+        
         
         // 确保标题居中
         navigationItem.largeTitleDisplayMode = .never
@@ -217,15 +227,50 @@ class ChatDetailViewController: UIViewController {
     
     private func setupInputContainer() {
         inputContainer.backgroundColor = LarkColorStyle.Chat.inputContainerColor
-        inputContainer.layer.borderColor = LarkColorStyle.UI.borderColor.cgColor
-        inputContainer.layer.borderWidth = 0.5
+        inputContainer.layer.borderWidth = 0 // 移除inputContainer的边框
         view.addSubview(inputContainer)
         
+        // 引用视图
+        let refView = UIView()
+        refView.backgroundColor = LarkColorStyle.Chat.inputFieldColor // Use input field background color
+        refView.layer.cornerRadius = 6
+        refView.isHidden = true
+        refView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(refView)
+        replyReferenceView = refView
+
+        let refLabel = UILabel()
+        refLabel.font = UIFont.systemFont(ofSize: 14)
+        refLabel.textColor = LarkColorStyle.Text.primary // Use primary text color
+        refLabel.numberOfLines = 1
+        refLabel.translatesAutoresizingMaskIntoConstraints = false
+        refView.addSubview(refLabel)
+        replyReferenceLabel = refLabel
+
+        let closeBtn = UIButton(type: .system)
+        closeBtn.setTitle("✕", for: .normal)
+        closeBtn.setTitleColor(LarkColorStyle.Text.primary, for: .normal) // Use primary text color for X button
+        closeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        closeBtn.translatesAutoresizingMaskIntoConstraints = false
+        closeBtn.addTarget(self, action: #selector(hideReplyReference), for: .touchUpInside)
+        refView.addSubview(closeBtn)
+        replyReferenceCloseBtn = closeBtn
+
         // 设置输入框 - 修复浅色模式下的颜色
-        inputField.borderStyle = .roundedRect
-        inputField.placeholder = "输入消息..."
+        inputField.placeholder = "发送给 \(contact.name)"
         inputField.backgroundColor = LarkColorStyle.Chat.inputFieldColor
         inputField.textColor = LarkColorStyle.Text.primary
+        inputField.layer.cornerRadius = 8 // 调整圆角大小，使其更尖锐
+        inputField.layer.masksToBounds = true
+        // 添加边框
+        inputField.layer.borderColor = LarkColorStyle.UI.borderColor.cgColor // 设置边框颜色
+        inputField.layer.borderWidth = 0.5 // 设置边框宽度
+        // 增加内边距（UITextField没有textInsets，需用leftView/rightView或自定义）
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 44))
+        inputField.leftView = paddingView
+        inputField.leftViewMode = .always
+        inputField.rightView = paddingView
+        inputField.rightViewMode = .always
         inputContainer.addSubview(inputField)
         
         // 设置发送按钮
@@ -240,33 +285,62 @@ class ChatDetailViewController: UIViewController {
         inputContainer.translatesAutoresizingMaskIntoConstraints = false
         inputField.translatesAutoresizingMaskIntoConstraints = false
         sendButton.translatesAutoresizingMaskIntoConstraints = false
+        replyReferenceView?.translatesAutoresizingMaskIntoConstraints = false
+        replyReferenceLabel?.translatesAutoresizingMaskIntoConstraints = false
+        replyReferenceCloseBtn?.translatesAutoresizingMaskIntoConstraints = false
         
         // 添加约束
         inputContainerBottomConstraint = inputContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         
-        NSLayoutConstraint.activate([
+        var constraints: [NSLayoutConstraint] = [
             // TableView约束
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: inputContainer.topAnchor),
+            // tableView bottom constraint depends on replyReferenceView
             
             // 输入容器约束
             inputContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             inputContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            inputContainer.heightAnchor.constraint(equalToConstant: 60),
             inputContainerBottomConstraint,
             
             // 输入框约束
             inputField.leadingAnchor.constraint(equalTo: inputContainer.leadingAnchor, constant: 16),
-            inputField.centerYAnchor.constraint(equalTo: inputContainer.centerYAnchor),
             inputField.trailingAnchor.constraint(equalTo: sendButton.leadingAnchor, constant: -8),
-            
-            // 发送按钮约束
+            inputField.heightAnchor.constraint(equalToConstant: 44),
             sendButton.trailingAnchor.constraint(equalTo: inputContainer.trailingAnchor, constant: -16),
-            sendButton.centerYAnchor.constraint(equalTo: inputContainer.centerYAnchor),
+            sendButton.centerYAnchor.constraint(equalTo: inputField.centerYAnchor),
             sendButton.widthAnchor.constraint(equalToConstant: 60)
-        ])
+        ]
+        // Constraints for replyReferenceView
+        if let refView = replyReferenceView, let refLabel = replyReferenceLabel, let closeBtn = replyReferenceCloseBtn {
+            constraints += [
+                refView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8), // Constrain to main view
+                refView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8), // Constrain to main view
+                refView.bottomAnchor.constraint(equalTo: inputContainer.topAnchor, constant: -4), // Align bottom to inputContainer top with small padding
+                refView.heightAnchor.constraint(equalToConstant: 28),
+                // closeBtn on the left within refView
+                closeBtn.leadingAnchor.constraint(equalTo: refView.leadingAnchor, constant: 8),
+                closeBtn.centerYAnchor.constraint(equalTo: refView.centerYAnchor),
+                closeBtn.widthAnchor.constraint(equalToConstant: 20),
+                // refLabel to the right of closeBtn within refView
+                refLabel.leadingAnchor.constraint(equalTo: closeBtn.trailingAnchor, constant: 8),
+                refLabel.trailingAnchor.constraint(equalTo: refView.trailingAnchor, constant: -8),
+                refLabel.centerYAnchor.constraint(equalTo: refView.centerYAnchor)
+            ]
+            // When refView is present, tableView's bottom is constrained to refView's top
+            constraints.append(tableView.bottomAnchor.constraint(equalTo: refView.topAnchor))
+        } else {
+            // When refView is not present, tableView's bottom is constrained to inputContainer's top
+            constraints.append(tableView.bottomAnchor.constraint(equalTo: inputContainer.topAnchor))
+        }
+
+        // Input field top constraint relative to inputContainer top
+        constraints.append(inputField.topAnchor.constraint(equalTo: inputContainer.topAnchor, constant: 8))
+
+        // Input container bottom and input field bottom alignment
+        constraints.append(inputField.bottomAnchor.constraint(equalTo: inputContainer.bottomAnchor, constant: -8))
+        NSLayoutConstraint.activate(constraints)
     }
     
     // MARK: - 键盘处理
@@ -352,9 +426,8 @@ class ChatDetailViewController: UIViewController {
     }
     
     // MARK: - 操作方法
-    @objc private func sendMessage() {
+    @objc internal func sendMessage() {
         guard let text = inputField.text, !text.isEmpty else { return }
-        
         // 创建当前用户
         let currentUser = Contact(
             avatar: UIImage(named: "zhang-jilong") ?? UIImage(systemName: "person.circle.fill") ?? UIImage(),
@@ -363,20 +436,27 @@ class ChatDetailViewController: UIViewController {
             datetime: "",
             type: .user
         )
-        
         let newMessage = Message(
             content: text,
             sender: currentUser,
             type: .sent,
-            isRead: false
+            isRead: false,
+            replyTo: replyTargetMessage
         )
-        
+        let replyToId = replyTargetMessage?.id
+        // 自动隐藏引用视图
+        if replyTargetMessage != nil {
+            hideReplyReference()
+        }
         messages.append(newMessage)
-        
-        // 使用insertRows而不是reloadData，性能更好
+        updateReplyCountDict()
         let indexPath = IndexPath(row: messages.count - 1, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
-        
+        // 刷新被引用消息cell
+        if let replyId = replyToId, let replyIndex = messages.firstIndex(where: { $0.id == replyId }) {
+            let replyIndexPath = IndexPath(row: replyIndex, section: 0)
+            tableView.reloadRows(at: [replyIndexPath], with: .none)
+        }
         scrollToBottom(animated: true)
         inputField.text = ""
     }
@@ -392,6 +472,110 @@ class ChatDetailViewController: UIViewController {
             }
         }
     }
+    
+    @objc internal func handleMessageLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        let touchPoint = gesture.location(in: tableView) // Get touch location relative to tableView
+        guard let indexPath = tableView.indexPathForRow(at: touchPoint), // Get indexPath for the touch location
+              indexPath.row < messages.count else { return }
+        let message = messages[indexPath.row] // Use accurate indexPath.row to get message
+        let isSelf = message.type == .sent
+        let isWithin5Min = Date().timeIntervalSince(message.timestamp) < 300
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        if isSelf && isWithin5Min {
+            alert.addAction(UIAlertAction(title: NSLocalizedString("menu_recall", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "撤回", comment: ""), style: .destructive, handler: { [weak self] _ in
+                self?.recallMessage(at: indexPath.row)
+            }))
+        }
+        alert.addAction(UIAlertAction(title: NSLocalizedString("menu_reply", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "回复", comment: ""), style: .default, handler: { [weak self] _ in
+            self?.replyMessage(at: indexPath.row) // Pass accurate indexPath.row
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("menu_cancel", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "取消", comment: ""), style: .cancel, handler: nil))
+        if let popover = alert.popoverPresentationController {
+            // Use the cell as the source view and its bounds as the source rect
+            guard let cell = gesture.view else { return }
+            popover.sourceView = cell
+            popover.sourceRect = cell.bounds
+        }
+        present(alert, animated: true, completion: nil)
+    }
+    
+    // 撤回消息，插入 recallTip 类型
+    internal func recallMessage(at index: Int) {
+        let recalled = messages[index]
+        let replyToId = recalled.replyTo?.id
+        // Mark the recalled message as isRecalled
+        recalled.isRecalled = true
+        let recallTip = Message(
+            content: NSLocalizedString("recall_tip_text", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "你撤回了一条消息", comment: ""),
+            sender: recalled.sender,
+            timestamp: Date(),
+            type: .recallTip,
+            isRead: true,
+            recallContent: recalled.content,
+            recallEditExpireAt: Date().addingTimeInterval(60), // Set initial expire time
+            recallReplyTo: recalled.replyTo
+        )
+        messages.remove(at: index)
+        // Insert recallTip
+        messages.insert(recallTip, at: index)
+        updateReplyCountDict()
+        tableView.reloadData()
+        // Refresh the recalled message cell to update its appearance (e.g., show "此消息已撤回")
+        let recalledIndexPath = IndexPath(row: index, section: 0)
+        tableView.reloadRows(at: [recalledIndexPath], with: .none)
+        // 新增：刷新被引用消息cell
+        if let replyId = replyToId, let replyIndex = messages.firstIndex(where: { $0.id == replyId }) {
+            let replyIndexPath = IndexPath(row: replyIndex, section: 0)
+            tableView.reloadRows(at: [replyIndexPath], with: .none)
+        }
+    }
+    
+    private func checkRecallExpire() {
+        let now = Date()
+        var needReload = false
+        for (idx, msg) in messages.enumerated() where msg.type == .recallTip {
+            if let expire = msg.recallEditExpireAt, expire < now && expire != Date.distantPast {
+                msg.recallEditExpireAt = Date.distantPast // 标记为已过期
+                needReload = true
+            }
+        }
+        if needReload { tableView.reloadData() }
+    }
+    
+    private func startRecallExpireTimer() {
+        recallExpireTimer?.invalidate()
+        recallExpireTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            self?.checkRecallExpire()
+        }
+    }
+    
+    // 预留回复功能
+    private func replyMessage(at index: Int) {
+        let message = messages[index]
+        replyTargetMessage = message
+        replyReferenceLabel?.text = "回复 \(message.sender.name)：\(message.content)"
+        replyReferenceView?.isHidden = false
+    }
+
+    @objc internal func hideReplyReference() {
+        replyTargetMessage = nil
+        replyReferenceView?.isHidden = true
+    }
+    
+    // 模拟回复消息的便捷方法
+   func testHelper_replyMessage(at index: Int) {
+       replyMessage(at: index)
+   }
+    
+    private func updateReplyCountDict() {
+        replyCountDict = [:]
+        for msg in messages {
+            if let replyId = msg.replyTo?.id {
+                replyCountDict[replyId, default: 0] += 1
+            }
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
@@ -401,11 +585,80 @@ extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as! MessageCell
-        
         let message = messages[indexPath.row]
+        if message.type == .recallTip {
+            let cellId = "RecallTipCell"
+            var cell = tableView.dequeueReusableCell(withIdentifier: cellId)
+            if cell == nil {
+                cell = UITableViewCell(style: .default, reuseIdentifier: cellId)
+                cell?.selectionStyle = .none
+                cell?.backgroundColor = .clear
+            }
+            cell?.contentView.subviews.forEach { $0.removeFromSuperview() }
+            let container = UIView()
+            container.translatesAutoresizingMaskIntoConstraints = false
+            cell?.contentView.addSubview(container)
+            NSLayoutConstraint.activate([
+                container.centerXAnchor.constraint(equalTo: cell!.contentView.centerXAnchor),
+                container.centerYAnchor.constraint(equalTo: cell!.contentView.centerYAnchor),
+                container.topAnchor.constraint(equalTo: cell!.contentView.topAnchor, constant: 8),
+                container.bottomAnchor.constraint(equalTo: cell!.contentView.bottomAnchor, constant: -8)
+            ])
+            let label = UILabel()
+            label.text = NSLocalizedString("recall_tip_text", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "你撤回了一条消息", comment: "")
+            label.textColor = UIColor.systemGray
+            label.font = UIFont.systemFont(ofSize: 15)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            container.addSubview(label)
+            var editBtn: UIButton? = nil
+            // 只要 recallEditExpireAt 没过期或为 nil，都显示"重新编辑"按钮
+            if message.recallEditExpireAt == nil || (message.recallEditExpireAt != Date.distantPast && message.recallEditExpireAt! > Date()) {
+                let btn = UIButton(type: .system)
+                btn.setTitle(NSLocalizedString("reedit_button_title", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "重新编辑", comment: ""), for: .normal)
+                btn.setTitleColor(.systemBlue, for: .normal)
+                btn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+                btn.translatesAutoresizingMaskIntoConstraints = false
+                btn.tag = indexPath.row
+                btn.addTarget(self, action: #selector(reEditMessageFromTip(_:)), for: .touchUpInside)
+                container.addSubview(btn)
+                editBtn = btn
+            }
+            if let editBtn = editBtn {
+                NSLayoutConstraint.activate([
+                    label.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                    label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+                    editBtn.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 2),
+                    editBtn.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+                    editBtn.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+                    container.heightAnchor.constraint(greaterThanOrEqualToConstant: 32)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    label.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+                    label.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+                    label.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+                    container.heightAnchor.constraint(greaterThanOrEqualToConstant: 32)
+                ])
+            }
+            return cell!
+        }
+        // 普通消息cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MessageCell", for: indexPath) as! MessageCell
         cell.configure(with: message)
-        
+        // 移除旧手势，避免复用问题
+        cell.contentView.gestureRecognizers?.forEach { cell.contentView.removeGestureRecognizer($0) }
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleMessageLongPress(_:)))
+        cell.contentView.addGestureRecognizer(longPress)
+        cell.contentView.tag = indexPath.row
+        // 新增：如果有回复引用，渲染引用条
+        cell.showReplyIfNeeded(message.replyTo)
+        // 新增：只在被回复的那条消息下方显示"X条回复"
+        let replyCount = replyCountDict[message.id] ?? 0
+        if replyCount > 0 {
+            cell.showReplyCount(replyCount, messageType: message.type)
+        } else {
+            cell.hideReplyCount()
+        }
         return cell
     }
     
@@ -415,6 +668,31 @@ extension ChatDetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
+    }
+    
+    // 点击"重新编辑"按钮
+    @objc internal func reEditMessageFromTip(_ sender: UIButton) {
+        let idx = sender.tag
+        guard idx < messages.count, messages[idx].type == .recallTip, let content = messages[idx].recallContent else { return }
+        inputField.text = content
+        inputField.isUserInteractionEnabled = true
+        inputField.becomeFirstResponder()
+        // 新增：如果 recallTip 有 recallReplyTo，则设置引用条
+        if let replyTo = messages[idx].recallReplyTo {
+            replyTargetMessage = replyTo
+            // 检查被引用的消息是否已被撤回
+            if replyTo.isRecalled {
+                replyReferenceLabel?.text = "回复 \(replyTo.sender.name)：" + NSLocalizedString("recalled_message_tip", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "此消息已撤回", comment: "") // Localize recalled message tip in reply reference
+            } else {
+                replyReferenceLabel?.text = "回复 \(replyTo.sender.name)：\(replyTo.content)"
+            }
+            replyReferenceView?.isHidden = false
+        }
+        // 续时1分钟（只对当前激活的 recallTip 有效）
+        if let _ = messages[idx].recallEditExpireAt, messages[idx].recallEditExpireAt != Date.distantPast {
+            messages[idx].recallEditExpireAt = Date().addingTimeInterval(60)
+            tableView.reloadRows(at: [IndexPath(row: idx, section: 0)], with: .none)
+        }
     }
 }
 
@@ -500,3 +778,4 @@ extension ChatDetailViewController {
     }
 }
 #endif
+

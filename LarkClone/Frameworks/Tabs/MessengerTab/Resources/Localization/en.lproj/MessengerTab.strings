@@ -11,3 +11,23 @@
 // Add tags localization
 "tag_external" = " External ";
 "tag_bot" = " Bot ";
+
+//Message reply count
+"reply_count_singular" = "1 reply";
+"reply_count_plural_format" = "%@ replies";
+
+// Long press message menu options
+"menu_recall" = "Recall";
+"menu_reply" = "Reply";
+"menu_cancel" = "Cancel";
+
+// Recall message tip and re-edit button
+"recall_tip_text" = "You recalled a message.";
+"reedit_button_title" = "Re-edit";
+
+// Recalled message tip
+"recalled_message_tip" = "This message was recalled.";
+
+// Time period localization
+"time_am" = "AM";
+"time_pm" = "PM";
