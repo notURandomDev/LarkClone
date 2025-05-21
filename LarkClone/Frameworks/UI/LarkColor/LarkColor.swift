@@ -171,7 +171,7 @@ public class LarkColorStyle: NSObject {
             public static var backgroundColor: UIColor {
                 return UIColor { traitCollection in
                     return traitCollection.userInterfaceStyle == .dark
-                        ? UIColor(red: 0.0, green: 0.47, blue: 0.99, alpha: 1.0) // 更鲜亮的蓝色
+                    ? UIColor(red: 0.0, green: 0.35, blue: 0.75, alpha: 0.9) // 更鲜亮的蓝色
                         : UIColor(red: 0.0, green: 0.47, blue: 0.99, alpha: 1.0) // 苹果风格蓝色
                 }
             }
