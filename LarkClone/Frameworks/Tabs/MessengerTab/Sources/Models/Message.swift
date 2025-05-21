@@ -53,8 +53,26 @@ class Message {
     // 格式化时间为聊天界面显示格式
     func formattedTime() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter.string(from: timestamp)
+        // Check current locale to decide format
+        let currentLocale = Locale.current
+        if currentLocale.language.languageCode == "zh" { // Assuming Chinese for zh
+            let calendar = Calendar.current
+            let hour = calendar.component(.hour, from: timestamp)
+            
+            let period: String
+            if hour >= 0 && hour < 12 {
+                period = NSLocalizedString("time_am", tableName: "MessengerTab", bundle: Bundle(for: Message.self), value: "上午", comment: "")
+                formatter.dateFormat = "h:mm"
+            } else {
+                period = NSLocalizedString("time_pm", tableName: "MessengerTab", bundle: Bundle(for: Message.self), value: "下午", comment: "")
+                formatter.dateFormat = "h:mm"
+            }
+            return period + " " + formatter.string(from: timestamp)
+        } else {
+            // Default to English format (or other non-Chinese)
+            formatter.dateFormat = "h:mm a"
+            return formatter.string(from: timestamp)
+        }
     }
     
     // 创建测试消息数据

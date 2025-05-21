@@ -54,9 +54,9 @@ extension ChatDetailViewController {
         reEditMessageFromTip(sender)
     }
     
-    func testHelper_activateFirstRecallTipTimer() {
-        activateFirstRecallTipTimer()
-    }
+//    func testHelper_activateFirstRecallTipTimer() {
+//        activateFirstRecallTipTimer()
+//    }
 
     func testHelper_getReplyReferenceView() -> UIView? {
         return replyReferenceView
@@ -248,14 +248,11 @@ class ChatDetailViewControllerTests: XCTestCase {
         // 直接调用 recallMessage 来模拟撤回操作
         viewController.recallMessage(at: indexPath.row)
         
-        // 调用 activateFirstRecallTipTimer 模拟计时器开始
-        viewController.activateFirstRecallTipTimer()
-        
         // 验证消息是否被撤回（消息类型变为recallTip）
         let messages = viewController.testHelper_getMessages()
         XCTAssertEqual(messages.count, 1, "Should still have one message")
         XCTAssertEqual(messages[0].type, .recallTip, "Message should be converted to recall tip")
-        XCTAssertEqual(messages[0].content, "你撤回了一条消息", "Recall tip content should be correct")
+        XCTAssertEqual(messages[0].content, NSLocalizedString("recall_tip_text", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "你撤回了一条消息", comment: ""), "Recall tip content should be correct")
         XCTAssertNotNil(messages[0].recallContent, "Recall content should be preserved")
         XCTAssertEqual(messages[0].recallContent, "测试撤回消息", "Recall content should match original message")
         
@@ -275,7 +272,7 @@ class ChatDetailViewControllerTests: XCTestCase {
         let expiredRecallTipCell = viewController.tableView(tableView, cellForRowAt: indexPath)
         let expiredEditButton = (expiredRecallTipCell.contentView.subviews.first?.subviews.first { subview in
             if let button = subview as? UIButton, let title = button.titleLabel?.text {
-                return title == "重新编辑"
+                return title == NSLocalizedString("reedit_button_title", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "重新编辑", comment: "")
             }
             return false
         }) as? UIButton
@@ -286,7 +283,7 @@ class ChatDetailViewControllerTests: XCTestCase {
         
         // 重新设置一个未过期的 recall tip 消息，并获取其初始过期时间
         let freshRecallTip = Message(
-            content: "你撤回了一条消息",
+            content: NSLocalizedString("recall_tip_text", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "你撤回了一条消息", comment: ""),
             sender: currentUser,
             timestamp: Date(),
             type: .recallTip,
@@ -301,7 +298,7 @@ class ChatDetailViewControllerTests: XCTestCase {
         let freshRecallTipCell = viewController.tableView(tableView, cellForRowAt: indexPath)
         let freshEditButton = (freshRecallTipCell.contentView.subviews.first?.subviews.first { subview in
             if let button = subview as? UIButton, let title = button.titleLabel?.text {
-                return title == "重新编辑"
+                return title == NSLocalizedString("reedit_button_title", tableName: "MessengerTab", bundle: Bundle(for: MessageCell.self), value: "重新编辑", comment: "")
             }
             return false
         }) as? UIButton

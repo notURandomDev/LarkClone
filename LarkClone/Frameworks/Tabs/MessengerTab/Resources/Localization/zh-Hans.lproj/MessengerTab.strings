@@ -6,8 +6,30 @@
   
  */
  "messenger_title" = "飞书消息";
- "messenger_tabbar_title" = "信息";
+ "messenger_tabbar_title" = "消息";
 
  // 添加标签的本地化
  "tag_external" = " 外部 ";
  "tag_bot" = " 机器人 ";
+
+// 消息回复计数
+"reply_count_singular" = "1 条回复";
+"reply_count_plural_format" = "%@ 条回复";
+
+// 长按消息菜单选项
+"menu_recall" = "撤回";
+"menu_reply" = "回复";
+"menu_cancel" = "取消";
+
+// 撤回消息提示和重新编辑
+"recall_tip_text" = "你撤回了一条消息";
+"reedit_button_title" = "重新编辑";
+
+// Recalled message tip
+"recalled_message_tip" = "此消息已撤回";
+
+// Time period localization
+"time_am" = "上午";
+"time_pm" = "下午";
+
+ 
