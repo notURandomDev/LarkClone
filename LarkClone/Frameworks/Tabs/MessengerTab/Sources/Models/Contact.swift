@@ -9,12 +9,17 @@ enum ContactType: String {
     case external
 }
 
-struct Contact {
-    let avatar: UIImage?
-    let name: String
-    let latestMsg: String
-    let datetime: String
-    let type: ContactType
+class Contact {
+    var avatar: UIImage?
+    var name: String
+    var latestMsg: String
+    var datetime: String
+    var type: ContactType
+    // 新增状态属性
+    var isPinned: Bool = false
+    var isUnread: Bool = false
+    var isMarked: Bool = false
+    var isMuted: Bool = false
     
     // 从plist解析的数据中创建Contact
     static func from(contactData: ContactData) -> Contact {
@@ -56,6 +61,15 @@ struct Contact {
             datetime: larkContact.datetime,
             type: ContactType(rawValue: larkContact.type) ?? .user
         )
+    }
+    
+    // 修改初始化方法
+    init(avatar: UIImage?, name: String, latestMsg: String, datetime: String, type: ContactType) {
+        self.avatar = avatar
+        self.name = name
+        self.latestMsg = latestMsg
+        self.datetime = datetime
+        self.type = type
     }
 }
 

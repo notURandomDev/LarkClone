@@ -42,6 +42,9 @@ class ContactListVC: UIViewController {
                 self?.loadInitialData()
             }
         }
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
+        tableView.addGestureRecognizer(longPress)
     }
     
 //    override func viewWillAppear(_ animated: Bool) {
@@ -178,6 +181,29 @@ class ContactListVC: UIViewController {
             self.loadingIndicator.stopAnimating()
         }
     }
+    
+    // MARK: - 长按弹窗
+    @objc private func handleLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard gesture.state == .began else { return }
+        let point = gesture.location(in: tableView)
+        guard let indexPath = tableView.indexPathForRow(at: point) else { return }
+        let contact = contacts[indexPath.row]
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: contact.isPinned ? "取消置顶" : "置顶", style: .default, handler: { _ in
+            self.togglePin(at: indexPath)
+        }))
+        alert.addAction(UIAlertAction(title: contact.isUnread ? "取消标为未读" : "标为未读", style: .default, handler: { _ in
+            self.toggleUnread(at: indexPath)
+        }))
+        alert.addAction(UIAlertAction(title: contact.isMarked ? "取消标记" : "标记", style: .default, handler: { _ in
+            self.toggleMark(at: indexPath)
+        }))
+        alert.addAction(UIAlertAction(title: contact.isMuted ? "取消消息免打扰" : "消息免打扰", style: .default, handler: { _ in
+            self.toggleMute(at: indexPath)
+        }))
+        alert.addAction(UIAlertAction(title: "完成", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -221,5 +247,61 @@ extension ContactListVC: UITableViewDelegate, UITableViewDataSource {
         if offsetY > contentHeight - screenHeight - 100 && !isLoading && hasMoreData {
             loadMoreData()
         }
+    }
+    
+    // MARK: - 左滑操作
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let contact = contacts[indexPath.row]
+        let pinAction = UIContextualAction(style: .normal, title: contact.isPinned ? "取消置顶" : "置顶") { _, _, completion in
+            self.togglePin(at: indexPath)
+            completion(true)
+        }
+        pinAction.backgroundColor = .systemBlue
+        let unreadAction = UIContextualAction(style: .normal, title: contact.isUnread ? "取消未读" : "标为未读") { _, _, completion in
+            self.toggleUnread(at: indexPath)
+            completion(true)
+        }
+        unreadAction.backgroundColor = .systemTeal
+        let markAction = UIContextualAction(style: .normal, title: contact.isMarked ? "取消标记" : "标记") { _, _, completion in
+            self.toggleMark(at: indexPath)
+            completion(true)
+        }
+        markAction.backgroundColor = .systemRed
+        return UISwipeActionsConfiguration(actions: [unreadAction, pinAction, markAction])
+    }
+    
+    // MARK: - 操作逻辑
+    private func togglePin(at indexPath: IndexPath) {
+        let contact = contacts[indexPath.row]
+        contact.isPinned.toggle()
+        contacts.remove(at: indexPath.row)
+        if contact.isPinned {
+            // 置顶，插入到最前面
+            contacts.insert(contact, at: 0)
+        } else {
+            // 取消置顶，插入到未置顶区并按时间排序
+            var nonPinnedContacts = contacts.filter { !$0.isPinned }
+            nonPinnedContacts.append(contact)
+            // 按datetime降序排序（假设datetime为yyyy-MM-dd HH:mm:ss或类似格式）
+            nonPinnedContacts.sort { $0.datetime > $1.datetime }
+            let pinnedContacts = contacts.filter { $0.isPinned }
+            contacts = pinnedContacts + nonPinnedContacts
+        }
+        tableView.reloadData()
+    }
+    private func toggleUnread(at indexPath: IndexPath) {
+        let contact = contacts[indexPath.row]
+        contact.isUnread.toggle()
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    private func toggleMark(at indexPath: IndexPath) {
+        let contact = contacts[indexPath.row]
+        contact.isMarked.toggle()
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    private func toggleMute(at indexPath: IndexPath) {
+        let contact = contacts[indexPath.row]
+        contact.isMuted.toggle()
+        tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

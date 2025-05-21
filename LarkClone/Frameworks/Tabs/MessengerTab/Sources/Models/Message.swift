@@ -10,6 +10,7 @@ import UIKit
 enum MessageType {
     case sent
     case received
+    case recallTip
 }
 
 class Message {
@@ -19,19 +20,34 @@ class Message {
     let timestamp: Date
     let type: MessageType
     var isRead: Bool
+    var recallContent: String?
+    var recallEditExpireAt: Date?
+    var replyTo: Message?
+    var recallReplyTo: Message?
+    var isRecalled: Bool
     
     init(id: String = UUID().uuidString,
          content: String,
          sender: Contact,
          timestamp: Date = Date(),
          type: MessageType,
-         isRead: Bool = false) {
+         isRead: Bool = false,
+         recallContent: String? = nil,
+         recallEditExpireAt: Date? = nil,
+         replyTo: Message? = nil,
+         recallReplyTo: Message? = nil,
+         isRecalled: Bool = false) {
         self.id = id
         self.content = content
         self.sender = sender
         self.timestamp = timestamp
         self.type = type
         self.isRead = isRead
+        self.recallContent = recallContent
+        self.recallEditExpireAt = recallEditExpireAt
+        self.replyTo = replyTo
+        self.recallReplyTo = recallReplyTo
+        self.isRecalled = isRecalled
     }
     
     // 格式化时间为聊天界面显示格式
@@ -59,3 +75,4 @@ class Message {
         ]
     }
 }
+
